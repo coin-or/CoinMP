@@ -1,9 +1,9 @@
 * text=auto !eol
 /AUTHORS.txt -text
-/CoinMP.cpp -text
 /CoinMP.dll -text
-/CoinMP.h -text
 /CoinMP.lib -text
+CoinMP/src/CoinMP.cpp -text
+CoinMP/src/CoinMP.h -text
 /Externals -text
 /INSTALL.txt -text
 /LICENSE.txt -text
