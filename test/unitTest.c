@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "..\CoinMP.h"
+#include "CoinMP.h"
 
 int
 main (int argc, char *argv[])
