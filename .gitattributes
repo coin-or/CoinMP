@@ -1,14 +1,1 @@
 * text=auto !eol
-/AUTHORS.txt -text
-/CoinMP.cpp -text
-/CoinMP.dll -text
-/CoinMP.h -text
-/CoinMP.lib -text
-/Externals -text
-/INSTALL.txt -text
-/LICENSE.txt -text
-/README.txt -text
-msvc6/CoinMP.dsp -text
-msvc6/CoinMP.dsw -text
-msvc6/unitTest/unitTest.dsp -text
-test/unitTest.c -text

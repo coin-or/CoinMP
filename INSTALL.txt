@@ -1,5 +1,0 @@
-
-Currently CoinMP is only setup for compilation with MS Visual C++ 6.0 compiler.
-
-To build the 'CoinMP.dll', open the workspace file 'CoinMP.dsw' and select
-'Build CoinMP.dll' from the 'Build' menu in Visual Studio 6.
