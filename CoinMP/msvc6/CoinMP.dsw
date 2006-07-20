@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "CoinMPDll"=".\CoinMPDll\CoinMPDll.dsp" - Package Owner=<4>
+Project: "CoinMP"=".\CoinMP.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -105,7 +105,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "unitTest"=".\unitTest\unitTest.dsp" - Package Owner=<4>
+Project: "unitTest"=".\unitTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

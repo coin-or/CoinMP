@@ -85,7 +85,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\test\unitTest.c
+SOURCE=..\test\unitTest.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -93,7 +93,7 @@ SOURCE=..\..\test\unitTest.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\CoinMP.h
+SOURCE=..\src\CoinMP.h
 # End Source File
 # End Group
 # End Target
