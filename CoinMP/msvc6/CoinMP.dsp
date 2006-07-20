@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="CoinMPDll" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="CoinMP" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=CoinMPDll - Win32 Debug
+CFG=CoinMP - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=CoinMPDll - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "CoinMP.mak" CFG="CoinMP - Win32 Debug"
+!MESSAGE NMAKE /f "CoinMP.mak" CFG="CoinMP - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -42,7 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\..\Clp\src" /I "..\..\CoinUtils\src" /I "..\..\Osi\src" /I "..\..\Cbc\src" /I "..\..\Cgl\src" /I "..\..\Cgl\src\CglProbing" /I "..\..\Cgl\src\CglGomory" /I "..\..\Cgl\src\CglKnapsackCover" /I "..\..\Cgl\src\CglOddHole" /I "..\..\Cgl\src\CglClique" /I "..\..\Cgl\src\CglLiftAndProject" /I "..\..\Cgl\src\CglSimpleRounding" /I "..\..\Osi\src\OsiClp" /I "..\..\BuildTools\headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /W3 /GR /GX /O2 /I "..\..\Clp\src" /I "..\..\CoinUtils\src" /I "..\..\Osi\src" /I "..\..\Cbc\src" /I "..\..\Cgl\src" /I "..\..\Cgl\src\CglProbing" /I "..\..\Cgl\src\CglGomory" /I "..\..\Cgl\src\CglKnapsackCover" /I "..\..\Cgl\src\CglOddHole" /I "..\..\Cgl\src\CglClique" /I "..\..\Cgl\src\CglLiftAndProject" /I "..\..\Cgl\src\CglSimpleRounding" /I "..\..\Osi\src\OsiClp" /I "..\..\BuildTools\headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /FD /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -66,8 +67,9 @@ LINK32=link.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\Clp\src" /I "..\..\CoinUtils\src" /I "..\..\Osi\src" /I "..\..\Cbc\src" /I "..\..\Cgl\src" /I "..\..\Cgl\src\CglProbing" /I "..\..\Cgl\src\CglGomory" /I "..\..\Cgl\src\CglKnapsackCover" /I "..\..\Cgl\src\CglOddHole" /I "..\..\Cgl\src\CglClique" /I "..\..\Cgl\src\CglLiftAndProject" /I "..\..\Cgl\src\CglSimpleRounding" /I "..\..\Osi\src\OsiClp" /I "..\..\BuildTools\headers" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "..\..\Clp\src" /I "..\..\CoinUtils\src" /I "..\..\Osi\src" /I "..\..\Cbc\src" /I "..\..\Cgl\src" /I "..\..\Cgl\src\CglProbing" /I "..\..\Cgl\src\CglGomory" /I "..\..\Cgl\src\CglKnapsackCover" /I "..\..\Cgl\src\CglOddHole" /I "..\..\Cgl\src\CglClique" /I "..\..\Cgl\src\CglLiftAndProject" /I "..\..\Cgl\src\CglSimpleRounding" /I "..\..\Osi\src\OsiClp" /I "..\..\BuildTools\headers" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COINMP_EXPORTS" /FD /GZ /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -88,18 +90,18 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter ""
-# End Group
-# Begin Source File
-
-SOURCE=..\CoinUtils\src\CoinBuild.hpp
-# End Source File
 # Begin Source File
 
 SOURCE=..\src\CoinMP.cpp
 # End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "*.h;*.hpp"
 # Begin Source File
 
 SOURCE=..\src\CoinMP.h
 # End Source File
+# End Group
 # End Target
 # End Project
