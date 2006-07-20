@@ -88,7 +88,7 @@ main (int argc, char *argv[])
     int rowCount = 3;
     int nonZeroCount = 4 ;
     int rangeCount = 0;
-    int objectSense = 1;
+    int objectSense = -1;
     double objectCoeffs[2] = { 0.05 , 0.03 };
     double rhsValues[3] = { 1400 , 8000 , 5000 };
     double rangeValues[3] = { 0 , 0 , 0 };
@@ -125,7 +125,7 @@ main (int argc, char *argv[])
       
       fprintf(stdout, "Solution Status: %s\n", solutionText );
       fprintf(stdout, "Solution Status: %d\n", solutionStatus);
-      fprintf(stdout, "Solution Value: %lg\n", objectValue  + 4000.0/30.0);
+      fprintf(stdout, "Solution Value: %lg\n", objectValue);
       
       assert(solutionStatus==0);
     }
