@@ -8,4 +8,7 @@
 /INSTALL.txt -text
 /LICENSE.txt -text
 /README.txt -text
+msvc6/CoinMP.dsp -text
+msvc6/CoinMP.dsw -text
+msvc6/unitTest/unitTest.dsp -text
 test/unitTest.c -text
