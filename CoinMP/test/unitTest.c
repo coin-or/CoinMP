@@ -91,9 +91,9 @@ main (int argc, char *argv[])
     int objectSense = -1;
     double objectCoeffs[2] = { 0.05 , 0.03 };
     double rhsValues[3] = { 1400 , 8000 , 5000 };
-    double rangeValues[2] = { 0 , 0 };
-    char rowType[2] = { 'L', 'L' };
-    int matrixBegin[3] = { 0 , 2, 4 };
+    double rangeValues[3] = { 0 , 0 , 0 };
+    char rowType[3] = { 'L', 'L' , 'L' };
+    int matrixBegin[2+1] = { 0 , 2, 4 };
     int matrixCount[2] = { 2 , 2 };
     int matrixIndex[4] = { 0, 1, 0, 2};
     double matrixValues[4] = { 0.1, 1, 0.2, 1};
@@ -125,7 +125,7 @@ main (int argc, char *argv[])
       
       fprintf(stdout, "Solution Status: %s\n", solutionText );
       fprintf(stdout, "Solution Status: %d\n", solutionStatus);
-      fprintf(stdout, "Solution Value: %lg\n", objectValue);
+      fprintf(stdout, "Solution Value: %lg\n", objectValue  + 4000.0/30.0);
       
       assert(solutionStatus==0);
     }
