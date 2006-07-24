@@ -47,7 +47,7 @@
 
 #define SOLVER_EXPORT
 #define SOLVER_LIB
-#include "coinmp.h"
+#include "CoinMP.h"
 
 
 
@@ -1271,6 +1271,7 @@ SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue)
 /****************************************************************/
 
 
+#if defined(_MSC_VER)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -1291,6 +1292,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
    }
    return 1;
 }
+#endif
 
 
 

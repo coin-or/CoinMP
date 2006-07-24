@@ -16,13 +16,17 @@
 #define SOLV_SUCCESS   1
 #define SOLV_FAILED    0
 
-
+#if defined(_MSC_VER)
 #ifdef SOLVER_EXPORT
 #define SOLVAPI extern "C"  __declspec(dllexport)  
 #define SOLVFUNC   
 #else
 #define SOLVAPI __declspec(dllimport)
 #define SOLVFUNC 
+#endif
+#else
+#define SOLVAPI
+#define SOLVFUNC
 #endif
 
 
@@ -259,7 +263,7 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 
 #define COIN_INT_MIPFATHOMDISC     20
 #define COIN_INT_MIPHOTSTART       21
-//#define COIN_INT_MIPFORCEPRIOR     21
+/*#define COIN_INT_MIPFORCEPRIOR     21*/
 #define COIN_INT_MIPMINIMUMDROP    22
 #define COIN_INT_MIPMAXCUTPASS     23
 #define COIN_INT_MIPMAXPASSROOT    24

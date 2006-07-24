@@ -48,7 +48,13 @@ AM_CPPFLAGS += \
 	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglProbing` \
 	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglRedSplit` \
 	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglTwomir` \
+	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglLiftAndProject` \
+	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglSimpleRounding` \
 	-I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(CLPSRCDIR)/inc` \
+	-I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src`
 
 # List additional defines
