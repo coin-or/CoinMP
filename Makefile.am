@@ -2,12 +2,13 @@
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
-## $Id: Makefile.am 72 2006-07-21 18:38:56Z jpfasano $
+## $Id$
 
 # Author:  Andreas Waechter           IBM    2006-04-13
 
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = 
 # EXTRA_DIST = doxydoc/doxygen.conf
 
 ########################################################################

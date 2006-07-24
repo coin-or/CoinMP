@@ -2,7 +2,7 @@
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
-## $Id: Makefile.am 76 2006-07-21 19:58:27Z jpfasano $
+## $Id$
 
 # Author:  Andreas Waechter           IBM    2006-04-13
 
@@ -17,7 +17,7 @@ AUTOMAKE_OPTIONS = foreign
 lib_LTLIBRARIES = libCoinMP.la
 
 # List all source files for this library, including headers
-libFlopCpp_la_SOURCES = \
+libCoinMP_la_SOURCES = \
 	CoinMP.h \
 	CoinMP.cpp \
 	CoinMPConfig.h
@@ -33,6 +33,7 @@ libFlopCpp_la_SOURCES = \
 # "cygpath" stuff is necessary to compile with native compilers on Windows.
 # "top_srcdir" refers to the basic directory for the main package that is
 # being compiled.
+AM_CPPFLAGS = 
 AM_CPPFLAGS += \
 	-I`$(CYGPATH_W) $(CGLSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglClique` \

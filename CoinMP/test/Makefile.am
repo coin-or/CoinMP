@@ -2,7 +2,7 @@
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
-## $Id: Makefile.am 71 2006-07-14 17:44:04Z jpfasano $
+## $Id$
 
 # Author:  Andreas Waechter           IBM    2006-04-13
 
