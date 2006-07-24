@@ -1,5 +1,9 @@
 * text=auto !eol
 /AUTHORS.txt -text
+CoinMP/Makefile.am -text
+CoinMP/coinmp_addlibs.txt.in -text
+CoinMP/configure.ac -text
+CoinMP/examples/Makefile.in -text
 CoinMP/msvc6/CoinMP.dsp -text
 CoinMP/msvc6/CoinMP.dsw -text
 CoinMP/msvc6/Release/CoinMP.dll -text
@@ -8,8 +12,13 @@ CoinMP/msvc6/Release/CoinMP.lib -text
 CoinMP/msvc6/unitTest.dsp -text
 CoinMP/src/CoinMP.cpp -text
 CoinMP/src/CoinMP.h -text
+CoinMP/src/CoinMPConfig.h -text
+CoinMP/src/Makefile.am -text
+CoinMP/test/Makefile.am -text
 CoinMP/test/unitTest.c -text
 /Externals -text
 /INSTALL.txt -text
 /LICENSE.txt -text
+/Makefile.am -text
 /README.txt -text
+/configure.ac -text
