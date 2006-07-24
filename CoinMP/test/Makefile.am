@@ -9,7 +9,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 ########################################################################
-#                         unitTest for FlopCpp                         #
+#                         unitTest for CoinMP                          #
 ########################################################################
 
 noinst_PROGRAMS = unitTest
@@ -17,7 +17,7 @@ noinst_PROGRAMS = unitTest
 unitTest_SOURCES = unitTest.cpp
 
 # List libraries of COIN projects
-unitTest_LDADD = ../src/libFlopCpp.la
+unitTest_LDADD = ../src/libCoinMP.la
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Windows
