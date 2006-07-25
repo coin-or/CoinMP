@@ -136,4 +136,6 @@ main (int argc, char *argv[])
 
   fprintf(stdout, "All tests completed successfully\n" );
 
+  return 0;
+
 }

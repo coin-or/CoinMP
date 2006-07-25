@@ -40,6 +40,12 @@
 
 typedef void *HPROB;
 
+#ifdef __cplusplus
+
+   extern "C"
+      {
+
+#endif
 
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
 
@@ -229,7 +235,13 @@ int    (SOLVFUNC *CoinSetRealOption)(HPROB hProb, int OptionID, double RealValue
 char*  (SOLVFUNC *CoinGetStringOption)(HPROB hProb, int OptionID);
 int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringValue);
 
-#endif 
+#endif
+
+#ifdef __cplusplus
+
+ }
+
+#endif
 
 
 
