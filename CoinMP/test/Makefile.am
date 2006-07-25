@@ -14,7 +14,7 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_PROGRAMS = unitTest
 
-unitTest_SOURCES = unitTest.c
+unitTest_SOURCES = unitTest.cpp
 
 # List libraries of COIN projects
 unitTest_LDADD = ../src/libCoinMP.la

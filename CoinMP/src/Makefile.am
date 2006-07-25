@@ -23,7 +23,7 @@ libCoinMP_la_SOURCES = \
 	CoinMPConfig.h
 
 # This is for libtool (on Windows)
-#libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
+libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
 
 ########################################################################
 #                            Additional flags                          #
