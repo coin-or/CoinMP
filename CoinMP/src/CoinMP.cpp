@@ -510,7 +510,7 @@ SOLVAPI int CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount,
 }
 
 
-SOLVAPI int CoinLoadNonLinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
+SOLVAPI int CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
 										int *NlpBegin, int *NlpOper, int *NlpArg1, 
 										int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 										double *NlpValue1, double *NlpValue2)
@@ -520,7 +520,7 @@ SOLVAPI int CoinLoadNonLinear(HPROB hProb, int NlpTreeCount, int NlpLineCount,
 
 
 
-SOLVAPI int CoinUnloadProb(HPROB hProb)
+SOLVAPI int CoinUnloadProblem(HPROB hProb)
 {
    PCOIN pCoin = (PCOIN)hProb;
 	

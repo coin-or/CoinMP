@@ -76,7 +76,7 @@ main (int argc, char *argv[])
       assert( fabs(objectValue-1428729.2857143) < 0.001 );
     }
     
-    CoinUnloadProb(hProb);
+    CoinUnloadProblem(hProb);
     CoinFreeSolver();
   }
 
@@ -130,7 +130,7 @@ main (int argc, char *argv[])
       assert(solutionStatus==0);
     }
     
-    CoinUnloadProb(hProb);
+    CoinUnloadProblem(hProb);
     CoinFreeSolver();
   }
 

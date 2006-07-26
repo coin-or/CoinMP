@@ -98,12 +98,12 @@ SOLVAPI int    CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 SOLVAPI int    CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
 											int *QuadIndex, double *QuadValues);
 
-SOLVAPI int    CoinLoadNonLinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
+SOLVAPI int    CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
 											int *NlpBegin, int *NlpOper, int *NlpArg1, 
 											int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 											double *NlpValue1, double *NlpValue2);
 
-SOLVAPI int    CoinUnloadProb(HPROB hProb);
+SOLVAPI int    CoinUnloadProblem(HPROB hProb);
 
 SOLVAPI int    CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 SOLVAPI int    CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
@@ -186,12 +186,12 @@ int    (SOLVFUNC *CoinLoadSos)(HPROB hProb, int SosCount, int SosNZCount,
 int    (SOLVFUNC *CoinLoadQuadratic)(HPROB hProb, int *QuadBegin, int *QuadCount, 
 												 int *QuadIndex, double *QuadValues);
 
-int    (SOLVFUNC *CoinLoadNonLinear)(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
+int    (SOLVFUNC *CoinLoadNonlinear)(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
 												 int *NlpBegin, int *NlpOper, int *NlpArg1, 
 												 int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 												 double *NlpValue1, double *NlpValue2);
 
-int    (SOLVFUNC *CoinUnloadProb)(HPROB hProb);
+int    (SOLVFUNC *CoinUnloadProblem)(HPROB hProb);
 
 void   (SOLVFUNC *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 void   (SOLVFUNC *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
