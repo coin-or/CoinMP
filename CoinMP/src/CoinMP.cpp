@@ -616,6 +616,8 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
+	return SOLV_FAILED;  // BK 7/26/2006: using the NodeCallback crashes CBC!
+
    pCoin->MipNodeCallback = NodeCallback;
 	delete pCoin->nodehandler;
 
