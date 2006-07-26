@@ -8,6 +8,7 @@ CoinMP/msvc6/CoinMP.dsw -text
 CoinMP/msvc6/Release/CoinMP.dll -text
 CoinMP/msvc6/Release/CoinMP.exp -text
 CoinMP/msvc6/Release/CoinMP.lib -text
+CoinMP/msvc6/Release/CoinMP.zip -text
 CoinMP/msvc6/unitTest.dsp -text
 /Externals -text
 /INSTALL.txt -text
