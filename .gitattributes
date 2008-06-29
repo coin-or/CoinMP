@@ -1,6 +1,5 @@
 * text=auto !eol
 /AUTHORS -text
-/AUTHORS.txt -text
 CoinMP/coinmp_addlibs.txt.in -text
 CoinMP/examples/Makefile.in -text
 CoinMP/inc/config_coinmp.h.in -text
