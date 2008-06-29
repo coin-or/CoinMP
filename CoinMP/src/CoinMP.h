@@ -9,12 +9,9 @@
 /************************************************************************/
 
 
-#ifndef COINLP_H
-#define COINLP_H
+#ifndef COINMP_H
+#define COINMP_H
 
-
-#define SOLV_SUCCESS   1
-#define SOLV_FAILED    0
 
 #if defined(_MSC_VER)
 #ifdef SOLVER_EXPORT
@@ -38,6 +35,14 @@
 
 
 
+#define SOLV_SUCCESS   1
+#define SOLV_FAILED    0
+
+#define OBJSENS_MAX   -1
+#define OBJSENS_MIN    1
+
+
+
 typedef void *HPROB;
 
 #ifdef __cplusplus
@@ -50,15 +55,15 @@ typedef void *HPROB;
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
 
 typedef int (*ITERCALLBACK)(int    IterNum, 
-									 double ObjectValue,
-									 int    IsFeasible, 
-									 double InfeasValue);
+							double ObjectValue,
+							int    IsFeasible, 
+							double InfeasValue);
 
 typedef int (*NODECALLBACK)(int    IterNum, 
-										 int	  MipNodeCount,
-										 double BestBound,
-										 double BestInteger,
-										 int    IsMipImproved);
+							int	   MipNodeCount,
+							double BestBound,
+							double BestInteger,
+							int    IsMipImproved);
 
 
 
@@ -76,14 +81,14 @@ SOLVAPI double CoinGetRealMax(void);
 SOLVAPI HPROB  CoinCreateProblem(char *ProblemName);
 
 SOLVAPI int    CoinLoadProblem(HPROB hProb, int ColCount, int RowCount,
-										 int NonZeroCount,    int RangeCount, 
-										 int ObjectSense, double* ObjectCoeffs, 
-										 double* RHSValues,  double* RangeValues, 
-										 char* RowType, int* MatrixBegin, 
-										 int* MatrixCount,   int* MatrixIndex,    
-										 double* MatrixValues, double* LowerBounds,  
-										 double* UpperBounds, double* InitValues, 
-										 char** ColNames, char** RowNames);
+							int NonZeroCount,    int RangeCount, 
+							int ObjectSense, double* ObjectCoeffs, 
+							double* RHSValues,  double* RangeValues, 
+							char* RowType, int* MatrixBegin, 
+							int* MatrixCount,   int* MatrixIndex,    
+							double* MatrixValues, double* LowerBounds,  
+							double* UpperBounds, double* InitValues, 
+							char** ColNames, char** RowNames);
 
 SOLVAPI int    CoinLoadInteger(HPROB hProb, char* ColumnType);
 
@@ -92,16 +97,16 @@ SOLVAPI int    CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorIndex,
 										  int *PriorValues, int *BranchDir);
 
 SOLVAPI int    CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount, 
-									char *SosType, int *SosPrior, int *SosBegin,   
-									int *SosIndex, double *SosRef);
+						   char *SosType, int *SosPrior, int *SosBegin,   
+						   int *SosIndex, double *SosRef);
 
 SOLVAPI int    CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
-											int *QuadIndex, double *QuadValues);
+								 int *QuadIndex, double *QuadValues);
 
 SOLVAPI int    CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
-											int *NlpBegin, int *NlpOper, int *NlpArg1, 
-											int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
-											double *NlpValue1, double *NlpValue2);
+								 int *NlpBegin, int *NlpOper, int *NlpArg1, 
+								 int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
+								 double *NlpValue1, double *NlpValue2);
 
 SOLVAPI int    CoinUnloadProblem(HPROB hProb);
 
@@ -120,9 +125,9 @@ SOLVAPI int    CoinGetIterCount(HPROB hProb);
 SOLVAPI int    CoinGetNodeCount(HPROB hProb);
 
 SOLVAPI int    CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
-											 double* SlackValues, double* ShadowPrice);
+									 double* SlackValues, double* ShadowPrice);
 SOLVAPI int    CoinGetSolutionRanges(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
-												 double *RhsLoRange, double *RhsUpRange);
+									 double *RhsLoRange, double *RhsUpRange);
 SOLVAPI int    CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus);
 
 SOLVAPI int    CoinReadFile(HPROB hProb, int FileType, char *ReadFilename);
@@ -133,7 +138,7 @@ SOLVAPI int    CoinCloseLogFile(HPROB hProb);
 
 SOLVAPI int    CoinGetOptionCount(HPROB hProb);
 SOLVAPI int    CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *GroupType,
-											int *OptionType, char *OptionName, char *ShortName);
+								 int *OptionType, char *OptionName, char *ShortName);
 
 SOLVAPI int    CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 SOLVAPI int    CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
