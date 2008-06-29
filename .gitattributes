@@ -13,6 +13,7 @@ CoinMP/msvc6/unitTest.dsp -text
 /Externals -text
 /INSTALL -text
 /INSTALL.txt -text
+/LICENSE -text
 /LICENSE.txt -text
 /README.txt -text
 /config.guess -text
