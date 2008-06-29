@@ -12,7 +12,7 @@ You can obtain the source code for the CoinMP package in two ways:
    Assuming that you want to download the code into a subdirectory
    "COIN-CoinMP", you type
 
-   svn co https://projects.coin-or.org/svn/CoinMP/trunk Coin-CoinMP
+   svn co https://projects.coin-or.org/svn/CoinMP/stable/1.0 Coin-CoinMP
 
 2. Download the tarball from http://www.coin-or.org/Tarballs/CoinMP and
    extract it, for example, with

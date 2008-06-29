@@ -5,7 +5,7 @@ Library projects.  This CoinMP.dll distribution of the COIN-OR projects for
 Windows has the advantages of being: high portability, does not require any 
 compilation, easy to use, and can be used from any other Windows application.  
 
-For information how to build CoinMP, see the INSTALL.txt file.
+For information how to build CoinMP, see the INSTALL file.
 
 To use CoinMP in your own application, link in the CoinMP.lib file in the 
 CoinMP\msvc6\Release folder and copy the CoinMP.dll file to the same directory 
