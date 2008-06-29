@@ -12,11 +12,8 @@ CoinMP/msvc6/Release/CoinMP.zip -text
 CoinMP/msvc6/unitTest.dsp -text
 /Externals -text
 /INSTALL -text
-/INSTALL.txt -text
 /LICENSE -text
-/LICENSE.txt -text
 /README -text
-/README.txt -text
 /config.guess -text
 /config.sub -text
 /depcomp -text
