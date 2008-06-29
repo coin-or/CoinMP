@@ -1,0 +1,123 @@
+**********************************************************************
+***                         DOWNLOAD                               ***
+**********************************************************************
+
+You can obtain the source code for the CoinMP package in two ways:
+
+1. Obtain the source directly from the COIN-OR subversion repository
+   (recommended).  For this you needs the program 'svn' installed on
+   your machine, and output of "svn --version" must contain 
+   "handles 'https' scheme".
+
+   Assuming that you want to download the code into a subdirectory
+   "COIN-CoinMP", you type
+
+   svn co https://projects.coin-or.org/svn/CoinMP/trunk Coin-CoinMP
+
+2. Download the tarball from http://www.coin-or.org/Tarballs/CoinMP and
+   extract it, for example, with
+
+   gunzip CoinMP_2006Jun07.tgz
+   tar xvf CoinMP_2006Jun07.tar
+
+   (Here "2006Jun07" is of course replaced by the string in the
+   tarball you downloaded.)
+
+   More detailed download instructions can be found at
+
+   https://projects.coin-or.org/BuildTools/wiki/user-download
+
+
+**********************************************************************
+**********************************************************************
+***   MS Visual Studio Build                                       ***
+**********************************************************************
+**********************************************************************
+
+To build the 'CoinMP.dll', open the workspace file 'CoinMP.dsw' and select
+'Build CoinMP.dll' from the 'Build' menu in Visual Studio 6.
+
+To build the 'CoinMP.dll', start MS Visual Studio 6.0, open 
+the workspace file 'CoinMP.dsw' in the CoinMP\msvc6 folder 
+and select 'Build CoinMP.dll' from the 'Build' menu.
+
+
+**********************************************************************
+**********************************************************************
+***   Unix Build                                                   ***
+**********************************************************************
+**********************************************************************
+These instructions are for UNIX-like systems (including Linux, Cygwin
+and MSys).
+
+**********************************************************************
+***               Unix CONFIGURATION                               ***
+**********************************************************************
+
+Go into the directory that you just downloaded or extracted (e.g.,
+Coin-CoinMP or CoinMP_2006Jun07).  Then you type
+
+   ./configure
+
+Note that you might have to specify additional options, in case you
+don't want to use the default choices that configure makes (e.g.,
+compilers).  Please visit
+
+   https://projects.coin-or.org/BuildTools/wiki/user-configure
+
+and the CoinMP Trac page
+
+   https://projects.coin-or.org/CoinMP
+
+for more information.
+
+If everything went fine, you will see at the end of the output
+
+   "Main configuration of CoinMP successful"
+
+**********************************************************************
+***           Unix     COMPILATION AND INSTALLATION                ***
+**********************************************************************
+
+In the directory where you ran the configure script:
+
+1. Compile the code by typing
+
+   make
+
+2. To test if the code works, you can type
+
+   make test
+
+3. To install the code, you type
+
+   make install
+
+   After this, you will find the executables, libraries and header
+   files in the "bin", "lib" and "include" subdirectory, respectively.
+
+More information on the compilation and installation can be found at
+
+   https://projects.coin-or.org/BuildTools/wiki/user-compile
+
+**********************************************************************
+***                UNIX: USING THE LIBRARIES                       ***
+**********************************************************************
+
+Now you can link your own code with the installed libraries.  You can
+find examples in the
+
+   CoinMP/examples/
+
+subdirectory, see also the information at
+
+   https://projects.coin-or.org/BuildTools/wiki/user-examples
+
+
+
+
+=======
+Currently CoinMP.dll has only been tested to build with the 
+MS Visual C++ 6.0 compiler.
+
+>>>>>>> .r50
