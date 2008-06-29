@@ -778,7 +778,7 @@ SOLVAPI int CoinGetSolutionStatus(HPROB hProb)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
-	return pCoin->clp->status();
+	return pCoin->SolutionStatus;
 }
 
 
