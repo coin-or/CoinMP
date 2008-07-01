@@ -62,6 +62,7 @@ examplesdir = $(prefix)/examples/$(PACKAGE_NAME)
 
 install-exec-local:
 	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
+	mkdir -p $(DESTDIR)$(examplesdir)
 	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
 
 uninstall-local:
