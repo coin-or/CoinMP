@@ -124,7 +124,6 @@ AC_COIN_HAS_PROJECT(Osi)
 # Here list all the files that configure should create (except for the
 # configuration header file)
 AC_CONFIG_FILES([Makefile
-                 examples/Makefile
                  src/Makefile
                  test/Makefile
 		 coinmp_addlibs.txt])

@@ -322,4 +322,3 @@ int main (int argc, char *argv[])
     CoinFreeSolver();
 	return 0;
 }
- 
