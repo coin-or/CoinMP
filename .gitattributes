@@ -1,5 +1,8 @@
 * text=auto !eol
 /AUTHORS -text
+CoinMP/AUTHORS -text
+CoinMP/INSTALL -text
+CoinMP/LICENSE -text
 CoinMP/MSVisualStudio/v8/CoinMP.sln -text
 CoinMP/MSVisualStudio/v8/CoinMP/CoinMP.vcproj -text
 CoinMP/MSVisualStudio/v8/release/CoinMP.dll -text
@@ -7,8 +10,8 @@ CoinMP/MSVisualStudio/v8/release/CoinMP.exp -text
 CoinMP/MSVisualStudio/v8/release/CoinMP.lib -text
 CoinMP/MSVisualStudio/v8/release/unitTest.exe -text
 CoinMP/MSVisualStudio/v8/unitTest/unitTest.vcproj -text
+CoinMP/README -text
 CoinMP/coinmp_addlibs.txt.in -text
-CoinMP/examples/Makefile.in -text
 CoinMP/inc/config_coinmp.h.in -text
 CoinMP/msvc6/CoinMP.dsp -text
 CoinMP/msvc6/CoinMP.dsw -text

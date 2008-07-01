@@ -28,7 +28,9 @@ endif
 
 # Here we need include all files that are not mentioned in other Makefiles
 
-EXTRA_DIST = 
+EXTRA_DIST = \
+	examples/Makefile \
+	examples/example.cpp
 
 ########################################################################
 #                           Extra Targets                              #
@@ -49,15 +51,22 @@ distclean-local:
 
 ########################################################################
 #                  Installation of the addlibs file                    #
+#                  Installation of the examples dir                    #
 ########################################################################
 
 addlibsfile = coinmp_addlibs.txt
+addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)
+
+examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.cpp
+examplesdir = $(prefix)/examples/$(PACKAGE_NAME)
 
 install-exec-local:
-	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(libdir)/$(addlibsfile)
+	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
+	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
 
 uninstall-local:
-	rm -f $(DESTDIR)$(libdir)/$(addlibsfile)
+	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
+	rm -f $(DESTDIR)$(examplesdir)
 
 ########################################################################
 #                         Maintainer Stuff                             #

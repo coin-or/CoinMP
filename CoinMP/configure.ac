@@ -12,7 +12,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[0.1],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[trunk],[coin-discuss@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
@@ -106,16 +106,6 @@ AC_COIN_HAS_PROJECT(Osi)
 
 # Ampl Solver library
 # AC_COIN_HAS_ASL
-
-##############################################################################
-#                   VPATH links for example input files                      #
-##############################################################################
-
-# In case this is a VPATH configuration we need to make sure that the
-# input files for the examples are available in the VPATH directory.
-
-#AC_COIN_VPATH_LINK(examples/fixed.dat)
-#AC_COIN_VPATH_LINK(examples/train.dat)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
