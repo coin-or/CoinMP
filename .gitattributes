@@ -12,6 +12,8 @@ CoinMP/MSVisualStudio/v8/release/unitTest.exe -text
 CoinMP/MSVisualStudio/v8/unitTest/unitTest.vcproj -text
 CoinMP/README -text
 CoinMP/coinmp_addlibs.txt.in -text
+CoinMP/examples/Makefile -text
+CoinMP/examples/example.cpp -text
 CoinMP/inc/config_coinmp.h.in -text
 CoinMP/msvc6/CoinMP.dsp -text
 CoinMP/msvc6/CoinMP.dsw -text
