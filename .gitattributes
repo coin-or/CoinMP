@@ -28,6 +28,7 @@ CoinMP/msvc6/unitTest.dsp -text
 /README -text
 /config.guess -text
 /config.sub -text
+/configure -text
 /depcomp -text
 /install-sh -text
 /missing -text
