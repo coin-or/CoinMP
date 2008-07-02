@@ -25,6 +25,7 @@ CoinMP/msvc6/Release/CoinMP.lib -text
 CoinMP/msvc6/Release/CoinMP.zip -text
 CoinMP/msvc6/unitTest.dsp -text
 CoinMP/src/Makefile.in -text
+CoinMP/test/Makefile.in -text
 /Externals -text
 /INSTALL -text
 /LICENSE -text
