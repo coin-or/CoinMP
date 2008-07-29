@@ -13,6 +13,7 @@ LIBDIRS := $(CoinDir)/lib
 
 LIBS	:= -lCoinMP
 LIBS 	+= -lCbc
+LIBS	+= -lCbcSolver
 LIBS 	+= -lCgl
 LIBS 	+= -lOsi
 LIBS 	+= -lOsiClp
