@@ -51,7 +51,7 @@ if COIN_HAS_CBC
   AM_CPPFLAGS += -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
   unitTest_LDADD += $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
-	$(CBCOBJDIR)/src/libCbc.la
+	$(CBCOBJDIR)/src/libCbc.la $(CBCOBJDIR)/src/libCbcSolver.la 
   LIBS += `cat $(CBCOBJDIR)/cbc_addlibs.txt`
 endif
 
