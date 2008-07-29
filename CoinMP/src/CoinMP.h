@@ -143,6 +143,8 @@ SOLVAPI int    CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *
 SOLVAPI int    CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 SOLVAPI int    CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
 
+SOLVAPI int CoinGetOptionChanged(HPROB hProb, int OptionID);
+
 SOLVAPI int    CoinGetIntOption(HPROB hProb, int OptionID);
 SOLVAPI int    CoinSetIntOption(HPROB hProb, int OptionID, int IntValue);
 
@@ -230,6 +232,8 @@ int    (SOLVFUNC *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID,
 
 int    (SOLVFUNC *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 int    (SOLVFUNC *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
+
+int	   (SOLVAPI *CoinGetOptionChanged)(HPROB hProb, int OptionID);
 
 int    (SOLVFUNC *CoinGetIntOption)(HPROB hProb, int OptionID);
 int    (SOLVFUNC *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
@@ -336,6 +340,7 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 #define COIN_INT_MIPCUT_SIMPROUND        180
 #define COIN_INT_MIPSIMPROUND_FREQ       181   
 
+#define COIN_INT_MIPUSECBCMAIN           200   
 
 
 #endif

@@ -6,7 +6,7 @@
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson                                 */
 /*                                                                      */
-/*  Copyright (c) 2005-2006                     Bjarni Kristjansson     */
+/*  Copyright (c) 2005-2008                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -21,14 +21,18 @@
 
 #include "CoinHelperFunctions.hpp"
 #include "CoinMessageHandler.hpp"
+
 #include "ClpSimplex.hpp"
 #include "ClpPrimalColumnSteepest.hpp"
 #include "ClpDualRowSteepest.hpp"
 #include "ClpEventHandler.hpp"
-#include "CbcEventHandler.hpp"
+
 #include "OsiSolverInterface.hpp"
 #include "OsiClpSolverInterface.hpp"
+
 #include "CbcModel.hpp"
+#include "CbcSolver.hpp"
+#include "CbcEventHandler.hpp"
 
 #include "CglProbing.hpp"
 #include "CglGomory.hpp"
@@ -50,6 +54,7 @@
 #include "CoinMP.h"
 
 
+#define NEW_STYLE_CBCMAIN
 
 /**************************************************************************/
 
@@ -219,25 +224,34 @@ public:
 
 private:
 	NODECALLBACK callback_;
+	int lastSolCount_;
 };
 
 
 void CBNodeHandler::setCallback(NODECALLBACK callback)
 {
   callback_ = callback;
+  lastSolCount_ = 0;
 }
 
 
 CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 {
 	int numIter;
+	int numNodes;
+	double bestBound;
 	double objValue;
+	int solCount;
 	int cancelAsap;
 
 	if (whichEvent==node) {
 		numIter = model_->getIterationCount();
+		numNodes = model_->getNodeCount();
 		objValue = model_->getObjValue();
-		cancelAsap = callback_(numIter, 0, 0.0, objValue, 0);
+		bestBound = model_->getBestPossibleObjValue();
+		solCount = model_->getSolutionCount();
+		cancelAsap = callback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
+		lastSolCount_ = solCount;
 		if (cancelAsap) {
 			return stop;
 		}
@@ -273,8 +287,9 @@ CbcEventHandler * CBNodeHandler::clone() const
 {
 	CBNodeHandler * nodehandler;
 
-   nodehandler = new CBNodeHandler(*this);
+	nodehandler = new CBNodeHandler(*this);
 	nodehandler->callback_ = this->callback_;
+	nodehandler->lastSolCount_ = this->lastSolCount_;
 	return nodehandler;
 }
 
@@ -284,7 +299,11 @@ CbcEventHandler * CBNodeHandler::clone() const
 
 typedef struct {
 				ClpSimplex *clp;
+				ClpSolve *clp_options;
 				CbcModel *cbc;
+#ifdef NEW_STYLE_CBCMAIN
+				CbcModel *cbc2;
+#endif
 				OsiClpSolverInterface *osi;
 
 				CBMessageHandler *msghandler;
@@ -338,13 +357,13 @@ SOLVAPI char*  CoinGetSolverName(void)
 
 SOLVAPI char*  CoinGetVersionStr(void)
 {
-	return "1.0";
+	return "1.1";
 }
 
 
 SOLVAPI double CoinGetVersion(void)
 {
-	return 1.0;
+	return 1.1;
 }
 
 
@@ -361,14 +380,17 @@ SOLVAPI double CoinGetRealMax(void)
 }
 
 
+/**************************************************************************/
+
 
 SOLVAPI HPROB CoinCreateProblem(char *ProblemName)
 {
-   PCOIN pCoin;
+	PCOIN pCoin;
 
-   pCoin = (PCOIN) malloc(sizeof(COININFO));
-   global_pCoin = pCoin;
-   pCoin->clp = new ClpSimplex();
+	pCoin = (PCOIN) malloc(sizeof(COININFO));
+	global_pCoin = pCoin;
+	pCoin->clp = new ClpSimplex();
+	pCoin->clp_options = new ClpSolve();
 	pCoin->osi = new OsiClpSolverInterface(pCoin->clp);
 	pCoin->cbc = NULL;  /* ERRORFIX 2/22/05: Crashes if not NULL when trying to set message handler */
 	pCoin->msghandler = NULL;
@@ -436,6 +458,7 @@ SOLVAPI int CoinLoadProblem(HPROB hProb, int ColCount, int RowCount, int NonZero
 							LowerBounds, UpperBounds, ObjectCoeffs, pCoin->RowLower, pCoin->RowUpper);
 
 
+	/* Load names */
 	std::vector<std::string> rowNameList;
 	rowNameList.reserve(RowCount);
 	for (i = 0; i < RowCount; i++) {
@@ -480,6 +503,12 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 				pCoin->cbc->solver()->setInteger(i);
 			}
 		}
+#ifdef NEW_STYLE_CBCMAIN
+		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
+			pCoin->cbc2 = pCoin->cbc;
+			CbcMain0(*pCoin->cbc);
+		}
+#endif
 	}
 	//pCoin->cbc->solver()->copyInIntegerInformation(pCoin->IsInt);
 
@@ -616,7 +645,7 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
-	return SOLV_FAILED;  // BK 7/26/2006: using the NodeCallback crashes CBC!
+	//return SOLV_FAILED;  // BK 7/26/2006: using the NodeCallback crashes CBC!
 
    pCoin->MipNodeCallback = NodeCallback;
 	delete pCoin->nodehandler;
@@ -626,7 +655,15 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 
 	pCoin->nodehandler->setCallback(NodeCallback);
 	//if (pCoin->iterhandler) pCoin->iterhandler->setNodeCallback(NodeCallback);
-	if (pCoin->cbc) pCoin->cbc->passInEventHandler(pCoin->nodehandler);
+#ifdef NEW_STYLE_CBCMAIN
+	if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
+		if (pCoin->cbc2) pCoin->cbc2->passInEventHandler(pCoin->nodehandler);
+		}
+	else
+#endif
+	{
+		if (pCoin->cbc) pCoin->cbc->passInEventHandler(pCoin->nodehandler);
+	}
 	return SOLV_SUCCESS;
 }
 
@@ -634,141 +671,194 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 
 /****************************************************************/
 
-SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
-{		
-   PCOIN pCoin = (PCOIN)hProb;
-   ClpSolve clp_options;
+int coinSetClpOptions(HPROB hProb)
+{
+	PCOIN pCoin = (PCOIN)hProb;
 	ClpSolve::SolveType method;
 	ClpSolve::PresolveType presolve;
-
-	pCoin->clp->scaling(CoinGetIntOption(hProb,COIN_INT_SCALING));
-	pCoin->clp->setPerturbation(CoinGetIntOption(hProb, COIN_INT_PERTURBATION));
-
-	pCoin->clp->setMaximumIterations(CoinGetIntOption(hProb, COIN_INT_MAXITER));
-
-	pCoin->clp->setPrimalObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJLIM));
-	pCoin->clp->setDualObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_DUALOBJLIM));
-	pCoin->clp->setPrimalTolerance(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJTOL));
-	pCoin->clp->setDualTolerance(CoinGetIntOption(hProb, COIN_REAL_DUALOBJTOL));
+	//ClpSolve clp_options;
 
 	/* check if it has been changed, leave alone otherwise */
-   ClpPrimalColumnSteepest primalSteepest(CoinGetIntOption(hProb, COIN_INT_PRIMALPIVOTALG));
-   pCoin->clp->setPrimalColumnPivotAlgorithm(primalSteepest);
+	if (CoinGetOptionChanged(hProb, COIN_INT_SCALING))			pCoin->clp->scaling(CoinGetIntOption(hProb,COIN_INT_SCALING));
+	if (CoinGetOptionChanged(hProb, COIN_INT_PERTURBATION))		pCoin->clp->setPerturbation(CoinGetIntOption(hProb, COIN_INT_PERTURBATION));
 
-   ClpDualRowSteepest dualSteepest(CoinGetIntOption(hProb, COIN_INT_DUALPIVOTALG));
-   pCoin->clp->setDualRowPivotAlgorithm(dualSteepest);
+	if (CoinGetOptionChanged(hProb, COIN_INT_MAXITER))			pCoin->clp->setMaximumIterations(CoinGetIntOption(hProb, COIN_INT_MAXITER));
 
-	if (CoinGetIntOption(hProb, COIN_INT_CRASHIND)) {
-		pCoin->clp->crash(CoinGetIntOption(hProb, COIN_REAL_CRASHGAP),
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJLIM))		pCoin->clp->setDualObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_DUALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJTOL))	pCoin->clp->setPrimalTolerance(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJTOL))		pCoin->clp->setDualTolerance(CoinGetIntOption(hProb, COIN_REAL_DUALOBJTOL));
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_PRIMALPIVOTALG)) {
+		ClpPrimalColumnSteepest primalSteepest(CoinGetIntOption(hProb, COIN_INT_PRIMALPIVOTALG));
+		pCoin->clp->setPrimalColumnPivotAlgorithm(primalSteepest);
+	}
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_DUALPIVOTALG)) {
+		ClpDualRowSteepest dualSteepest(CoinGetIntOption(hProb, COIN_INT_DUALPIVOTALG));
+		pCoin->clp->setDualRowPivotAlgorithm(dualSteepest);
+	}
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_CRASHIND)) { 
+		if (CoinGetIntOption(hProb, COIN_INT_CRASHIND)) {
+			pCoin->clp->crash(CoinGetIntOption(hProb, COIN_REAL_CRASHGAP),
 								CoinGetIntOption(hProb, COIN_INT_CRASHPIVOT));
+		}
 	}
-	switch (CoinGetIntOption(hProb,COIN_INT_SOLVEMETHOD)) {
-		case 0: method = ClpSolve::useDual;				 break;
-		case 1: method = ClpSolve::usePrimal;			 break;
-		case 2: method = ClpSolve::usePrimalorSprint; break;
-		case 3: method = ClpSolve::useBarrier;			 break;
-		case 4: method = ClpSolve::useBarrierNoCross; break;
-		case 5: method = ClpSolve::automatic;			 break;
-		default: method = ClpSolve::usePrimal;
-	}
-	pCoin->clp->setSolveType(method);   //ClpSolve::usePrimal
 
-	switch (CoinGetIntOption(hProb,COIN_INT_PRESOLVETYPE)) {
-		case 0: presolve = ClpSolve::presolveOn;		 break;
-		case 1: presolve = ClpSolve::presolveOff;		 break;
-		case 2: presolve = ClpSolve::presolveNumber;	 break;
-		default: presolve = ClpSolve::presolveOn;
+	if (CoinGetOptionChanged(hProb, COIN_INT_SOLVEMETHOD)) {
+		switch (CoinGetIntOption(hProb,COIN_INT_SOLVEMETHOD)) {
+			case 0: method = ClpSolve::useDual;				break;
+			case 1: method = ClpSolve::usePrimal;			break;
+			case 2: method = ClpSolve::usePrimalorSprint;	break;
+			case 3: method = ClpSolve::useBarrier;			break;
+			case 4: method = ClpSolve::useBarrierNoCross;	break;
+			case 5: method = ClpSolve::automatic;			break;
+			default: method = ClpSolve::usePrimal;
+		}
+		pCoin->clp->setSolveType(method);   //ClpSolve::usePrimal
 	}
-	clp_options.setPresolveType(presolve);   //ClpSolve::presolveOn
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_PRESOLVETYPE)) {   
+		switch (CoinGetIntOption(hProb,COIN_INT_PRESOLVETYPE)) {
+			case 0: presolve = ClpSolve::presolveOn;		 break;
+			case 1: presolve = ClpSolve::presolveOff;		 break;
+			case 2: presolve = ClpSolve::presolveNumber;	 break;
+			default: presolve = ClpSolve::presolveOn;
+		}
+		pCoin->clp_options->setPresolveType(presolve);   //ClpSolve::presolveOn
+	}
+	return 1;
+}
+
+
+int coinSetCbcOptions(HPROB hProb)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPMAXNODES))		pCoin->cbc->setMaximumNodes(CoinGetIntOption(hProb, COIN_INT_MIPMAXNODES));
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPMAXSOL))		pCoin->cbc->setMaximumSolutions(CoinGetIntOption(hProb, COIN_INT_MIPMAXSOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPMAXSEC))		pCoin->cbc->setDblParam(CbcModel::CbcMaximumSeconds,CoinGetRealOption(hProb, COIN_REAL_MIPMAXSEC));
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPFATHOMDISC))	pCoin->cbc->setIntParam(CbcModel::CbcFathomDiscipline,CoinGetIntOption(hProb, COIN_INT_MIPFATHOMDISC));
+
+	// JPF commented: pCoin->cbc->setHotstartStrategy(CoinGetIntOption(hProb, COIN_INT_MIPHOTSTART));
+	//		pCoin->cbc->setForcePriority(CoinGetIntOption(hProb, COIN_INT_MIPFORCEPRIOR));
+
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPMINIMUMDROP))	pCoin->cbc->setMinimumDrop(CoinGetIntOption(hProb, COIN_INT_MIPMINIMUMDROP));
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPMAXPASSROOT))	pCoin->cbc->setMaximumCutPassesAtRoot(CoinGetIntOption(hProb, COIN_INT_MIPMAXPASSROOT));
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPMAXCUTPASS))	pCoin->cbc->setMaximumCutPasses(CoinGetIntOption(hProb, COIN_INT_MIPMAXCUTPASS));
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPSTRONGBRANCH))	pCoin->cbc->setNumberStrong(CoinGetIntOption(hProb, COIN_INT_MIPSTRONGBRANCH));
+	if (CoinGetOptionChanged(hProb, COIN_INT_MIPSCANGLOBCUTS))	pCoin->cbc->setHowOftenGlobalScan(CoinGetIntOption(hProb, COIN_INT_MIPSCANGLOBCUTS));
+
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPINTTOL))		pCoin->cbc->setIntegerTolerance(CoinGetRealOption(hProb, COIN_REAL_MIPINTTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPINFWEIGHT))	pCoin->cbc->setInfeasibilityWeight(CoinGetRealOption(hProb, COIN_REAL_MIPINFWEIGHT));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPCUTOFF))		pCoin->cbc->setDblParam(CbcModel::CbcCutoffIncrement,CoinGetRealOption(hProb, COIN_REAL_MIPCUTOFF));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPABSGAP))		pCoin->cbc->setAllowableGap(CoinGetRealOption(hProb, COIN_REAL_MIPABSGAP));
+	return 1;
+}
+
+
+int coinSetCglOptions(HPROB hProb)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	/* see CbcModel.hpp has commments on calling cuts */
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_PROBING)) {
+		pCoin->probing = new CglProbing();
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_MODE))	pCoin->probing->setMode(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MODE));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_USEOBJ))	pCoin->probing->setUsingObjective(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_USEOBJ) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_MAXPASS))	pCoin->probing->setMaxPass(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXPASS));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_MAXPROBE))	pCoin->probing->setMaxProbe(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXPROBE));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_MAXLOOK))	pCoin->probing->setMaxLook(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXLOOK));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPPROBE_ROWCUTS))	pCoin->probing->setRowCuts(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_ROWCUTS));
+		pCoin->cbc->addCutGenerator(pCoin->probing,CoinGetIntOption(hProb, COIN_INT_MIPPROBE_FREQ),"Probing");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_GOMORY)) {
+		pCoin->gomory = new CglGomory();
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPGOMORY_LIMIT))	pCoin->gomory->setLimit(CoinGetIntOption(hProb, COIN_INT_MIPGOMORY_LIMIT));
+		if (CoinGetOptionChanged(hProb, COIN_REAL_MIPGOMORY_AWAY))	pCoin->gomory->setAway(CoinGetRealOption(hProb, COIN_REAL_MIPGOMORY_AWAY));
+		pCoin->cbc->addCutGenerator(pCoin->gomory,CoinGetIntOption(hProb, COIN_INT_MIPGOMORY_FREQ),"Gomory");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_KNAPSACK)) {
+		pCoin->knapsack = new CglKnapsackCover();
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPKNAPSACK_MAXIN))	pCoin->knapsack->setMaxInKnapsack(CoinGetIntOption(hProb, COIN_INT_MIPKNAPSACK_MAXIN));
+		pCoin->cbc->addCutGenerator(pCoin->knapsack,CoinGetIntOption(hProb, COIN_INT_MIPKNAPSACK_FREQ),"Knapsack");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_ODDHOLE)) {
+		pCoin->oddhole= new CglOddHole();
+		if (CoinGetOptionChanged(hProb, COIN_REAL_MIPODDHOLE_MINVIOL))	pCoin->oddhole->setMinimumViolation(CoinGetRealOption(hProb, COIN_REAL_MIPODDHOLE_MINVIOL));
+		if (CoinGetOptionChanged(hProb, COIN_REAL_MIPODDHOLE_MINVIOLPER))	pCoin->oddhole->setMinimumViolationPer(CoinGetRealOption(hProb, COIN_REAL_MIPODDHOLE_MINVIOLPER));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPODDHOLE_MAXENTRIES))	pCoin->oddhole->setMaximumEntries(CoinGetIntOption(hProb, COIN_INT_MIPODDHOLE_MAXENTRIES));
+		pCoin->cbc->addCutGenerator(pCoin->oddhole,CoinGetIntOption(hProb, COIN_INT_MIPODDHOLE_FREQ),"OddHole");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_CLIQUE)) {
+		pCoin->clique= new CglClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_PACKING) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_STAR))		pCoin->clique->setDoStarClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STAR) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_STARMETHOD))	pCoin->clique->setStarCliqueNextNodeMethod((CglClique::scl_next_node_method)CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARMETHOD));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_STARMAXLEN))	pCoin->clique->setStarCliqueCandidateLengthThreshold(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARMAXLEN));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_STARREPORT))	pCoin->clique->setStarCliqueReport(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARREPORT) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_ROW))		pCoin->clique->setDoRowClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROW) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_ROWMAXLEN))	pCoin->clique->setRowCliqueCandidateLengthThreshold(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROWMAXLEN));
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPCLIQUE_ROWREPORT))	pCoin->clique->setRowCliqueReport(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROWREPORT) ? true : false);
+		if (CoinGetOptionChanged(hProb, COIN_REAL_MIPCLIQUE_MINVIOL))	pCoin->clique->setMinViolation(CoinGetRealOption(hProb, COIN_REAL_MIPCLIQUE_MINVIOL));
+		pCoin->cbc->addCutGenerator(pCoin->clique,CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_FREQ),"Clique");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_LIFTPROJECT)) {
+		pCoin->liftpro = new CglLiftAndProject();
+		if (CoinGetOptionChanged(hProb, COIN_INT_MIPLIFTPRO_BETAONE))	pCoin->liftpro->setBeta(CoinGetIntOption(hProb, COIN_INT_MIPLIFTPRO_BETAONE) ? 1 : -1);
+		pCoin->cbc->addCutGenerator(pCoin->liftpro,CoinGetIntOption(hProb, COIN_INT_MIPLIFTPRO_FREQ),"LiftProject");
+	}
+
+	if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_SIMPROUND)) {
+		pCoin->rounding = new CglSimpleRounding();
+		pCoin->cbc->addCutGenerator(pCoin->rounding,CoinGetIntOption(hProb, COIN_INT_MIPSIMPROUND_FREQ),"Rounding");
+	}
+	return 1;
+}
+
+
+SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
+{		
+	PCOIN pCoin = (PCOIN)hProb;
 
 	if (!pCoin->SolveAsMIP) {
-		pCoin->clp->initialSolve(clp_options);
+		coinSetClpOptions(hProb);
+		if (CoinGetOptionChanged(hProb, COIN_INT_PRESOLVETYPE))
+			pCoin->clp->initialSolve(*pCoin->clp_options);
+		else {
+			pCoin->clp->initialSolve();
+		}
 		pCoin->SolutionStatus = pCoin->clp->status();
 		}
 	else {
-		pCoin->cbc->setMaximumNodes(CoinGetIntOption(hProb, COIN_INT_MIPMAXNODES));
-		pCoin->cbc->setMaximumSolutions(CoinGetIntOption(hProb, COIN_INT_MIPMAXSOL));
-		pCoin->cbc->setDblParam(CbcModel::CbcMaximumSeconds,CoinGetRealOption(hProb, COIN_REAL_MIPMAXSEC));
+#ifdef NEW_STYLE_CBCMAIN
+		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
+			coinSetClpOptions(hProb);
+			coinSetCbcOptions(hProb);
+			//coinSetCglOptions(hProb);  BK: CbcMain1 should call the Cgl's automatically
+			const int argc = 3;
+			const char *argv[] = {"CoinMP", "-solve", "-quit"};
+			CbcMain1(argc,argv,*pCoin->cbc);
+			pCoin->SolutionStatus = pCoin->cbc->status();
+			}
+		else 
+#endif
+		{
+			coinSetClpOptions(hProb);
+			coinSetCbcOptions(hProb);
+			coinSetCglOptions(hProb);
 
-		pCoin->cbc->setIntParam(CbcModel::CbcFathomDiscipline,CoinGetIntOption(hProb, COIN_INT_MIPFATHOMDISC));
-
-		// JPF commented: pCoin->cbc->setHotstartStrategy(CoinGetIntOption(hProb, COIN_INT_MIPHOTSTART));
-		//		pCoin->cbc->setForcePriority(CoinGetIntOption(hProb, COIN_INT_MIPFORCEPRIOR));
-
-		pCoin->cbc->setMinimumDrop(CoinGetIntOption(hProb, COIN_INT_MIPMINIMUMDROP));
-		pCoin->cbc->setMaximumCutPassesAtRoot(CoinGetIntOption(hProb, COIN_INT_MIPMAXPASSROOT));
-		pCoin->cbc->setMaximumCutPasses(CoinGetIntOption(hProb, COIN_INT_MIPMAXCUTPASS));
-		pCoin->cbc->setNumberStrong(CoinGetIntOption(hProb, COIN_INT_MIPSTRONGBRANCH));
-		pCoin->cbc->setHowOftenGlobalScan(CoinGetIntOption(hProb, COIN_INT_MIPSCANGLOBCUTS));
-
-		pCoin->cbc->setIntegerTolerance(CoinGetRealOption(hProb, COIN_REAL_MIPINTTOL));
-		pCoin->cbc->setInfeasibilityWeight(CoinGetRealOption(hProb, COIN_REAL_MIPINFWEIGHT));
-		pCoin->cbc->setDblParam(CbcModel::CbcCutoffIncrement,CoinGetRealOption(hProb, COIN_REAL_MIPCUTOFF));
-		pCoin->cbc->setAllowableGap(CoinGetRealOption(hProb, COIN_REAL_MIPABSGAP));
-
-		/* see CbcModel.hpp has commments on calling cuts */
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_PROBING)) {
-			pCoin->probing = new CglProbing();
-			pCoin->probing->setMode(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MODE));
-			pCoin->probing->setUsingObjective(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_USEOBJ) ? true : false);
-			pCoin->probing->setMaxPass(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXPASS));
-			pCoin->probing->setMaxProbe(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXPROBE));
-			pCoin->probing->setMaxLook(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_MAXLOOK));
-			pCoin->probing->setRowCuts(CoinGetIntOption(hProb, COIN_INT_MIPPROBE_ROWCUTS));
-			pCoin->cbc->addCutGenerator(pCoin->probing,CoinGetIntOption(hProb, COIN_INT_MIPPROBE_FREQ),"Probing");
+			pCoin->cbc->initialSolve();
+			pCoin->cbc->branchAndBound();
+			pCoin->SolutionStatus = pCoin->cbc->status();
 		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_GOMORY)) {
-			pCoin->gomory = new CglGomory();
-			pCoin->gomory->setLimit(CoinGetIntOption(hProb, COIN_INT_MIPGOMORY_LIMIT));
-			pCoin->gomory->setAway(CoinGetRealOption(hProb, COIN_REAL_MIPGOMORY_AWAY));
-			pCoin->cbc->addCutGenerator(pCoin->gomory,CoinGetIntOption(hProb, COIN_INT_MIPGOMORY_FREQ),"Gomory");
-		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_KNAPSACK)) {
-			pCoin->knapsack = new CglKnapsackCover();
-			pCoin->knapsack->setMaxInKnapsack(CoinGetIntOption(hProb, COIN_INT_MIPKNAPSACK_MAXIN));
-			pCoin->cbc->addCutGenerator(pCoin->knapsack,CoinGetIntOption(hProb, COIN_INT_MIPKNAPSACK_FREQ),"Knapsack");
-		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_ODDHOLE)) {
-			pCoin->oddhole= new CglOddHole();
-			pCoin->oddhole->setMinimumViolation(CoinGetRealOption(hProb, COIN_REAL_MIPODDHOLE_MINVIOL));
-			pCoin->oddhole->setMinimumViolationPer(CoinGetRealOption(hProb, COIN_REAL_MIPODDHOLE_MINVIOLPER));
-			pCoin->oddhole->setMaximumEntries(CoinGetIntOption(hProb, COIN_INT_MIPODDHOLE_MAXENTRIES));
-			pCoin->cbc->addCutGenerator(pCoin->oddhole,CoinGetIntOption(hProb, COIN_INT_MIPODDHOLE_FREQ),"OddHole");
-		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_CLIQUE)) {
-			pCoin->clique= new CglClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_PACKING) ? true : false);
-			pCoin->clique->setDoStarClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STAR) ? true : false);
-			pCoin->clique->setStarCliqueNextNodeMethod((CglClique::scl_next_node_method)CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARMETHOD));
-			pCoin->clique->setStarCliqueCandidateLengthThreshold(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARMAXLEN));
-			pCoin->clique->setStarCliqueReport(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_STARREPORT) ? true : false);
-			pCoin->clique->setDoRowClique(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROW) ? true : false);
-			pCoin->clique->setRowCliqueCandidateLengthThreshold(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROWMAXLEN));
-			pCoin->clique->setRowCliqueReport(CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_ROWREPORT) ? true : false);
-			pCoin->clique->setMinViolation(CoinGetRealOption(hProb, COIN_REAL_MIPCLIQUE_MINVIOL));
-			pCoin->cbc->addCutGenerator(pCoin->clique,CoinGetIntOption(hProb, COIN_INT_MIPCLIQUE_FREQ),"Clique");
-		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_LIFTPROJECT)) {
-			pCoin->liftpro = new CglLiftAndProject();
-			pCoin->liftpro->setBeta(CoinGetIntOption(hProb, COIN_INT_MIPLIFTPRO_BETAONE) ? 1 : -1);
-			pCoin->cbc->addCutGenerator(pCoin->liftpro,CoinGetIntOption(hProb, COIN_INT_MIPLIFTPRO_FREQ),"LiftProject");
-		}
-
-		if (CoinGetIntOption(hProb, COIN_INT_MIPCUT_SIMPROUND)) {
-			pCoin->rounding = new CglSimpleRounding();
-			pCoin->cbc->addCutGenerator(pCoin->rounding,CoinGetIntOption(hProb, COIN_INT_MIPSIMPROUND_FREQ),"Rounding");
-		}
-
-		pCoin->cbc->initialSolve();
-		pCoin->cbc->branchAndBound();
-		pCoin->SolutionStatus = pCoin->cbc->status();
-	}
-	
+	}	
 	return pCoin->SolutionStatus;
 }
 
@@ -790,10 +880,10 @@ SOLVAPI char * CoinGetSolutionText(HPROB hProb, int SolutionStatus)
 	switch (SolutionStatus) {
 		case 0:	strcpy(pCoin->SolutionText, "Optimal solution found");		break;
 		case 1:	strcpy(pCoin->SolutionText, "Problem primal infeasible");	break;
-		case 2:  strcpy(pCoin->SolutionText, "Problem dual infeasible");		break;
-		case 3:  strcpy(pCoin->SolutionText, "Stopped on iterations");			break;
-		case 4: 	strcpy(pCoin->SolutionText, "Stopped due to errors");			break;
-		case 5: 	strcpy(pCoin->SolutionText, "Stopped by user");		break;
+		case 2:	strcpy(pCoin->SolutionText, "Problem dual infeasible");		break;
+		case 3:	strcpy(pCoin->SolutionText, "Stopped on iterations");			break;
+		case 4: strcpy(pCoin->SolutionText, "Stopped due to errors");			break;
+		case 5: strcpy(pCoin->SolutionText, "Stopped by user");		break;
 	}
 	return pCoin->SolutionText;
 }
@@ -816,7 +906,11 @@ SOLVAPI double CoinGetMipBestBound(HPROB hProb)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
-   return 0;
+	if (!pCoin->SolveAsMIP) 
+		return 0;
+	else {
+		return pCoin->cbc->getBestPossibleObjValue();
+	}
 }
 
 
@@ -824,7 +918,11 @@ SOLVAPI int CoinGetIterCount(HPROB hProb)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
-   return pCoin->clp->numberIterations();
+	if (!pCoin->SolveAsMIP) 
+		return pCoin->clp->numberIterations();
+	else {
+		return pCoin->cbc->getIterationCount();
+	}
 }
 
 
@@ -869,26 +967,26 @@ SOLVAPI int CoinGetSolutionValues(HPROB hProb, double* Activity, double* Reduced
 		for (i = 0; i < pCoin->ColCount; i++) {
 			Activity[i] = columnPrimal[i];
 		}
-   }
+	}
 	if (ReducedCost) {
 		columnDual = pCoin->clp->dualColumnSolution();
 		for (i = 0; i < pCoin->ColCount; i++) {
 			ReducedCost[i] = columnDual[i];
 		}
-   }
+	}
 	if (SlackValues) {
 		rowPrimal = pCoin->clp->primalRowSolution();
 		for (i = 0; i < pCoin->RowCount; i++) {
 			SlackValues[i] = rowPrimal[i];
 		}
-   }
+	}
 	if (ShadowPrice) {
 		rowDual = pCoin->clp->dualRowSolution();
 		for (i = 0; i < pCoin->RowCount; i++) {
 			ShadowPrice[i] = rowDual[i];
 		}
-   }
-   return SOLV_SUCCESS;
+	}
+	return SOLV_SUCCESS;
 }
 
 
@@ -932,7 +1030,7 @@ SOLVAPI int CoinReadFile(HPROB hProb, int FileType, char* ReadFilename)
 
 SOLVAPI int CoinWriteFile(HPROB hProb, int FileType, char* WriteFilename)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
 	switch (FileType) {
 		case SOLV_FILE_MPS:		pCoin->clp->writeMps(WriteFilename);    break;
@@ -952,7 +1050,7 @@ SOLVAPI int CoinWriteFile(HPROB hProb, int FileType, char* WriteFilename)
 
 SOLVAPI int CoinOpenLogFile(HPROB hProb, char* logFilename)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
 	return SOLV_SUCCESS;
 }
@@ -960,7 +1058,7 @@ SOLVAPI int CoinOpenLogFile(HPROB hProb, char* logFilename)
 
 SOLVAPI int CoinCloseLogFile(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
 	return SOLV_SUCCESS;
 }
@@ -976,22 +1074,22 @@ SOLVAPI int CoinCloseLogFile(HPROB hProb)
 #define ROUND(x)       (((x)>0)?((long)((x)+0.5)):((long)((x)-0.5)))
 
 
-#define OPT_NONE				0
-#define OPT_ONOFF				1
-#define OPT_LIST				2
+#define OPT_NONE			0
+#define OPT_ONOFF			1
+#define OPT_LIST			2
 #define OPT_INT				3
-#define OPT_REAL				4
+#define OPT_REAL			4
 #define OPT_STRING			5
 
-#define GRP_NONE           0
-#define GRP_OTHER          0
+#define GRP_NONE			0
+#define GRP_OTHER			0
 
 #define GRP_SIMPLEX			1
 #define GRP_PREPROC			2
 #define GRP_LOGFILE			3
 #define GRP_LIMITS			4
-#define GRP_MIPSTRAT			5
-#define GRP_MIPCUTS        6
+#define GRP_MIPSTRAT		5
+#define GRP_MIPCUTS			6
 #define GRP_MIPTOL			7
 #define GRP_BARRIER			8
 #define GRP_NETWORK			9
@@ -1003,20 +1101,20 @@ typedef int    OPTINT;
 typedef double OPTVAL;
 
 typedef struct {
-           char   OptionName[32];
-			  char   ShortName[32];
-			  int    GroupType;
-           OPTVAL DefaultValue;
-           OPTVAL CurrentValue;
-           OPTVAL MinValue;
-           OPTVAL MaxValue;
-			  int		OptionType;
-           int    changed;
-           int    OptionID;
+			char   OptionName[32];
+			char   ShortName[32];
+			int    GroupType;
+			OPTVAL DefaultValue;
+			OPTVAL CurrentValue;
+			OPTVAL MinValue;
+			OPTVAL MaxValue;
+			int		OptionType;
+			int    changed;
+			int    OptionID;
         } SOLVOPTINFO, *PSOLVOPT;
 
 
-#define OPTIONCOUNT    66
+#define OPTIONCOUNT    67
 
 
 
@@ -1117,6 +1215,7 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 	  "MipCutSimpleRounding",   "CutSimpRound", GRP_MIPCUTS,        0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_SIMPROUND,
 	  "MipSimpleRoundFrequency","SimpRoundFreq",GRP_MIPCUTS,       -1,       -1,-MAXINT,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPSIMPROUND_FREQ,
 
+	  "MipUseCbcMain",          "UseCbcMain",   GRP_MIPSTRAT,       1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPUSECBCMAIN,
 	};
 
 
@@ -1182,6 +1281,17 @@ int LocateOptionID(int OptionID)
 	return -1;
 }
 
+SOLVAPI int CoinGetOptionChanged(HPROB hProb, int OptionID)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+	int OptionNr;
+
+	OptionNr = LocateOptionID(OptionID);
+	if (OptionNr < 0) {
+		return 0;
+	}
+	return OptionTable[OptionNr].changed;
+}
 
 
 SOLVAPI int CoinGetIntOption(HPROB hProb,int OptionID)
@@ -1194,7 +1304,7 @@ SOLVAPI int CoinGetIntOption(HPROB hProb,int OptionID)
 		return 0;
 	}
 	if (OptionTable[OptionNr].OptionType != OPT_REAL)
-		return OptionTable[OptionNr].CurrentValue;
+		return (int)OptionTable[OptionNr].CurrentValue;
 	else {
 		return 0;
 	}
@@ -1204,7 +1314,7 @@ SOLVAPI int CoinGetIntOption(HPROB hProb,int OptionID)
 
 SOLVAPI int CoinSetIntOption(HPROB hProb,int OptionID, int IntValue)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
 	OptionNr = LocateOptionID(OptionID);
@@ -1212,7 +1322,9 @@ SOLVAPI int CoinSetIntOption(HPROB hProb,int OptionID, int IntValue)
 		return SOLV_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType != OPT_REAL) {
+		CoinWriteMsgLog("%s[%d] = %d (was %d)",OptionTable[OptionNr].OptionName, OptionNr, IntValue, (int)OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = IntValue;
+		OptionTable[OptionNr].changed = 1;
 	   return SOLV_SUCCESS;
 	}
 	return SOLV_FAILED;
@@ -1222,7 +1334,7 @@ SOLVAPI int CoinSetIntOption(HPROB hProb,int OptionID, int IntValue)
 
 SOLVAPI double CoinGetRealOption(HPROB hProb,int OptionID)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
 	OptionNr = LocateOptionID(OptionID);
@@ -1239,7 +1351,7 @@ SOLVAPI double CoinGetRealOption(HPROB hProb,int OptionID)
 
 SOLVAPI int CoinSetRealOption(HPROB hProb,int OptionID, double RealValue)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
 	OptionNr = LocateOptionID(OptionID);
@@ -1247,7 +1359,9 @@ SOLVAPI int CoinSetRealOption(HPROB hProb,int OptionID, double RealValue)
 		return SOLV_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType == OPT_REAL) {
+		CoinWriteMsgLog("%s[%d] = %lg (was %lg)",OptionTable[OptionNr].OptionName, OptionNr, RealValue, OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = RealValue;
+		OptionTable[OptionNr].changed = 1;
 	   return SOLV_SUCCESS;
 	}
 	return SOLV_FAILED;
