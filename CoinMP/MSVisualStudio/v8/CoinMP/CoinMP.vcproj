@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\Clp\src,..\..\..\..\CoinUtils\src,..\..\..\..\Osi\src,..\..\..\..\Cbc\src,..\..\..\..\Cgl\src,..\..\..\..\Cgl\src\CglProbing,..\..\..\..\Cgl\src\CglGomory,..\..\..\..\Cgl\src\CglKnapsackCover,..\..\..\..\Cgl\src\CglOddHole,..\..\..\..\Cgl\src\CglClique,..\..\..\..\Cgl\src\CglLiftAndProject,..\..\..\..\Cgl\src\CglSimpleRounding,..\..\..\..\Osi\src\OsiClp,..\..\..\..\BuildTools\headers"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;COINMP_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;COINMP_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\Clp\src,..\..\..\..\CoinUtils\src,..\..\..\..\Osi\src,..\..\..\..\Cbc\src,..\..\..\..\Cgl\src,..\..\..\..\Cgl\src\CglProbing,..\..\..\..\Cgl\src\CglGomory,..\..\..\..\Cgl\src\CglKnapsackCover,..\..\..\..\Cgl\src\CglOddHole,..\..\..\..\Cgl\src\CglClique,..\..\..\..\Cgl\src\CglLiftAndProject,..\..\..\..\Cgl\src\CglSimpleRounding,..\..\..\..\Osi\src\OsiClp,..\..\..\..\BuildTools\headers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;COINMP_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;COINMP_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -177,7 +177,32 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\..\..\Cbc\src\CbcSolver.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\..\Cbc\src\;..\..\..\..\Cgl\src\CglResidualCapacity;..\..\..\..\Cgl\src\CglLandP;..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\Cgl\src\CglClique;..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\Cgl\src\CglGomory;..\..\..\..\Cgl\src\CglPreProcess;..\..\..\..\Cgl\src\CglDuplicateRow;..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\Cgl\src\CglProbing;..\..\..\..\Cgl\src;..\..\..\..\Clp\src;..\..\..\..\Osi\src\OsiClp;..\..\..\..\Osi\src;..\..\..\..\CoinUtils\src;..\..\..\..\BuildTools\headers"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\..\Cbc\src\;..\..\..\..\Cgl\src\CglResidualCapacity;..\..\..\..\Cgl\src\CglLandP;..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\Cgl\src\CglClique;..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\Cgl\src\CglGomory;..\..\..\..\Cgl\src\CglPreProcess;..\..\..\..\Cgl\src\CglDuplicateRow;..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\Cgl\src\CglProbing;..\..\..\..\Cgl\src;..\..\..\..\Clp\src;..\..\..\..\Osi\src\OsiClp;..\..\..\..\Osi\src;..\..\..\..\CoinUtils\src;..\..\..\..\BuildTools\headers"
+						PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\..\src\CoinMP.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Cbc\src\unitTestClp.cpp"
 				>
 			</File>
 		</Filter>
@@ -186,6 +211,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\..\..\Cbc\src\CbcSolver.hpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\..\src\CoinMP.h"
 				>
