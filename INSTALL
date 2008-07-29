@@ -12,16 +12,16 @@ You can obtain the source code for the CoinMP package in two ways:
    Assuming that you want to download the code into a subdirectory
    "COIN-CoinMP", you type
 
-   svn co https://projects.coin-or.org/svn/CoinMP/stable/1.0 Coin-CoinMP
+   svn co https://projects.coin-or.org/svn/CoinMP/stable/1.1 Coin-CoinMP
 
-2. Download the tarball from http://www.coin-or.org/Tarballs/CoinMP and
+2. Download the tarball from http://www.coin-or.org/download/source/CoinMP
    extract it, for example, with
 
-   gunzip CoinMP_2006Jun07.tgz
-   tar xvf CoinMP_2006Jun07.tar
+   gunzip CoinMP-1.1.0.tgz
+   tar xvf CoinMP-1.1.0.tar
 
-   (Here "2006Jun07" is of course replaced by the string in the
-   tarball you downloaded.)
+   (Here "-1.1.0" is of course replaced by the actual release string 
+    in the tarball you downloaded.)
 
    More detailed download instructions can be found at
 
@@ -34,12 +34,9 @@ You can obtain the source code for the CoinMP package in two ways:
 **********************************************************************
 **********************************************************************
 
-To build the 'CoinMP.dll', open the workspace file 'CoinMP.dsw' and select
-'Build CoinMP.dll' from the 'Build' menu in Visual Studio 6.
-
-To build the 'CoinMP.dll', start MS Visual Studio 6.0, open 
-the workspace file 'CoinMP.dsw' in the CoinMP\msvc6 folder 
-and select 'Build CoinMP.dll' from the 'Build' menu.
+To build the 'CoinMP.dll', start MS Visual Studio 2005 or 2008, open 
+the solution file 'CoinMP.sln' in the CoinMP\MSVisualStudio\v8 folder 
+and select 'Build Solution' from the 'Build' menu.
 
 
 **********************************************************************
@@ -114,10 +111,5 @@ subdirectory, see also the information at
    https://projects.coin-or.org/BuildTools/wiki/user-examples
 
 
-
-
-=======
-Currently CoinMP.dll has only been tested to build with the 
-MS Visual C++ 6.0 compiler.
 
 >>>>>>> .r50
