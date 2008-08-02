@@ -60,12 +60,12 @@ addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)
 examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.cpp
 examplesdir = $(prefix)/examples/$(PACKAGE_NAME)
 
-install-exec-local:
+install-exec-local: install-doc
 	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
 	mkdir -p $(DESTDIR)$(examplesdir)
 	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
 
-uninstall-local:
+uninstall-local: uninstall-doc
 	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
 	rm -f $(DESTDIR)$(examplesdir)
 
