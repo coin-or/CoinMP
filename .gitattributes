@@ -3,7 +3,9 @@
 CoinMP/AUTHORS -text
 CoinMP/LICENSE -text
 CoinMP/MSVisualStudio/v8/CoinMP.sln -text
+CoinMP/MSVisualStudio/v8/CoinMP/CoinMP.rc -text
 CoinMP/MSVisualStudio/v8/CoinMP/CoinMP.vcproj -text
+CoinMP/MSVisualStudio/v8/CoinMP/resource.h -text
 CoinMP/MSVisualStudio/v8/release/CoinMP.dll -text
 CoinMP/MSVisualStudio/v8/release/CoinMP.exp -text
 CoinMP/MSVisualStudio/v8/release/CoinMP.lib -text
