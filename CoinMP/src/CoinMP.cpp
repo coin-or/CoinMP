@@ -832,6 +832,9 @@ int coinSetCglOptions(HPROB hProb)
 /************************************************************************/
 
 
+extern int CbcOrClpRead_mode;
+
+
 SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
 {		
 	PCOIN pCoin = (PCOIN)hProb;
@@ -851,6 +854,7 @@ SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
 			coinSetClpOptions(hProb);
 			coinSetCbcOptions(hProb);
 			//coinSetCglOptions(hProb);  BK: CbcMain1 should call the Cgl's automatically
+			CbcOrClpRead_mode = 1;  // BK: Missing in CbcMain1 (CpcSolver.cpp, stable 2.2), was included in stable 2.1
 			const int argc = 3;
 			const char *argv[] = {"CoinMP", "-solve", "-quit"};
 			CbcMain1(argc,argv,*pCoin->cbc);
