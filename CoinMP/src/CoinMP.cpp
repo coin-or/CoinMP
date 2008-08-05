@@ -4,9 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
-/*  Author       :  Bjarni Kristjansson                                 */
+/*  Version      :  1.1                                                 */
 /*                                                                      */
-/*  Copyright (c) 2005-2008                     Bjarni Kristjansson     */
+/*  Author       :  Bjarni Kristjansson, Maximal Software               */
+/*                                                                      */
+/*  Copyright (c) 2002-2008                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -56,40 +58,96 @@
 
 #define NEW_STYLE_CBCMAIN
 
-/**************************************************************************/
+
+/************************************************************************/
+/*  Solver Initialization                                               */
+/************************************************************************/
+
+
+SOLVAPI int CoinInitSolver(char *LicenseStr)
+{
+	return SOLV_SUCCESS;
+}
+
+
+SOLVAPI int CoinFreeSolver(void)
+{
+	return SOLV_SUCCESS;
+}
+
+/************************************************************************/
+/*  Solver Queries                                                      */
+/************************************************************************/
+
+
+SOLVAPI char*  CoinGetSolverName(void)
+{
+	return "CoinMP";
+}
+
+
+SOLVAPI char*  CoinGetVersionStr(void)
+{
+	return "1.1";
+}
+
+
+SOLVAPI double CoinGetVersion(void)
+{
+	return 1.1;
+}
+
+
+SOLVAPI int    CoinGetFeatures(void)
+{
+	return 0;
+}
+
+
+
+SOLVAPI double CoinGetRealMax(void)
+{
+	return COIN_DBL_MAX;
+}
+
+
+/************************************************************************/
+/*  Message Callback Handler                                            */
+/************************************************************************/
 
 
 class CBMessageHandler : public CoinMessageHandler {
 public: 
-   void setCallback(MSGLOGCALLBACK callback);
+	void setCallback(MSGLOGCALLBACK msgCallback);
 	virtual int print();
 private:
-	MSGLOGCALLBACK callback_;
+	MSGLOGCALLBACK msgCallback_;
 };
 
 
-void CBMessageHandler::setCallback(MSGLOGCALLBACK callback)
+void CBMessageHandler::setCallback(MSGLOGCALLBACK msgCallback)
 {
-  callback_ = callback;
+  msgCallback_ = msgCallback;
 }
 
 
 int CBMessageHandler::print()
 {
-	callback_((char *)messageBuffer());
+	msgCallback_((char *)messageBuffer());
 	return CoinMessageHandler::print();
 }
 
 
 
-/**************************************************************************/
+/************************************************************************/
+/*  Iteration Callback Handler                                          */
+/************************************************************************/
 
 
 class CBIterHandler : public ClpEventHandler {
 
 public: 
-   void setIterCallback(ITERCALLBACK callback);
-   void setNodeCallback(NODECALLBACK callback);
+   void setIterCallback(ITERCALLBACK iterCallback);
 
 	virtual int event(Event whichEvent);
    
@@ -109,20 +167,14 @@ public:
 
 private:
 	ITERCALLBACK iterCallback_;
-	NODECALLBACK nodeCallback_;
 };
 
 
-void CBIterHandler::setIterCallback(ITERCALLBACK callback)
+void CBIterHandler::setIterCallback(ITERCALLBACK iterCallback)
 {
-  iterCallback_ = callback;
+  iterCallback_ = iterCallback;
 }
 
-
-void CBIterHandler::setNodeCallback(NODECALLBACK callback)
-{
-  nodeCallback_ = callback;
-}
 
 
 int CBIterHandler::event(Event whichEvent)
@@ -143,16 +195,6 @@ int CBIterHandler::event(Event whichEvent)
 		isPrimalFeasible = model_->primalFeasible();
 		isDualFeasible = model_->dualFeasible();
 		cancelAsap = iterCallback_(numIter, objValue, isPrimalFeasible&&isDualFeasible, sumPrimalInfeas);
-		if (cancelAsap) {
-			return 5;
-		}
-	}
-	if ((whichEvent == node) ||
-		 (whichEvent == treeStatus) ||
-		 (whichEvent == solution)) {
-		numIter = model_->getIterationCount();
-		objValue = model_->getObjValue();
-		cancelAsap = nodeCallback_(numIter, 0, 0.0, objValue, 0);
 		if (cancelAsap) {
 			return 5;
 		}
@@ -189,19 +231,20 @@ ClpEventHandler * CBIterHandler::clone() const
 
    iterhandler = new CBIterHandler(*this);
 	iterhandler->iterCallback_ = this->iterCallback_;
-	iterhandler->nodeCallback_ = this->nodeCallback_;
 	return iterhandler;
 }
 
 
 
-/**************************************************************************/
+/************************************************************************/
+/*  Mip Node Callback Handler                                           */
+/************************************************************************/
 
 
 class CBNodeHandler : public CbcEventHandler {
 
 public: 
-   void setCallback(NODECALLBACK callback);
+   void setCallback(NODECALLBACK mipCodeCallback);
 
 	virtual CbcAction event(CbcEvent whichEvent);
    
@@ -223,14 +266,14 @@ public:
 
 
 private:
-	NODECALLBACK callback_;
+	NODECALLBACK mipNodeCallback_;
 	int lastSolCount_;
 };
 
 
-void CBNodeHandler::setCallback(NODECALLBACK callback)
+void CBNodeHandler::setCallback(NODECALLBACK mipNodeCallback)
 {
-  callback_ = callback;
+  mipNodeCallback_ = mipNodeCallback;
   lastSolCount_ = 0;
 }
 
@@ -250,7 +293,7 @@ CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 		objValue = model_->getObjValue();
 		bestBound = model_->getBestPossibleObjValue();
 		solCount = model_->getSolutionCount();
-		cancelAsap = callback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
+		cancelAsap = mipNodeCallback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
 		lastSolCount_ = solCount;
 		if (cancelAsap) {
 			return stop;
@@ -288,21 +331,24 @@ CbcEventHandler * CBNodeHandler::clone() const
 	CBNodeHandler * nodehandler;
 
 	nodehandler = new CBNodeHandler(*this);
-	nodehandler->callback_ = this->callback_;
+	nodehandler->mipNodeCallback_ = this->mipNodeCallback_;
 	nodehandler->lastSolCount_ = this->lastSolCount_;
 	return nodehandler;
 }
 
 
 
-/**************************************************************************/
+/************************************************************************/
+/*  Coin Problem Info Structure                                         */
+/************************************************************************/
+
 
 typedef struct {
 				ClpSimplex *clp;
 				ClpSolve *clp_options;
 				CbcModel *cbc;
 #ifdef NEW_STYLE_CBCMAIN
-				CbcModel *cbc2;
+				//CbcModel *cbc2;
 #endif
 				OsiClpSolverInterface *osi;
 
@@ -336,51 +382,9 @@ PCOIN global_pCoin;
 
 
 
-SOLVAPI int CoinInitSolver(char *LicenseStr)
-{
-	return SOLV_SUCCESS;
-}
-
-
-SOLVAPI int CoinFreeSolver(void)
-{
-	return SOLV_SUCCESS;
-}
-
-
-
-SOLVAPI char*  CoinGetSolverName(void)
-{
-	return "CoinMP";
-}
-
-
-SOLVAPI char*  CoinGetVersionStr(void)
-{
-	return "1.1";
-}
-
-
-SOLVAPI double CoinGetVersion(void)
-{
-	return 1.1;
-}
-
-
-SOLVAPI int    CoinGetFeatures(void)
-{
-	return 0;
-}
-
-
-
-SOLVAPI double CoinGetRealMax(void)
-{
-	return COIN_DBL_MAX;
-}
-
-
-/**************************************************************************/
+/************************************************************************/
+/*  Create/Load Problem                                                 */
+/************************************************************************/
 
 
 SOLVAPI HPROB CoinCreateProblem(char *ProblemName)
@@ -407,12 +411,13 @@ SOLVAPI HPROB CoinCreateProblem(char *ProblemName)
 
 
 
-SOLVAPI int CoinLoadProblem(HPROB hProb, int ColCount, int RowCount, int NonZeroCount, 
-											int RangeCount, int ObjectSense, double* ObjectCoeffs, 
-											double* RHSValues, double* RangeValues, char* RowType, 
-											int* MatrixBegin, int* MatrixCount, int* MatrixIndex, 
-											double* MatrixValues, double* LowerBounds, double* UpperBounds, 
-											double* InitValues, char** ColNames, char** RowNames)
+SOLVAPI int CoinLoadProblem(HPROB hProb, 
+							int ColCount, int RowCount, int NonZeroCount, 
+							int RangeCount, int ObjectSense, double* ObjectCoeffs, 
+							double* RHSValues, double* RangeValues, char* RowType, 
+							int* MatrixBegin, int* MatrixCount, int* MatrixIndex, 
+							double* MatrixValues, double* LowerBounds, double* UpperBounds, 
+							double* InitValues, char** ColNames, char** RowNames)
 {
    PCOIN pCoin = (PCOIN)hProb;
    int i;
@@ -488,15 +493,12 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 		if ( ColumnType[i] == 'B' || ColumnType[i] == 'I' ) {
 			pCoin->IsInt[i] = 1;
 			pCoin->SolveAsMIP = 1;
-			//pCoin->cbc->solver()->setInteger(i);
 		}
 		else {
 			pCoin->IsInt[i] = 0;
-			//pCoin->cbc->solver()->setContinuous(i);
 		}
 	}
 	if (pCoin->SolveAsMIP) {
-		//pCoin->clp->copyInIntegerInformation(pCoin->IsInt);
 		pCoin->cbc = new CbcModel(*pCoin->osi);
 		for (i = 0; i < pCoin->ColCount; i++ ) {
 			if (pCoin->IsInt[i]) {
@@ -505,13 +507,11 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 		}
 #ifdef NEW_STYLE_CBCMAIN
 		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
-			pCoin->cbc2 = pCoin->cbc;
+			//pCoin->cbc2 = pCoin->cbc;
 			CbcMain0(*pCoin->cbc);
 		}
 #endif
 	}
-	//pCoin->cbc->solver()->copyInIntegerInformation(pCoin->IsInt);
-
 	return SOLV_SUCCESS;
 }
 
@@ -566,30 +566,32 @@ SOLVAPI int CoinUnloadProblem(HPROB hProb)
 
 
 
-/****************************************************************/
+/************************************************************************/
+/*  Callback Handling                                                   */
+/************************************************************************/
 
 
-int CoinWriteMsgLog(char *FormatStr, ...)
+int coinWriteMsgLog(char *FormatStr, ...)
 {
-   va_list pVa;
-   char strbuf[256];
+	va_list pVa;
+	char strbuf[256];
 
-   va_start(pVa,FormatStr);
-   vsprintf(strbuf,FormatStr,pVa);
+	va_start(pVa,FormatStr);
+	vsprintf(strbuf,FormatStr,pVa);
 	global_pCoin->MessageLogCallback(strbuf);
 	return SOLV_SUCCESS;
 }
 
 
-int CoinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, double InfeasValue)
+int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, double InfeasValue)
 {
 	if (!global_pCoin->SolveAsMIP) {
 		if (((IterCount < 100) && ((IterCount % 10) == 0)) ||
 			 ((IterCount % 100) == 0)) {
 			if (!IsFeasible)
-				CoinWriteMsgLog("Iteration: %5d  %16.8lg  %16.8lg",IterCount, ObjectValue, InfeasValue);
+				coinWriteMsgLog("Iteration: %5d  %16.8lg  %16.8lg",IterCount, ObjectValue, InfeasValue);
 			else {
-				CoinWriteMsgLog("Iteration: %5d  %16.8lg",IterCount, ObjectValue);
+				coinWriteMsgLog("Iteration: %5d  %16.8lg",IterCount, ObjectValue);
 			}
 		}
 	}
@@ -598,13 +600,13 @@ int CoinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, doubl
 }
 
 
-int CoinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double BestObject, int IsMipImproved)
+int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double BestObject, int IsMipImproved)
 {
 	if ((NodeCount > 0) && (((NodeCount % 100) == 0) || (IsMipImproved))) {
-		CoinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
+		coinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
 		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
 	}
-   global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
 	return SOLV_SUCCESS;
 }
 
@@ -613,9 +615,9 @@ int CoinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double B
 
 SOLVAPI int CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-   pCoin->MessageLogCallback = MsgLogCallback;
+	pCoin->MessageLogCallback = MsgLogCallback;
 	delete pCoin->msghandler;
 	pCoin->msghandler = new CBMessageHandler();
 	pCoin->msghandler->setCallback(MsgLogCallback);
@@ -630,9 +632,9 @@ SOLVAPI int CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback)
 
 SOLVAPI int CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-   pCoin->IterationCallback = IterCallback;
+	pCoin->IterationCallback = IterCallback;
 	delete pCoin->iterhandler;
 	pCoin->iterhandler = new CBIterHandler(pCoin->clp);
 	pCoin->iterhandler->setIterCallback(IterCallback);
@@ -643,21 +645,19 @@ SOLVAPI int CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 
 SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-	//return SOLV_FAILED;  // BK 7/26/2006: using the NodeCallback crashes CBC!
-
-   pCoin->MipNodeCallback = NodeCallback;
+	pCoin->MipNodeCallback = NodeCallback;
 	delete pCoin->nodehandler;
 
 	//JPF: pCoin->nodehandler = new CBNodeHandler(pCoin->clp);
 	pCoin->nodehandler = new CBNodeHandler(pCoin->cbc);
 
 	pCoin->nodehandler->setCallback(NodeCallback);
-	//if (pCoin->iterhandler) pCoin->iterhandler->setNodeCallback(NodeCallback);
 #ifdef NEW_STYLE_CBCMAIN
 	if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
-		if (pCoin->cbc2) pCoin->cbc2->passInEventHandler(pCoin->nodehandler);
+		//if (pCoin->cbc2) pCoin->cbc2->passInEventHandler(pCoin->nodehandler);
+		if (pCoin->cbc) pCoin->cbc->passInEventHandler(pCoin->nodehandler);
 		}
 	else
 #endif
@@ -669,7 +669,10 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 
 
 
-/****************************************************************/
+/************************************************************************/
+/*  Option Setting                                                      */
+/************************************************************************/
+
 
 int coinSetClpOptions(HPROB hProb)
 {
@@ -823,6 +826,12 @@ int coinSetCglOptions(HPROB hProb)
 }
 
 
+
+/************************************************************************/
+/*  Optimization                                                        */
+/************************************************************************/
+
+
 SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
 {		
 	PCOIN pCoin = (PCOIN)hProb;
@@ -862,6 +871,11 @@ SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
 	return pCoin->SolutionStatus;
 }
 
+
+
+/************************************************************************/
+/*  Solution status                                                     */
+/************************************************************************/
 
 
 SOLVAPI int CoinGetSolutionStatus(HPROB hProb)
@@ -938,7 +952,10 @@ SOLVAPI int CoinGetNodeCount(HPROB hProb)
 }
 
 
-/****************************************************************/
+
+/************************************************************************/
+/*  Solution retrieval                                                  */
+/************************************************************************/
 
 
 SOLVAPI int CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
@@ -1006,7 +1023,9 @@ SOLVAPI int CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus)
 
 
 
-/****************************************************************/
+/************************************************************************/
+/*  File Handling                                                       */
+/************************************************************************/
 
 
 SOLVAPI int CoinReadFile(HPROB hProb, int FileType, char* ReadFilename)
@@ -1064,9 +1083,13 @@ SOLVAPI int CoinCloseLogFile(HPROB hProb)
 }
 
 
-/****************************************************************/
-/****************************************************************/
 
+/************************************************************************/
+/*  Option Table                                                        */
+/************************************************************************/
+
+#undef MAXINT
+#undef MAXREAL
 
 #define MAXINT          2100000000L
 #define MAXREAL         COIN_DBL_MAX
@@ -1220,6 +1243,10 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 
 
 
+/************************************************************************/
+/*  Option Handling                                                     */
+/************************************************************************/
+
 
 SOLVAPI int CoinGetOptionCount(HPROB hProb)
 {
@@ -1263,13 +1290,7 @@ SOLVAPI int CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue,
 }
 
 
-
-
-/****************************************************************/
-
-
-
-int LocateOptionID(int OptionID)
+int coinLocateOptionID(int OptionID)
 {
 	int i;
 
@@ -1281,12 +1302,13 @@ int LocateOptionID(int OptionID)
 	return -1;
 }
 
+
 SOLVAPI int CoinGetOptionChanged(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
-	OptionNr = LocateOptionID(OptionID);
+	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
 		return 0;
 	}
@@ -1299,7 +1321,7 @@ SOLVAPI int CoinGetIntOption(HPROB hProb,int OptionID)
 	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
-	OptionNr = LocateOptionID(OptionID);
+	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
 		return 0;
 	}
@@ -1317,12 +1339,12 @@ SOLVAPI int CoinSetIntOption(HPROB hProb,int OptionID, int IntValue)
 	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
-	OptionNr = LocateOptionID(OptionID);
+	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
 		return SOLV_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType != OPT_REAL) {
-		CoinWriteMsgLog("%s[%d] = %d (was %d)",OptionTable[OptionNr].OptionName, OptionNr, IntValue, (int)OptionTable[OptionNr].CurrentValue);
+		coinWriteMsgLog("%s[%d] = %d (was %d)",OptionTable[OptionNr].OptionName, OptionNr, IntValue, (int)OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = IntValue;
 		OptionTable[OptionNr].changed = 1;
 	   return SOLV_SUCCESS;
@@ -1337,7 +1359,7 @@ SOLVAPI double CoinGetRealOption(HPROB hProb,int OptionID)
 	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
-	OptionNr = LocateOptionID(OptionID);
+	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
 		return 0.0;
 	}
@@ -1354,12 +1376,12 @@ SOLVAPI int CoinSetRealOption(HPROB hProb,int OptionID, double RealValue)
 	PCOIN pCoin = (PCOIN)hProb;
 	int OptionNr;
 
-	OptionNr = LocateOptionID(OptionID);
+	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
 		return SOLV_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType == OPT_REAL) {
-		CoinWriteMsgLog("%s[%d] = %lg (was %lg)",OptionTable[OptionNr].OptionName, OptionNr, RealValue, OptionTable[OptionNr].CurrentValue);
+		coinWriteMsgLog("%s[%d] = %lg (was %lg)",OptionTable[OptionNr].OptionName, OptionNr, RealValue, OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = RealValue;
 		OptionTable[OptionNr].changed = 1;
 	   return SOLV_SUCCESS;
@@ -1384,7 +1406,10 @@ SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue)
 }
 
 
-/****************************************************************/
+
+/************************************************************************/
+/*  DLL Handling                                                        */
+/************************************************************************/
 
 
 #if defined(_MSC_VER)

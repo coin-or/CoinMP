@@ -4,13 +4,17 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Author       :  Bjarni Kristjansson                                 */
+/*  Version      :  1.1                                                 */
+/*                                                                      */
+/*  Author       :  Bjarni Kristjansson, Maximal Software               */
+/*                                                                      */
+/*  Copyright (c) 2002-2008                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
 
-#ifndef COINMP_H
-#define COINMP_H
+#ifndef _COINMP_H_
+#define _COINMP_H_
 
 
 #if defined(_MSC_VER)
@@ -46,10 +50,7 @@
 typedef void *HPROB;
 
 #ifdef __cplusplus
-
-   extern "C"
-      {
-
+extern "C" {
 #endif
 
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
@@ -143,7 +144,7 @@ SOLVAPI int    CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *
 SOLVAPI int    CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 SOLVAPI int    CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
 
-SOLVAPI int CoinGetOptionChanged(HPROB hProb, int OptionID);
+SOLVAPI int    CoinGetOptionChanged(HPROB hProb, int OptionID);
 
 SOLVAPI int    CoinGetIntOption(HPROB hProb, int OptionID);
 SOLVAPI int    CoinSetIntOption(HPROB hProb, int OptionID, int IntValue);
@@ -233,7 +234,7 @@ int    (SOLVFUNC *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID,
 int    (SOLVFUNC *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 int    (SOLVFUNC *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
 
-int	   (SOLVAPI *CoinGetOptionChanged)(HPROB hProb, int OptionID);
+int    (SOLVFUNC *CoinGetOptionChanged)(HPROB hProb, int OptionID);
 
 int    (SOLVFUNC *CoinGetIntOption)(HPROB hProb, int OptionID);
 int    (SOLVFUNC *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
@@ -247,9 +248,7 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 #endif
 
 #ifdef __cplusplus
-
- }
-
+}
 #endif
 
 
@@ -284,7 +283,7 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 
 #define COIN_INT_MIPFATHOMDISC     20
 #define COIN_INT_MIPHOTSTART       21
-/*#define COIN_INT_MIPFORCEPRIOR     21*/
+//#define COIN_INT_MIPFORCEPRIOR     21
 #define COIN_INT_MIPMINIMUMDROP    22
 #define COIN_INT_MIPMAXCUTPASS     23
 #define COIN_INT_MIPMAXPASSROOT    24
