@@ -36,9 +36,9 @@ void GetAndCheckSolution(double optimalValue, double objectConst, HPROB hProb)
 
 
 
-void RunTestProblem(char *problemName, double optimalValue, double objectConst,
+void RunTestProblem(char *problemName, double optimalValue, 
 	  int colCount, int rowCount, int nonZeroCount, int rangeCount, int objectSense, 
-      double *objectCoeffs, double *rhsValues, double *rangeValues, char *columnType,
+      double *objectCoeffs, double objectConst, double *rhsValues, double *rangeValues, char *columnType,
 	  char *rowType, int *matrixBegin, int *matrixCount, int *matrixIndex, double *matrixValues, 
 	  double *lowerBounds, double *upperBounds, double *initValues, char **colNames, char **rowNames)
 {
@@ -71,7 +71,7 @@ void RunTestProblem(char *problemName, double optimalValue, double objectConst,
 *
 *************************************************************************/
 
-void SolveCoinTestProblem(double optimalValue)
+void SolveProblemCoinTest(void)
 {
 	char *problemName = "CoinTest";
     int colCount=8;
@@ -98,16 +98,18 @@ void SolveCoinTestProblem(double optimalValue)
     char * colNames[8] = { "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8" };
     char * rowNames[5] = { "r1", "r2", "r3", "r4", "r5" } ;
     
-	RunTestProblem(problemName, optimalValue, objectConst,
+	double optimalValue = 1428729.2857143;
+
+	RunTestProblem(problemName, optimalValue, 
 	  colCount, rowCount, nonZeroCount, rangeCount,
-      objectSense, objectCoeffs, rhsValues, NULL,
+      objectSense, objectCoeffs, objectConst, rhsValues, NULL,
 	  NULL, rowType, matrixBegin, matrixCount, matrixIndex, 
 	  matrixValues, lowerBounds, upperBounds, initValues, 
 	  colNames, rowNames);
 }
 
 
-void SolveBakeryProblem(double optimalValue)
+void SolveProblemBakery(void)
 {
 	char *problemName = "Bakery";
     int colCount = 2;
@@ -132,15 +134,17 @@ void SolveBakeryProblem(double optimalValue)
     char * colNames[2] = { "Sun", "Moon" };
     char * rowNames[3] = { "c1", "c2", "c3" } ;
     
-	RunTestProblem(problemName, optimalValue, objectConst,
+	double optimalValue = 506.66666667;
+
+	RunTestProblem(problemName, optimalValue, 
 	  colCount, rowCount, nonZeroCount, rangeCount, objectSense, 
-      objectCoeffs, rhsValues, NULL, NULL, rowType, 
+      objectCoeffs, objectConst, rhsValues, NULL, NULL, rowType, 
       matrixBegin, matrixCount, matrixIndex, matrixValues, 
 	  lowerBounds, upperBounds, NULL, colNames, rowNames);
 }
 
 
-void SolveAfiroProblem(double optimalValue)
+void SolveProblemAfiro(void)
 {
 	char *probname = "Afiro";
 	int ncol = 32;
@@ -197,14 +201,16 @@ void SolveAfiroProblem(double optimalValue)
 		"X19", "X20", "R19", "R20", "X27", "X44", "R22", "R23", "X40", "X41", "X42", 
 		"X43", "X45", "X46", "X47", "X48", "X49", "X50", "X51"};
 
-	RunTestProblem(probname, optimalValue, objconst,
-	  ncol, nrow, nels, nrng, objsens, dobj, drhs, NULL,
+	double optimalValue = -464.753142857;
+
+	RunTestProblem(probname, optimalValue, 
+	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, NULL,
       NULL, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
 	  NULL, colname, rowname);
 }
 
 
-void SolveP0033Problem(double optimalValue)
+void SolveProblemP0033(void)
 {
 	char *probname = "P0033";
 	int ncol = 33;
@@ -265,14 +271,16 @@ void SolveP0033Problem(double optimalValue)
 		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 
 		'B', 'B', 'B', 'B', 'B', 'B' };
 
-	RunTestProblem(probname, optimalValue, objconst,
-	  ncol, nrow, nels, nrng, objsens, dobj, drhs, NULL,
+	double optimalValue = 3089.0;
+
+	RunTestProblem(probname, optimalValue, 
+	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, NULL,
       ctyp, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
 	  NULL, colname, rowname);
 }
 
 
-void SolveExmip1Problem(double optimalValue)
+void SolveProblemExmip1(void)
 {
 	char *probname = "Exmip1";
 	int ncol = 8;
@@ -302,8 +310,10 @@ void SolveExmip1Problem(double optimalValue)
 
 	char ctyp[8] = { 'C', 'C', 'B', 'B', 'C', 'C', 'C', 'C'};
 
-	RunTestProblem(probname, optimalValue, objconst,
-	  ncol, nrow, nels, nrng, objsens, dobj, drhs, drng,
+	double optimalValue = 3.23684210526;
+
+	RunTestProblem(probname, optimalValue, 
+	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, drng,
       ctyp, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
 	  NULL, colname, rowname);
 }
@@ -313,11 +323,11 @@ void SolveExmip1Problem(double optimalValue)
 int main (int argc, char *argv[])
 {
     CoinInitSolver("");
-	SolveCoinTestProblem(1428729.2857143);
-	SolveBakeryProblem(506.66666667);
-	SolveAfiroProblem(-464.753142857);
-	SolveP0033Problem(3089.0);
-	SolveExmip1Problem(3.23684210526);
+	SolveProblemCoinTest();
+	SolveProblemBakery();
+	SolveProblemAfiro();
+	SolveProblemP0033();
+	SolveProblemExmip1();
 	fprintf(stdout, "All tests completed successfully\n" );
     CoinFreeSolver();
 	return 0;
