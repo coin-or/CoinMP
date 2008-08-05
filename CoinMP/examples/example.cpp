@@ -323,7 +323,7 @@ int main (int argc, char *argv[])
 {
     CoinInitSolver("");
 	SolveProblemCoinTest();
-	SolveProbleBakerym();
+	SolveProblemBakery();
 	SolveProblemAfiro();
 	SolveProblemP0033();
 	SolveProblemExmip1();
