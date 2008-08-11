@@ -34,9 +34,9 @@ You can obtain the source code for the CoinMP package in two ways:
 **********************************************************************
 **********************************************************************
 
-To build the 'CoinMP.dll', start MS Visual Studio 2005 or 2008, open 
-the solution file 'CoinMP.sln' in the CoinMP\MSVisualStudio\v8 folder 
-and select 'Build Solution' from the 'Build' menu.
+To build the 'CoinMP.dll', start MS Visual Studio 8 (2005) or 9 (2008), 
+open the solution file 'CoinMP.sln' in the CoinMP\MSVisualStudio\v8 
+folder and select 'Build Solution' from the 'Build' menu.
 
 
 **********************************************************************
