@@ -1,7 +1,8 @@
 CoinDir  := ../..
 #CoinMPDir := ..
 
-
+CC       := gcc
+CFLAGS   := -g
 CXX      := g++
 CXXFLAGS := -g
 
@@ -30,7 +31,7 @@ LIBS	+= `cat $(CoinDir)/share/doc/coin/CoinUtils/coinutils_addlibs.txt`
 ###############################################################################
 
 SHLINKPREFIX = -Wl,-rpath,
-CXXFLAGS += $(addprefix -I,${IncDir})
+CFLAGS += $(addprefix -I,${IncDir})
 
 LDFLAGS := $(addprefix -L,$(LIBDIRS))
 LDFLAGS += $(addprefix $(SHLINKPREFIX),$(LIBDIRS))
@@ -49,7 +50,7 @@ default: all
 all :	example
 
 example : example.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o example example.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -o example example.c
 
 clean:	
 	@rm example
