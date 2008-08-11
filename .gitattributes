@@ -16,6 +16,7 @@ CoinMP/README -text
 CoinMP/coinmp_addlibs.txt.in -text
 CoinMP/configure -text
 CoinMP/examples/Makefile -text
+CoinMP/examples/example.c -text
 CoinMP/examples/example.cpp -text
 CoinMP/inc/config_coinmp.h.in -text
 CoinMP/src/Makefile.in -text
