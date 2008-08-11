@@ -30,7 +30,7 @@ endif
 
 EXTRA_DIST = \
 	examples/Makefile \
-	examples/example.cpp
+	examples/example.c
 
 ########################################################################
 #                           Extra Targets                              #
@@ -57,7 +57,7 @@ distclean-local:
 addlibsfile = coinmp_addlibs.txt
 addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)
 
-examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.cpp
+examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.c
 examplesdir = $(prefix)/examples/$(PACKAGE_NAME)
 
 install-exec-local: install-doc
