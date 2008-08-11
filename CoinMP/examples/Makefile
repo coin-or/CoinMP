@@ -49,7 +49,7 @@ default: all
 
 all :	example
 
-example : example.cpp
+example : example.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o example example.c
 
 clean:	
