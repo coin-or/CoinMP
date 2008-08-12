@@ -21,6 +21,7 @@ CoinMP/inc/config_coinmp.h.in -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
 /Externals -text
+/Externals.new -text
 /Externals.rel -text
 /Externals.stab -text
 /INSTALL -text
