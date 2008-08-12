@@ -319,6 +319,7 @@ void SolveProblemExmip1(void)
 int main (int argc, char *argv[])
 {
     CoinInitSolver("");
+	fprintf(stdout, "UnitTest: %s version %lg\n\n",CoinGetSolverName(), CoinGetVersion());
 	SolveProblemCoinTest();
 	SolveProblemBakery();
 	SolveProblemAfiro();
