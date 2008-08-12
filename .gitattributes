@@ -1,6 +1,7 @@
 * text=auto !eol
 /AUTHORS -text
 CoinMP/AUTHORS -text
+CoinMP/CoinMP.zip -text
 CoinMP/LICENSE -text
 CoinMP/MSVisualStudio/v8/CoinMP.sln -text
 CoinMP/MSVisualStudio/v8/CoinMP/CoinMP.rc -text
