@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
-/*  Version      :  1.1                                                 */
+/*  Version      :  1.2                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
@@ -52,7 +52,7 @@
 
 
 #define SOLVER_EXPORT
-#define SOLVER_LIB
+#define SOLV_LINK_LIB
 #include "CoinMP.h"
 
 
@@ -66,13 +66,13 @@
 
 SOLVAPI int CoinInitSolver(char *LicenseStr)
 {
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
 SOLVAPI int CoinFreeSolver(void)
 {
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 /************************************************************************/
@@ -88,24 +88,33 @@ SOLVAPI char*  CoinGetSolverName(void)
 
 SOLVAPI char*  CoinGetVersionStr(void)
 {
-	return "1.1";
+	return "1.2";
 }
 
 
 SOLVAPI double CoinGetVersion(void)
 {
-	return 1.1;
+	return 1.2;
 }
 
 
-SOLVAPI int    CoinGetFeatures(void)
+SOLVAPI int CoinGetFeatures(void)
 {
-	return 0;
+	return SOLV_FEATURE_LP |
+			SOLV_FEATURE_MIP;
+}
+
+
+SOLVAPI int CoinGetMethods(void)
+{
+	return SOLV_METHOD_PRIMAL |
+			SOLV_METHOD_DUAL | 
+			SOLV_METHOD_BARRIER;
 }
 
 
 
-SOLVAPI double CoinGetRealMax(void)
+SOLVAPI double CoinGetInfinity(void)
 {
 	return COIN_DBL_MAX;
 }
@@ -244,7 +253,7 @@ ClpEventHandler * CBIterHandler::clone() const
 class CBNodeHandler : public CbcEventHandler {
 
 public: 
-   void setCallback(NODECALLBACK mipCodeCallback);
+   void setCallback(MIPNODECALLBACK mipNodeCallback);
 
 	virtual CbcAction event(CbcEvent whichEvent);
    
@@ -266,12 +275,12 @@ public:
 
 
 private:
-	NODECALLBACK mipNodeCallback_;
+	MIPNODECALLBACK mipNodeCallback_;
 	int lastSolCount_;
 };
 
 
-void CBNodeHandler::setCallback(NODECALLBACK mipNodeCallback)
+void CBNodeHandler::setCallback(MIPNODECALLBACK mipNodeCallback)
 {
   mipNodeCallback_ = mipNodeCallback;
   lastSolCount_ = 0;
@@ -364,6 +373,7 @@ typedef struct {
 				CglLiftAndProject *liftpro;
 				CglSimpleRounding *rounding;
 
+				double ObjectConst;
 				int SolutionStatus;
 				int RowCount, ColCount;
 				double *RowLower;
@@ -373,7 +383,7 @@ typedef struct {
 				int SolveAsMIP;
 				MSGLOGCALLBACK  MessageLogCallback;
 				ITERCALLBACK    IterationCallback;
-				NODECALLBACK    MipNodeCallback;
+				MIPNODECALLBACK MipNodeCallback;
 				} COININFO, *PCOIN;
  
 
@@ -400,6 +410,8 @@ SOLVAPI HPROB CoinCreateProblem(char *ProblemName)
 	pCoin->msghandler = NULL;
 	pCoin->iterhandler = NULL;
 	pCoin->nodehandler = NULL;
+	pCoin->ObjectConst = 0.0;
+	pCoin->SolutionStatus = 0;
 	pCoin->ColCount = 0;
 	pCoin->RowCount = 0;
 	pCoin->RowLower = NULL;
@@ -412,8 +424,8 @@ SOLVAPI HPROB CoinCreateProblem(char *ProblemName)
 
 
 SOLVAPI int CoinLoadProblem(HPROB hProb, 
-							int ColCount, int RowCount, int NonZeroCount, 
-							int RangeCount, int ObjectSense, double* ObjectCoeffs, 
+							int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
+							int ObjectSense, double* ObjectCoeffs, double ObjectConst,
 							double* RHSValues, double* RangeValues, char* RowType, 
 							int* MatrixBegin, int* MatrixCount, int* MatrixIndex, 
 							double* MatrixValues, double* LowerBounds, double* UpperBounds, 
@@ -424,13 +436,14 @@ SOLVAPI int CoinLoadProblem(HPROB hProb,
 
 	pCoin->ColCount = ColCount;
 	pCoin->RowCount = RowCount;
+	pCoin->ObjectConst = ObjectConst;
 
 	pCoin->clp->setOptimizationDirection(ObjectSense);
 
 	pCoin->RowLower = (double *)malloc(RowCount*sizeof(double));
 	pCoin->RowUpper = (double *)malloc(RowCount*sizeof(double));
 	if (!pCoin->RowLower && !pCoin->RowUpper) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
    for( i = 0; i < RowCount; i++ ){
 		switch (RowType[i]) {
@@ -476,7 +489,7 @@ SOLVAPI int CoinLoadProblem(HPROB hProb,
 	}
 	pCoin->clp->copyNames(rowNameList, colNameList);
 
-   return SOLV_SUCCESS;
+   return SOLV_CALL_SUCCESS;
 }
 
 
@@ -487,7 +500,7 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 
 	pCoin->IsInt = (char *)malloc(pCoin->ColCount*sizeof(char));
 	if (!pCoin->IsInt) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	for (i = 0; i < pCoin->ColCount; i++ ) {
 		if ( ColumnType[i] == 'B' || ColumnType[i] == 'I' ) {
@@ -512,7 +525,7 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 		}
 #endif
 	}
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -520,7 +533,7 @@ SOLVAPI int CoinLoadInteger(HPROB hProb, char* ColumnType)
 SOLVAPI int CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorIndex, 
 									  int *PriorValues, int *BranchDir)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -528,14 +541,14 @@ SOLVAPI int CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 								char *SosType, int *SosPrior, int *SosBegin,   
 								int *SosIndex, double *SosRef)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
 SOLVAPI int CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
 										int *QuadIndex, double *QuadValues)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -544,7 +557,7 @@ SOLVAPI int CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount,
 										int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 										double *NlpValue1, double *NlpValue2)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -561,7 +574,7 @@ SOLVAPI int CoinUnloadProblem(HPROB hProb)
 	}
 	free(pCoin);
 	pCoin = NULL;
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -579,7 +592,7 @@ int coinWriteMsgLog(char *FormatStr, ...)
 	va_start(pVa,FormatStr);
 	vsprintf(strbuf,FormatStr,pVa);
 	global_pCoin->MessageLogCallback(strbuf);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -596,7 +609,7 @@ int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, doubl
 		}
 	}
 	global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -607,7 +620,7 @@ int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double B
 		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
 	}
 	global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -625,7 +638,7 @@ SOLVAPI int CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback)
 	if (pCoin->clp) pCoin->clp->passInMessageHandler(pCoin->msghandler);
 	if (pCoin->cbc) pCoin->cbc->passInMessageHandler(pCoin->msghandler);
 	if (pCoin->osi) pCoin->osi->passInMessageHandler(pCoin->msghandler);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -639,21 +652,21 @@ SOLVAPI int CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 	pCoin->iterhandler = new CBIterHandler(pCoin->clp);
 	pCoin->iterhandler->setIterCallback(IterCallback);
 	if (pCoin->clp) pCoin->clp->passInEventHandler(pCoin->iterhandler);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
-SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
+SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	pCoin->MipNodeCallback = NodeCallback;
+	pCoin->MipNodeCallback = MipNodeCallback;
 	delete pCoin->nodehandler;
 
 	//JPF: pCoin->nodehandler = new CBNodeHandler(pCoin->clp);
 	pCoin->nodehandler = new CBNodeHandler(pCoin->cbc);
 
-	pCoin->nodehandler->setCallback(NodeCallback);
+	pCoin->nodehandler->setCallback(MipNodeCallback);
 #ifdef NEW_STYLE_CBCMAIN
 	if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
 		//if (pCoin->cbc2) pCoin->cbc2->passInEventHandler(pCoin->nodehandler);
@@ -664,7 +677,7 @@ SOLVAPI int CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK NodeCallback)
 	{
 		if (pCoin->cbc) pCoin->cbc->passInEventHandler(pCoin->nodehandler);
 	}
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -854,7 +867,7 @@ SOLVAPI int CoinOptimizeProblem(HPROB hProb, int Method)
 			coinSetClpOptions(hProb);
 			coinSetCbcOptions(hProb);
 			//coinSetCglOptions(hProb);  BK: CbcMain1 should call the Cgl's automatically
-			CbcOrClpRead_mode = 1;  // BK: Missing in CbcMain1 (CpcSolver.cpp, stable 2.2), was included in stable 2.1
+			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			const int argc = 3;
 			const char *argv[] = {"CoinMP", "-solve", "-quit"};
 			CbcMain1(argc,argv,*pCoin->cbc);
@@ -913,9 +926,9 @@ SOLVAPI double CoinGetObjectValue(HPROB hProb)
    PCOIN pCoin = (PCOIN)hProb;
 
 	if (!pCoin->SolveAsMIP) 
-		return pCoin->clp->objectiveValue();
+		return pCoin->clp->objectiveValue() + pCoin->ObjectConst;
 	else {
-		return pCoin->cbc->getObjValue();
+		return pCoin->cbc->getObjValue() + pCoin->ObjectConst;
 	}
 }
 
@@ -944,7 +957,7 @@ SOLVAPI int CoinGetIterCount(HPROB hProb)
 }
 
 
-SOLVAPI int CoinGetNodeCount(HPROB hProb)
+SOLVAPI int CoinGetMipNodeCount(HPROB hProb)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
@@ -978,9 +991,9 @@ SOLVAPI int CoinGetSolutionValues(HPROB hProb, double* Activity, double* Reduced
 			for (i = 0; i < pCoin->ColCount; i++) {
 				Activity[i] = columnPrimal[i];
 			}
-			return SOLV_SUCCESS;
+			return SOLV_CALL_SUCCESS;
 		}
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 
 	if (Activity) {
@@ -1007,7 +1020,7 @@ SOLVAPI int CoinGetSolutionValues(HPROB hProb, double* Activity, double* Reduced
 			ShadowPrice[i] = rowDual[i];
 		}
 	}
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1015,14 +1028,14 @@ SOLVAPI int CoinGetSolutionValues(HPROB hProb, double* Activity, double* Reduced
 SOLVAPI int CoinGetSolutionRanges(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
 											 double *RhsLoRange, double *RhsUpRange)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
 
 SOLVAPI int CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus)
 {
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -1044,9 +1057,9 @@ SOLVAPI int CoinReadFile(HPROB hProb, int FileType, char* ReadFilename)
 		case SOLV_FILE_IIS: 
 
 		default:
-			return SOLV_FAILED;
+			return SOLV_CALL_FAILED;
 	}
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1063,10 +1076,10 @@ SOLVAPI int CoinWriteFile(HPROB hProb, int FileType, char* WriteFilename)
 		case SOLV_FILE_IIS: 
 
 		default:
-			return SOLV_FAILED;
+			return SOLV_CALL_FAILED;
 
 	}
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1075,7 +1088,7 @@ SOLVAPI int CoinOpenLogFile(HPROB hProb, char* logFilename)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1083,7 +1096,7 @@ SOLVAPI int CoinCloseLogFile(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1262,35 +1275,35 @@ SOLVAPI int CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *Gro
 										int *OptionType, char *OptionName, char *ShortName)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	if (OptionID)   *OptionID = OptionTable[OptionNr].OptionID;
 	if (OptionType) *OptionType = OptionTable[OptionNr].OptionType;
 	if (OptionName) strcpy(OptionName, OptionTable[OptionNr].OptionName);
 	if (ShortName)  strcpy(ShortName, OptionTable[OptionNr].ShortName);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
 SOLVAPI int CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	if (MinValue)   *MinValue = ROUND(OptionTable[OptionNr].MinValue);
 	if (MaxValue)   *MaxValue = ROUND(OptionTable[OptionNr].MaxValue);
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
 SOLVAPI int CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	if (MinValue)   *MinValue = OptionTable[OptionNr].MinValue;
 	if (MaxValue)   *MaxValue = OptionTable[OptionNr].MaxValue;
-	return SOLV_SUCCESS;
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -1345,15 +1358,15 @@ SOLVAPI int CoinSetIntOption(HPROB hProb,int OptionID, int IntValue)
 
 	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType != OPT_REAL) {
 		coinWriteMsgLog("%s[%d] = %d (was %d)",OptionTable[OptionNr].OptionName, OptionNr, IntValue, (int)OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = IntValue;
 		OptionTable[OptionNr].changed = 1;
-	   return SOLV_SUCCESS;
+	   return SOLV_CALL_SUCCESS;
 	}
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -1382,15 +1395,15 @@ SOLVAPI int CoinSetRealOption(HPROB hProb,int OptionID, double RealValue)
 
 	OptionNr = coinLocateOptionID(OptionID);
 	if (OptionNr < 0) {
-		return SOLV_FAILED;
+		return SOLV_CALL_FAILED;
 	}
 	if (OptionTable[OptionNr].OptionType == OPT_REAL) {
 		coinWriteMsgLog("%s[%d] = %lg (was %lg)",OptionTable[OptionNr].OptionName, OptionNr, RealValue, OptionTable[OptionNr].CurrentValue);
 		OptionTable[OptionNr].CurrentValue = RealValue;
 		OptionTable[OptionNr].changed = 1;
-	   return SOLV_SUCCESS;
+	   return SOLV_CALL_SUCCESS;
 	}
-	return SOLV_FAILED;
+	return SOLV_CALL_FAILED;
 }
 
 
@@ -1406,7 +1419,7 @@ SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
-   return SOLV_FAILED;
+   return SOLV_CALL_FAILED;
 }
 
 

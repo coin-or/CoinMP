@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Version      :  1.1                                                 */
+/*  Version      :  1.2                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
@@ -31,19 +31,55 @@
 #endif
 
 
-#ifndef SOLVER_LIB
-#ifndef SOLVER_DLL
-#define SOLVER_LIB
+#ifndef SOLV_LINK_LIB
+#ifndef SOLV_LINK_DLL
+#define SOLV_LINK_LIB
 #endif
 #endif
 
 
 
-#define SOLV_SUCCESS   1
-#define SOLV_FAILED    0
+#define SOLV_CALL_SUCCESS   1
+#define SOLV_CALL_FAILED    0
 
-#define OBJSENS_MAX   -1
-#define OBJSENS_MIN    1
+#define SOLV_METHOD_DEFAULT       0x00000000L
+
+#define SOLV_METHOD_PRIMAL        0x00000001L
+#define SOLV_METHOD_DUAL          0x00000002L
+#define SOLV_METHOD_NETWORK       0x00000004L
+#define SOLV_METHOD_BARRIER       0x00000008L
+
+#define SOLV_METHOD_BENDERS       0x00000100L
+#define SOLV_METHOD_DEQ           0x00000200L
+#define SOLV_METHOD_EV            0x00000400L
+
+
+#define SOLV_FEATURE_LP            0x00000001L
+#define SOLV_FEATURE_QP            0x00000002L
+#define SOLV_FEATURE_QCP           0x00000004L
+#define SOLV_FEATURE_NLP           0x00000008L
+
+#define SOLV_FEATURE_MIP           0x00000010L
+#define SOLV_FEATURE_MIQP          0x00000020L
+#define SOLV_FEATURE_MIQCP         0x00000040L
+#define SOLV_FEATURE_MINLP         0x00000080L
+
+#define SOLV_FEATURE_SP            0x00010000L
+
+
+#define SOLV_OBJSENS_MAX   -1
+#define SOLV_OBJSENS_MIN    1
+
+
+#define SOLV_FILE_LOG      0
+#define SOLV_FILE_BASIS    1
+#define SOLV_FILE_MIPSTART 2
+#define SOLV_FILE_MPS      3
+#define SOLV_FILE_LP       4
+#define SOLV_FILE_BINARY   5
+#define SOLV_FILE_OUTPUT   6
+#define SOLV_FILE_BINOUT   7
+#define SOLV_FILE_IIS      8
 
 
 
@@ -55,20 +91,20 @@ extern "C" {
 
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
 
-typedef int (*ITERCALLBACK)(int    IterNum, 
+typedef int (*ITERCALLBACK)(int    IterCount, 
 							double ObjectValue,
 							int    IsFeasible, 
 							double InfeasValue);
 
-typedef int (*NODECALLBACK)(int    IterNum, 
-							int	   MipNodeCount,
-							double BestBound,
-							double BestInteger,
-							int    IsMipImproved);
+typedef int (*MIPNODECALLBACK)(int    IterCount, 
+							   int	  MipNodeCount,
+							   double BestBound,
+							   double BestInteger,
+							   int    IsMipImproved);
 
 
 
-#ifdef SOLVER_LIB
+#ifdef SOLV_LINK_LIB
 
 SOLVAPI int    CoinInitSolver(char *LicenseStr);
 SOLVAPI int    CoinFreeSolver(void);
@@ -77,19 +113,18 @@ SOLVAPI char*  CoinGetSolverName(void);
 SOLVAPI char*  CoinGetVersionStr(void);
 SOLVAPI double CoinGetVersion(void);
 SOLVAPI int    CoinGetFeatures(void);
-SOLVAPI double CoinGetRealMax(void);
+SOLVAPI int    CoinGetMethods(void);
+SOLVAPI double CoinGetInfinity(void);
 
 SOLVAPI HPROB  CoinCreateProblem(char *ProblemName);
 
-SOLVAPI int    CoinLoadProblem(HPROB hProb, int ColCount, int RowCount,
-							int NonZeroCount,    int RangeCount, 
-							int ObjectSense, double* ObjectCoeffs, 
-							double* RHSValues,  double* RangeValues, 
-							char* RowType, int* MatrixBegin, 
-							int* MatrixCount,   int* MatrixIndex,    
-							double* MatrixValues, double* LowerBounds,  
-							double* UpperBounds, double* InitValues, 
-							char** ColNames, char** RowNames);
+SOLVAPI int    CoinLoadProblem(HPROB hProb, 
+							   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
+							   int ObjectSense, double* ObjectCoeffs, double ObjectConst,
+							   double* RHSValues,  double* RangeValues, char* RowType, 
+							   int* MatrixBegin, int* MatrixCount,   int* MatrixIndex,    
+							   double* MatrixValues, double* LowerBounds, double* UpperBounds, 
+							   double* InitValues, char** ColNames, char** RowNames);
 
 SOLVAPI int    CoinLoadInteger(HPROB hProb, char* ColumnType);
 
@@ -113,7 +148,7 @@ SOLVAPI int    CoinUnloadProblem(HPROB hProb);
 
 SOLVAPI int    CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 SOLVAPI int    CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
-SOLVAPI int    CoinSetMipNodeCallback(HPROB hProb, NODECALLBACK MipNodeCallback);
+SOLVAPI int    CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
 
 SOLVAPI int    CoinOptimizeProblem(HPROB hProb, int Method);
 
@@ -123,7 +158,7 @@ SOLVAPI double CoinGetObjectValue(HPROB hProb);
 SOLVAPI double CoinGetMipBestBound(HPROB hProb);
 
 SOLVAPI int    CoinGetIterCount(HPROB hProb);
-SOLVAPI int    CoinGetNodeCount(HPROB hProb);
+SOLVAPI int    CoinGetMipNodeCount(HPROB hProb);
 
 SOLVAPI int    CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
 									 double* SlackValues, double* ShadowPrice);
@@ -159,7 +194,7 @@ SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue)
 #endif
 
 
-#ifdef SOLVER_DLL
+#ifdef SOLV_LINK_DLL
 
 int    (SOLVFUNC *CoinInitSolver)(char *LicenseStr);
 int    (SOLVFUNC *CoinFreeSolver)(void);
@@ -168,19 +203,18 @@ char*  (SOLVFUNC *CoinGetSolverName)(void);
 char*  (SOLVFUNC *CoinGetVersionStr)(void);
 double (SOLVFUNC *CoinGetVersion)(void);
 int    (SOLVFUNC *CoinGetFeatures)(void);
-double (SOLVFUNC *CoinGetRealMax)(void);
+int    (SOLVFUNC *CoinGetMethods)(void);
+double (SOLVFUNC *CoinGetInfinity)(void);
 
 HPROB  (SOLVFUNC *CoinCreateProblem)(char *ProblemName);
 
-int    (SOLVFUNC *CoinLoadProblem)(HPROB hProb, int ColCount, int RowCount,
-											  int NonZeroCount, int RangeCount, 
-											  int ObjectSense, double* ObjectCoeffs, 
-											  double* RHSValues, double* RangeValues, 
-											  char* RowType, int* MatrixBegin, 
-											  int* MatrixCount, int* MatrixIndex,    
-											  double* MatrixValues, double* LowerBounds,  
-											  double* UpperBounds, double* InitValues, 
-											  char** ColNames, char** RowNames);
+int    (SOLVFUNC *CoinLoadProblem)(HPROB hProb, 
+								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
+								   int ObjectSense, double* ObjectCoeffs, double ObjectConst,
+								   double* RHSValues, double* RangeValues, char* RowType, 
+								   int* MatrixBegin, int* MatrixCount, int* MatrixIndex,    
+								   double* MatrixValues, double* LowerBounds, double* UpperBounds, 
+								   double* InitValues, char** ColNames, char** RowNames);
 
 int    (SOLVFUNC *CoinLoadInteger)(HPROB hProb, char* ColumnType);
 
@@ -213,7 +247,7 @@ double (SOLVFUNC *CoinGetObjectValue)(HPROB hProb);
 double (SOLVFUNC *CoinGetMipBestBound)(HPROB hProb);
 
 int    (SOLVFUNC *CoinGetIterCount)(HPROB hProb);
-int    (SOLVFUNC *CoinGetNodeCount)(HPROB hProb);
+int    (SOLVFUNC *CoinGetMipNodeCount)(HPROB hProb);
 
 int    (SOLVFUNC *CoinGetSolutionValues)(HPROB hProb, double* Activity, double* ReducedCost, 
 													  double* SlackValues, double* ShadowPrice);
@@ -251,13 +285,6 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 }
 #endif
 
-
-
-
-#define SOLV_FILE_MPS    1
-#define SOLV_FILE_LP     2
-#define SOLV_FILE_BASIS  3
-#define SOLV_FILE_IIS    4
 
 
 #define COIN_INT_SOLVEMETHOD     1
@@ -342,4 +369,4 @@ int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 #define COIN_INT_MIPUSECBCMAIN           200   
 
 
-#endif
+#endif  /* _COINMP_H_ */

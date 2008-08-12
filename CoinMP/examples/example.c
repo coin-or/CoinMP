@@ -1,5 +1,5 @@
 
-/* unitTest.c */
+/* example.c */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,7 +11,7 @@
 
 
 
-void GetAndCheckSolution(double optimalValue, double objectConst, HPROB hProb)
+void GetAndCheckSolution(double optimalValue, HPROB hProb)
 {
 	int solutionStatus;
 	char *solutionText;
@@ -19,7 +19,7 @@ void GetAndCheckSolution(double optimalValue, double objectConst, HPROB hProb)
 
 	solutionStatus = CoinGetSolutionStatus(hProb);
 	solutionText = CoinGetSolutionText(hProb,solutionStatus);
-	objectValue =  CoinGetObjectValue(hProb) + objectConst;
+	objectValue =  CoinGetObjectValue(hProb);
       
 	fprintf(stdout, "\n---------------------------------------\n");
 	fprintf(stdout, "Solution Result: %s\n", solutionText );
@@ -36,25 +36,25 @@ void GetAndCheckSolution(double optimalValue, double objectConst, HPROB hProb)
 
 
 
-void RunTestProblem(char *problemName, double optimalValue, 
-	  int colCount, int rowCount, int nonZeroCount, int rangeCount, int objectSense, 
-      double *objectCoeffs, double objectConst, double *rhsValues, double *rangeValues, char *columnType,
-	  char *rowType, int *matrixBegin, int *matrixCount, int *matrixIndex, double *matrixValues, 
-	  double *lowerBounds, double *upperBounds, double *initValues, char **colNames, char **rowNames)
+void RunTestProblem(char *problemName, double optimalValue, int colCount, int rowCount, 
+	  int nonZeroCount, int rangeCount, int objectSense, double *objectCoeffs, double objectConst, 
+      double *rhsValues, double *rangeValues, char *columnType, char *rowType, int *matrixBegin, 
+	  int *matrixCount, int *matrixIndex, double *matrixValues, double *lowerBounds, double *upperBounds, 
+	  double *initValues, char **colNames, char **rowNames)
 {
     HPROB hProb;
     
 	fprintf(stdout, "Solve Problem: %s\n", problemName);
     hProb = CoinCreateProblem(problemName);  
     CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
-					objectSense, objectCoeffs, rhsValues, rangeValues,
+					objectSense, objectCoeffs, objectConst, rhsValues, rangeValues,
 					rowType, matrixBegin, matrixCount, matrixIndex, matrixValues, 
 					lowerBounds, upperBounds, initValues, colNames, rowNames );
 	if (columnType) {
 		CoinLoadInteger(hProb, columnType);
 	}
 	CoinOptimizeProblem(hProb, 0);
-	GetAndCheckSolution(optimalValue, objectConst, hProb);
+	GetAndCheckSolution(optimalValue, hProb);
     CoinUnloadProblem(hProb);
 }
 
@@ -79,7 +79,7 @@ void SolveProblemCoinTest(void)
     int nonZeroCount=14;
     int rangeCount = 0;
 
-    int objectSense = OBJSENS_MAX;
+    int objectSense = SOLV_OBJSENS_MAX;
 	double objectConst = 0.0;
     double objectCoeffs[8] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
@@ -99,12 +99,12 @@ void SolveProblemCoinTest(void)
     char * rowNames[5] = { "r1", "r2", "r3", "r4", "r5" } ;
     
 	double optimalValue = 1428729.2857143;
-	RunTestProblem(problemName, optimalValue, 
-	  colCount, rowCount, nonZeroCount, rangeCount,
-      objectSense, objectCoeffs, objectConst, rhsValues, NULL,
-	  NULL, rowType, matrixBegin, matrixCount, matrixIndex, 
-	  matrixValues, lowerBounds, upperBounds, initValues, 
-	  colNames, rowNames);
+
+	RunTestProblem(problemName, optimalValue, colCount, rowCount, 
+	  nonZeroCount, rangeCount, objectSense, objectCoeffs, objectConst, 
+      rhsValues, NULL, NULL, rowType, matrixBegin, matrixCount, 
+	  matrixIndex, matrixValues, lowerBounds, upperBounds, 
+	  initValues, colNames, rowNames);
 }
 
 
@@ -116,7 +116,7 @@ void SolveProblemBakery(void)
     int nonZeroCount = 4 ;
     int rangeCount = 0;
 
-	int objectSense = OBJSENS_MAX;
+	int objectSense = SOLV_OBJSENS_MAX;
 	double objectConst = - 4000.0 / 30.0;
     double objectCoeffs[2] = { 0.05 , 0.08 };
 
@@ -135,11 +135,11 @@ void SolveProblemBakery(void)
     
 	double optimalValue = 506.66666667;
 
-	RunTestProblem(problemName, optimalValue, 
-	  colCount, rowCount, nonZeroCount, rangeCount, objectSense, 
-      objectCoeffs, objectConst, rhsValues, NULL, NULL, rowType, 
-      matrixBegin, matrixCount, matrixIndex, matrixValues, 
-	  lowerBounds, upperBounds, NULL, colNames, rowNames);
+	RunTestProblem(problemName, optimalValue, colCount, rowCount, 
+	  nonZeroCount, rangeCount, objectSense, objectCoeffs, objectConst, 
+      rhsValues, NULL, NULL, rowType, matrixBegin, matrixCount, 
+      matrixIndex, matrixValues, lowerBounds, upperBounds, 
+	  NULL, colNames, rowNames);
 }
 
 
@@ -151,7 +151,7 @@ void SolveProblemAfiro(void)
 	int nels = 83;
 	int nrng = 0;
 
-	int objsens = OBJSENS_MIN;
+	int objsens = SOLV_OBJSENS_MIN;
 
 	double objconst = 0.0;
 
@@ -202,10 +202,9 @@ void SolveProblemAfiro(void)
 
 	double optimalValue = -464.753142857;
 
-	RunTestProblem(probname, optimalValue, 
-	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, NULL,
-      NULL, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
-	  NULL, colname, rowname);
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+	  objsens, dobj, objconst, drhs, NULL, NULL, rtyp, mbeg, mcnt, 
+      midx, mval, dclo, dcup, NULL, colname, rowname);
 }
 
 
@@ -217,7 +216,7 @@ void SolveProblemP0033(void)
 	int nels = 98;
 	int nrng = 0;
 
-	int objsens = OBJSENS_MIN;
+	int objsens = SOLV_OBJSENS_MIN;
 
 	double objconst = 0.0;
 
@@ -272,10 +271,9 @@ void SolveProblemP0033(void)
 
 	double optimalValue = 3089.0;
 
-	RunTestProblem(probname, optimalValue, 
-	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, NULL,
-      ctyp, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
-	  NULL, colname, rowname);
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+	  objsens, dobj, objconst, drhs, NULL, ctyp, rtyp, mbeg, mcnt, 
+      midx, mval, dclo, dcup, NULL, colname, rowname);
 }
 
 
@@ -287,7 +285,7 @@ void SolveProblemExmip1(void)
 	int nels = 14;
 	int nrng = 2;
 	
-	int objsens = OBJSENS_MIN;
+	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
 	double dobj[8]={1, 0, 0, 0, 2, 0, 0, -1};
 
@@ -311,10 +309,9 @@ void SolveProblemExmip1(void)
 
 	double optimalValue = 3.23684210526;
 
-	RunTestProblem(probname, optimalValue, 
-	  ncol, nrow, nels, nrng, objsens, dobj, objconst, drhs, drng,
-      ctyp, rtyp, mbeg, mcnt, midx, mval, dclo, dcup, 
-	  NULL, colname, rowname);
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+	  objsens, dobj, objconst, drhs, drng, ctyp, rtyp, mbeg, mcnt, 
+      midx, mval, dclo, dcup, NULL, colname, rowname);
 }
 
 
@@ -327,7 +324,7 @@ int main (int argc, char *argv[])
 	SolveProblemAfiro();
 	SolveProblemP0033();
 	SolveProblemExmip1();
-	fprintf(stdout, "All tests completed successfully\n" );
+	fprintf(stdout, "All unit tests completed successfully\n" );
     CoinFreeSolver();
 	return 0;
 }
