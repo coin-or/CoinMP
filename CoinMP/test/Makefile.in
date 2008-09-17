@@ -49,23 +49,23 @@ noinst_PROGRAMS = unitTest$(EXEEXT)
 
 # Depending of what solvers are available, we add the corresponding files,
 # libraries and include dirs
-@COIN_HAS_CLP_TRUE@am__append_1 = -I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
+@COIN_HAS_CBC_TRUE@am__append_1 = -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
+@COIN_HAS_CBC_TRUE@	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
+
+@COIN_HAS_CBC_TRUE@am__append_2 = $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
+@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbcSolver.la $(CBCOBJDIR)/src/libCbc.la 
+
+@COIN_HAS_CBC_TRUE@am__append_3 = `cat $(CBCOBJDIR)/cbc_addlibs.txt`
+@COIN_HAS_CGL_TRUE@am__append_4 = $(CGLOBJDIR)/src/libCgl.la
+@COIN_HAS_CGL_TRUE@am__append_5 = `cat $(CGLOBJDIR)/cgl_addlibs.txt`
+@COIN_HAS_CLP_TRUE@am__append_6 = -I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
 @COIN_HAS_CLP_TRUE@	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` \
 @COIN_HAS_CLP_TRUE@	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp`
 
-@COIN_HAS_CLP_TRUE@am__append_2 = $(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
+@COIN_HAS_CLP_TRUE@am__append_7 = $(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
 @COIN_HAS_CLP_TRUE@	$(CLPOBJDIR)/src/libClp.la
 
-@COIN_HAS_CLP_TRUE@am__append_3 = `cat $(CLPOBJDIR)/clp_addlibs.txt`
-@COIN_HAS_CBC_TRUE@am__append_4 = -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
-@COIN_HAS_CBC_TRUE@	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
-
-@COIN_HAS_CBC_TRUE@am__append_5 = $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
-@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbc.la $(CBCOBJDIR)/src/libCbcSolver.la 
-
-@COIN_HAS_CBC_TRUE@am__append_6 = `cat $(CBCOBJDIR)/cbc_addlibs.txt`
-@COIN_HAS_CGL_TRUE@am__append_7 = $(CGLOBJDIR)/src/libCgl.la
-@COIN_HAS_CGL_TRUE@am__append_8 = `cat $(CGLOBJDIR)/cgl_addlibs.txt`
+@COIN_HAS_CLP_TRUE@am__append_8 = `cat $(CLPOBJDIR)/clp_addlibs.txt`
 subdir = test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -79,14 +79,14 @@ CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am_unitTest_OBJECTS = unitTest.$(OBJEXT)
 unitTest_OBJECTS = $(am_unitTest_OBJECTS)
-@COIN_HAS_CLP_TRUE@am__DEPENDENCIES_1 =  \
+@COIN_HAS_CBC_TRUE@am__DEPENDENCIES_1 =  \
+@COIN_HAS_CBC_TRUE@	$(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
+@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbcSolver.la \
+@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbc.la
+@COIN_HAS_CGL_TRUE@am__DEPENDENCIES_2 = $(CGLOBJDIR)/src/libCgl.la
+@COIN_HAS_CLP_TRUE@am__DEPENDENCIES_3 =  \
 @COIN_HAS_CLP_TRUE@	$(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
 @COIN_HAS_CLP_TRUE@	$(CLPOBJDIR)/src/libClp.la
-@COIN_HAS_CBC_TRUE@am__DEPENDENCIES_2 =  \
-@COIN_HAS_CBC_TRUE@	$(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
-@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbc.la \
-@COIN_HAS_CBC_TRUE@	$(CBCOBJDIR)/src/libCbcSolver.la
-@COIN_HAS_CGL_TRUE@am__DEPENDENCIES_3 = $(CGLOBJDIR)/src/libCgl.la
 unitTest_DEPENDENCIES = ../src/libCoinMP.la $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
 	$(OSIOBJDIR)/src/libOsi.la \
@@ -185,7 +185,7 @@ LIBEXT = @LIBEXT@
 LIBOBJS = @LIBOBJS@
 
 # List additional libraries
-LIBS = @LIBS@ $(am__append_3) $(am__append_6) $(am__append_8) `cat \
+LIBS = @LIBS@ $(am__append_3) $(am__append_5) $(am__append_8) `cat \
 	$(OSIOBJDIR)/osi_addlibs.txt` `cat \
 	$(COINUTILSOBJDIR)/coinutils_addlibs.txt` $(ADDLIBS)
 LIBTOOL = @LIBTOOL@
@@ -337,7 +337,7 @@ unitTest_SOURCES = unitTest.cpp
 #endif
 
 # Finally the Coin library (many of the above need it)
-unitTest_LDADD = ../src/libCoinMP.la $(am__append_2) $(am__append_5) \
+unitTest_LDADD = ../src/libCoinMP.la $(am__append_2) $(am__append_4) \
 	$(am__append_7) $(OSIOBJDIR)/src/libOsi.la \
 	$(COINUTILSOBJDIR)/src/libCoinUtils.la
 
@@ -346,7 +346,7 @@ unitTest_LDADD = ../src/libCoinMP.la $(am__append_2) $(am__append_5) \
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` -I`$(CYGPATH_W) \
 	$(COINUTILSOBJDIR)/inc` -I`$(CYGPATH_W) $(OSISRCDIR)/src` \
 	-I`$(CYGPATH_W) $(OSIOBJDIR)/inc` -I`$(CYGPATH_W) \
-	$(srcdir)/../src` $(am__append_1) $(am__append_4)
+	$(srcdir)/../src` $(am__append_1) $(am__append_6)
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin

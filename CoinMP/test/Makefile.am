@@ -38,6 +38,19 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 # Depending of what solvers are available, we add the corresponding files,
 # libraries and include dirs
 
+if COIN_HAS_CBC
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
+	$(CBCOBJDIR)/src/libCbcSolver.la $(CBCOBJDIR)/src/libCbc.la 
+  LIBS += `cat $(CBCOBJDIR)/cbc_addlibs.txt`
+endif
+
+if COIN_HAS_CGL
+  unitTest_LDADD += $(CGLOBJDIR)/src/libCgl.la
+  LIBS += `cat $(CGLOBJDIR)/cgl_addlibs.txt`
+endif
+
 if COIN_HAS_CLP
   AM_CPPFLAGS += -I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` \
@@ -45,19 +58,6 @@ if COIN_HAS_CLP
   unitTest_LDADD += $(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
 	$(CLPOBJDIR)/src/libClp.la
   LIBS  += `cat $(CLPOBJDIR)/clp_addlibs.txt`
-endif
-
-if COIN_HAS_CBC
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
-	$(CBCOBJDIR)/src/libCbc.la $(CBCOBJDIR)/src/libCbcSolver.la 
-  LIBS += `cat $(CBCOBJDIR)/cbc_addlibs.txt`
-endif
-
-if COIN_HAS_CGL
-  unitTest_LDADD += $(CGLOBJDIR)/src/libCgl.la
-  LIBS += `cat $(CGLOBJDIR)/cgl_addlibs.txt`
 endif
 
 #if COIN_HAS_CPX
