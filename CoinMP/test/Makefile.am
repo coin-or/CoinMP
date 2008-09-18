@@ -60,64 +60,69 @@ if COIN_HAS_CLP
   LIBS  += `cat $(CLPOBJDIR)/clp_addlibs.txt`
 endif
 
-#if COIN_HAS_CPX
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CPXINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCpx`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCpx/libOsiCpx.la
-#endif
+if COIN_HAS_CPX
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CPXINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCpx`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCpx/libOsiCpx.la
+endif
 
-#if COIN_HAS_DYLP
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(DYLPSRCDIR)/src/Dylp` \
-#	-I`$(CYGPATH_W) $(DYLPSRCDIR)/src/DylpStdLib` \
-#	-I`$(CYGPATH_W) $(DYLPOBJDIR)/inc` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiDylp`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiDylp/libOsiDylp.la \
-#	$(DYLPOBJDIR)/src/Dylp/libDylp.la
-#  LIBS += `cat $(DYLPOBJDIR)/dylp_addlibs.txt`
-#endif
+if COIN_HAS_DYLP
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(DYLPSRCDIR)/src/Dylp` \
+	-I`$(CYGPATH_W) $(DYLPSRCDIR)/src/DylpStdLib` \
+	-I`$(CYGPATH_W) $(DYLPOBJDIR)/inc` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiDylp`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiDylp/libOsiDylp.la \
+	$(DYLPOBJDIR)/src/Dylp/libDylp.la
+  LIBS += `cat $(DYLPOBJDIR)/dylp_addlibs.txt`
+endif
 
-#if COIN_HAS_FMP
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiFmp`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiFmp/libOsiFmp.la
-#endif
+if COIN_HAS_FMP
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiFmp`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiFmp/libOsiFmp.la
+endif
 
-#if COIN_HAS_GLPK
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(GLPKINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiGlpk`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiGlpk/libOsiGlpk.la
-#endif
+if COIN_HAS_GLPK
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(GLPKINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiGlpk`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiGlpk/libOsiGlpk.la
+endif
 
-#if COIN_HAS_MSK
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(MSKINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiMsk`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiMsk/libOsiMsk.la
-#endif
+if COIN_HAS_MSK
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(MSKINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiMsk`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiMsk/libOsiMsk.la
+endif
 
-#if COIN_HAS_OSL
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSLINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiOsl`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiOsl/libOsiOsl.la
-#endif
+if COIN_HAS_OSL
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSLINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiOsl`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiOsl/libOsiOsl.la
+endif
 
-#if COIN_HAS_SPX
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SPXINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSpx`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSpx/libOsiSpx.la
-#endif
+if COIN_HAS_SPX
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SPXINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSpx`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSpx/libOsiSpx.la
+endif
 
-#if COIN_HAS_SYM
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SYMSRCDIR)/src` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSym`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSym/libOsiSym.la \
-#	$(SYMOBJDIR)/src/libSym.la
-#  LIBS += `cat $(SYMOBJDIR)/sym_addlibs.txt`
-#endif
+if COIN_HAS_SYM
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SYMSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSym`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSym/libOsiSym.la \
+	$(SYMOBJDIR)/src/libSym.la
+  LIBS += `cat $(SYMOBJDIR)/sym_addlibs.txt`
+endif
 
-#if COIN_HAS_XPR
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(XPRINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiXpr`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiXpr/libOsiXpr.la
-#endif
+if COIN_HAS_XPR
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(XPRINCDIR)` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiXpr`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiXpr/libOsiXpr.la
+endif
+
+if COIN_HAS_ASL
+  AM_CPPFLAGS += $(ASL_CPPFLAGS) -DCOIN_HAS_ASL
+  unitTest_LDADD += $(ASLLIB)
+endif
 
 # Finally the Coin library (many of the above need it)
 unitTest_LDADD += \
