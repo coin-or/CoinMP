@@ -35,9 +35,6 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 # Depending of what solvers are available, we add the corresponding files,
 # libraries and include dirs
 
-# Depending of what solvers are available, we add the corresponding files,
-# libraries and include dirs
-
 if COIN_HAS_CBC
   AM_CPPFLAGS += -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
@@ -105,12 +102,20 @@ if COIN_HAS_SPX
   unitTest_LDADD += $(OSIOBJDIR)/src/OsiSpx/libOsiSpx.la
 endif
 
-if COIN_HAS_SYM
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SYMSRCDIR)/src` \
+if COIN_HAS_SYMPHONY
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SYMPHONYSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSym`
   unitTest_LDADD += $(OSIOBJDIR)/src/OsiSym/libOsiSym.la \
-	$(SYMOBJDIR)/src/libSym.la
-  LIBS += `cat $(SYMOBJDIR)/sym_addlibs.txt`
+	$(SYMPHONYOBJDIR)/src/libSym.la
+  LIBS += `cat $(SYMPHONYOBJDIR)/sym_addlibs.txt`
+endif
+
+if COIN_HAS_VOL
+  AM_CPPFLAGS += -I`$(CYGPATH_W) $(VOLSRCDIR)/src` \
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiVol`
+  unitTest_LDADD += $(OSIOBJDIR)/src/OsiVol/libOsiVol.la \
+	$(VOLOBJDIR)/src/libVol.la
+  LIBS += `cat $(VOLOBJDIR)/vol_addlibs.txt`
 endif
 
 if COIN_HAS_XPR
