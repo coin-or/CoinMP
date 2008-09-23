@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
-/*  Version      :  1.2                                                 */
+/*  Version      :  1.3                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
@@ -89,14 +89,14 @@ SOLVAPI int  SOLVCALL CoinGetSolverName(char* SolverName)
 
 SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr)
 {
-	strcpy(VersionStr, "1.2");
+	strcpy(VersionStr, "1.3");
 	return SOLV_CALL_SUCCESS;
 }
 
 
 SOLVAPI double SOLVCALL CoinGetVersion(void)
 {
-	return 1.2;
+	return 1.3;
 }
 
 
