@@ -12,7 +12,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[1.2],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[1.2.1],[coin-discuss@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
@@ -62,6 +62,9 @@ AC_COIN_HAS_PROJECT(Cgl)
 AC_COIN_HAS_PROJECT(Clp)
 AC_COIN_HAS_PROJECT(CoinUtils)
 AC_COIN_HAS_PROJECT(Osi)
+AC_COIN_HAS_PROJECT(DyLP)
+AC_COIN_HAS_PROJECT(Vol)
+AC_COIN_HAS_PROJECT(SYMPHONY)
 
 # Decide which one is the default solver
 #AC_MSG_CHECKING(for CBC default solver)
@@ -92,20 +95,22 @@ AC_COIN_HAS_PROJECT(Osi)
 #############################################################################
 
 # Check which third party solvers are available ToDo!
-#AC_COIN_HAS_USER_LIBRARY([Cplex],[CPX],[cplex.h],[CPXgetstat])
+AC_COIN_HAS_USER_LIBRARY([Cplex],[CPX],[cplex.h],[CPXgetstat])
 #AC_COIN_HAS_USER_LIBRARY([Glpk],[GLPK],[glpk.h],[glp_lpx_simplex])
-#AC_COIN_HAS_USER_LIBRARY([FortMP],[FMP])  #ToDo! is Fortran?
-#AC_COIN_HAS_USER_LIBRARY([Mosek],[MSK],[mosekdl.h],[MSK_openmosek])
-#AC_COIN_HAS_USER_LIBRARY([Osl],[OSL],[ekk_c_api.h],[ekk_simplex])
-#AC_COIN_HAS_USER_LIBRARY([Soplex],[SPX],[spxsolver.h]) # ToDo
-#AC_COIN_HAS_USER_LIBRARY([Xpress],[XPR],[xprs.h],[XPRSsetintcontrol])
+AC_COIN_HAS_USER_LIBRARY([FortMP],[FMP])  #ToDo! is Fortran?
+AC_COIN_HAS_USER_LIBRARY([Mosek],[MSK],[mosekdl.h],[MSK_openmosek])
+AC_COIN_HAS_USER_LIBRARY([Osl],[OSL],[ekk_c_api.h],[ekk_simplex])
+AC_COIN_HAS_USER_LIBRARY([Soplex],[SPX],[spxsolver.h]) # ToDo
+AC_COIN_HAS_USER_LIBRARY([Xpress],[XPR],[xprs.h],[XPRSsetintcontrol])
+
+AC_COIN_HAS_GLPK(Glpk)
 
 #############################################################################
 #                       Other third party software                          #
 #############################################################################
 
 # Ampl Solver library
-# AC_COIN_HAS_ASL
+AC_COIN_HAS_ASL
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #

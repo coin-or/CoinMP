@@ -17,7 +17,7 @@
 #define _COINMP_H_
 
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(HAVE_CONFIG_H)
 #ifdef SOLVER_EXPORT
 #define SOLVAPI extern "C"  __declspec(dllexport)  
 #define SOLVFUNC   
@@ -26,7 +26,7 @@
 #define SOLVFUNC 
 #endif
 #else
-#define SOLVAPI
+#define SOLVAPI extern "C"
 #define SOLVFUNC
 #endif
 
