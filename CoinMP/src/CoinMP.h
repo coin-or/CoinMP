@@ -202,8 +202,8 @@ SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, char* Str
 int    (SOLVCALL *CoinInitSolver)(char *LicenseStr);
 int    (SOLVCALL *CoinFreeSolver)(void);
 
-char*  (SOLVCALL *CoinGetSolverName)(void);
-char*  (SOLVCALL *CoinGetVersionStr)(void);
+int    (SOLVCALL *CoinGetSolverName)(char *SolverName);
+int    (SOLVCALL *CoinGetVersionStr)(char *VersionStr);
 double (SOLVCALL *CoinGetVersion)(void);
 int    (SOLVCALL *CoinGetFeatures)(void);
 int    (SOLVCALL *CoinGetMethods)(void);
@@ -245,7 +245,7 @@ void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCa
 int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
 int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
-char*  (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus);
+int    (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus, char* SolutionText);
 double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
 double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);
 
@@ -279,7 +279,7 @@ int    (SOLVCALL *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
 double (SOLVCALL *CoinGetRealOption)(HPROB hProb, int OptionID);
 int    (SOLVCALL *CoinSetRealOption)(HPROB hProb, int OptionID, double RealValue);
 
-char*  (SOLVCALL *CoinGetStringOption)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetStringOption)(HPROB hProb, int OptionID, char* StringValue);
 int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringValue);
 
 #endif
