@@ -220,7 +220,7 @@ void SolveProblemP0033(void)
 	int nels = 98;
 	int nrng = 0;
 
-	char *objectName = "OBJ";
+	char *objectname = "OBJ";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
 
@@ -277,7 +277,7 @@ void SolveProblemP0033(void)
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, dobj, objconst, drhs, NULL, ctyp, rtyp, mbeg, mcnt, 
-	  midx, mval, dclo, dcup, NULL, colnames, rownames, objectName);
+	  midx, mval, dclo, dcup, NULL, colnames, rownames, objectname);
 }
 
 
@@ -289,7 +289,7 @@ void SolveProblemExmip1(void)
 	int nels = 14;
 	int nrng = 2;
 	
-	char *objectName = "z";
+	char *objectname = "z";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
 	double dobj[8]={1, 0, 0, 0, 2, 0, 0, -1};
@@ -316,7 +316,7 @@ void SolveProblemExmip1(void)
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, dobj, objconst, drhs, drng, ctyp, rtyp, mbeg, mcnt, 
-	  midx, mval, dclo, dcup, NULL, colnames, rownames, objectName);
+	  midx, mval, dclo, dcup, NULL, colnames, rownames, objectname);
 }
 
 
