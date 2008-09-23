@@ -18,16 +18,19 @@
 
 
 #if defined(_MSC_VER) && !defined(HAVE_CONFIG_H)
+
+#define SOLVCALL   __stdcall
 #ifdef SOLVER_EXPORT
-#define SOLVAPI extern "C"  __declspec(dllexport)  
-#define SOLVFUNC   
+#define SOLVAPI  __declspec(dllexport)
 #else
 #define SOLVAPI __declspec(dllimport)
-#define SOLVFUNC 
 #endif
+
 #else
-#define SOLVAPI extern "C"
-#define SOLVFUNC
+
+#define SOLVAPI 
+#define SOLVCALL
+
 #endif
 
 
@@ -85,9 +88,9 @@
 
 typedef void *HPROB;
 
-#ifdef __cplusplus
+//#ifdef __cplusplus
 extern "C" {
-#endif
+//#endif
 
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
 
@@ -106,89 +109,89 @@ typedef int (*MIPNODECALLBACK)(int    IterCount,
 
 #ifdef SOLV_LINK_LIB
 
-SOLVAPI int    CoinInitSolver(char *LicenseStr);
-SOLVAPI int    CoinFreeSolver(void);
+SOLVAPI int    SOLVCALL CoinInitSolver(char* LicenseStr);
+SOLVAPI int    SOLVCALL CoinFreeSolver(void);
 
-SOLVAPI char*  CoinGetSolverName(void);
-SOLVAPI char*  CoinGetVersionStr(void);
-SOLVAPI double CoinGetVersion(void);
-SOLVAPI int    CoinGetFeatures(void);
-SOLVAPI int    CoinGetMethods(void);
-SOLVAPI double CoinGetInfinity(void);
+SOLVAPI int    SOLVCALL CoinGetSolverName(char* SolverName);
+SOLVAPI int    SOLVCALL CoinGetVersionStr(char* VersionStr);
+SOLVAPI double SOLVCALL CoinGetVersion(void);
+SOLVAPI int    SOLVCALL CoinGetFeatures(void);
+SOLVAPI int    SOLVCALL CoinGetMethods(void);
+SOLVAPI double SOLVCALL CoinGetInfinity(void);
 
-SOLVAPI HPROB  CoinCreateProblem(char *ProblemName);
+SOLVAPI HPROB  SOLVCALL CoinCreateProblem(char *ProblemName);
 
-SOLVAPI int    CoinLoadProblem(HPROB hProb, 
+SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb, 
 							   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
 							   int ObjectSense, double* ObjectCoeffs, double ObjectConst,
 							   double* RHSValues,  double* RangeValues, char* RowType, 
 							   int* MatrixBegin, int* MatrixCount,   int* MatrixIndex,    
 							   double* MatrixValues, double* LowerBounds, double* UpperBounds, 
-							   double* InitValues, char** ColNames, char** RowNames);
+							   double* InitValues, char* ColNames, char* RowNames, char *objName);
 
-SOLVAPI int    CoinLoadInteger(HPROB hProb, char* ColumnType);
+SOLVAPI int    SOLVCALL CoinLoadInteger(HPROB hProb, char* ColumnType);
 
 
-SOLVAPI int    CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorIndex, 
+SOLVAPI int    SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorIndex, 
 										  int *PriorValues, int *BranchDir);
 
-SOLVAPI int    CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount, 
+SOLVAPI int    SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount, 
 						   char *SosType, int *SosPrior, int *SosBegin,   
 						   int *SosIndex, double *SosRef);
 
-SOLVAPI int    CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
+SOLVAPI int    SOLVCALL CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
 								 int *QuadIndex, double *QuadValues);
 
-SOLVAPI int    CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
+SOLVAPI int    SOLVCALL CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
 								 int *NlpBegin, int *NlpOper, int *NlpArg1, 
 								 int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 								 double *NlpValue1, double *NlpValue2);
 
-SOLVAPI int    CoinUnloadProblem(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinUnloadProblem(HPROB hProb);
 
-SOLVAPI int    CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
-SOLVAPI int    CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
-SOLVAPI int    CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
+SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
+SOLVAPI int    SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
+SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
 
-SOLVAPI int    CoinOptimizeProblem(HPROB hProb, int Method);
+SOLVAPI int    SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method);
 
-SOLVAPI int    CoinGetSolutionStatus(HPROB hProb);
-SOLVAPI char*  CoinGetSolutionText(HPROB hProb, int SolutionStatus);
-SOLVAPI double CoinGetObjectValue(HPROB hProb);
-SOLVAPI double CoinGetMipBestBound(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetSolutionStatus(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText);
+SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb);
+SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb);
 
-SOLVAPI int    CoinGetIterCount(HPROB hProb);
-SOLVAPI int    CoinGetMipNodeCount(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetIterCount(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetMipNodeCount(HPROB hProb);
 
-SOLVAPI int    CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
+SOLVAPI int    SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
 									 double* SlackValues, double* ShadowPrice);
-SOLVAPI int    CoinGetSolutionRanges(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
+SOLVAPI int    SOLVCALL CoinGetSolutionRanges(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
 									 double *RhsLoRange, double *RhsUpRange);
-SOLVAPI int    CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus);
+SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus);
 
-SOLVAPI int    CoinReadFile(HPROB hProb, int FileType, char *ReadFilename);
-SOLVAPI int    CoinWriteFile(HPROB hProb, int FileType, char *WriteFilename);
+SOLVAPI int    SOLVCALL CoinReadFile(HPROB hProb, int FileType, char *ReadFilename);
+SOLVAPI int    SOLVCALL CoinWriteFile(HPROB hProb, int FileType, char *WriteFilename);
 
-SOLVAPI int    CoinOpenLogFile(HPROB hProb, char *LogFilename);
-SOLVAPI int    CoinCloseLogFile(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinOpenLogFile(HPROB hProb, char *LogFilename);
+SOLVAPI int    SOLVCALL CoinCloseLogFile(HPROB hProb);
 
-SOLVAPI int    CoinGetOptionCount(HPROB hProb);
-SOLVAPI int    CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *GroupType,
+SOLVAPI int    SOLVCALL CoinGetOptionCount(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *GroupType,
 								 int *OptionType, char *OptionName, char *ShortName);
 
-SOLVAPI int    CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
-SOLVAPI int    CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
+SOLVAPI int    SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
+SOLVAPI int    SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
 
-SOLVAPI int    CoinGetOptionChanged(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetOptionChanged(HPROB hProb, int OptionID);
 
-SOLVAPI int    CoinGetIntOption(HPROB hProb, int OptionID);
-SOLVAPI int    CoinSetIntOption(HPROB hProb, int OptionID, int IntValue);
+SOLVAPI int    SOLVCALL CoinGetIntOption(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinSetIntOption(HPROB hProb, int OptionID, int IntValue);
 
-SOLVAPI double CoinGetRealOption(HPROB hProb, int OptionID);
-SOLVAPI int    CoinSetRealOption(HPROB hProb, int OptionID, double RealValue);
+SOLVAPI double SOLVCALL CoinGetRealOption(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinSetRealOption(HPROB hProb, int OptionID, double RealValue);
 
-SOLVAPI char*  CoinGetStringOption(HPROB hProb, int OptionID);
-SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue);
+SOLVAPI int    SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue);
+SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, char* StringValue);
 
 
 #endif
@@ -196,94 +199,94 @@ SOLVAPI int    CoinSetStringOption(HPROB hProb, int OptionID, char *StringValue)
 
 #ifdef SOLV_LINK_DLL
 
-int    (SOLVFUNC *CoinInitSolver)(char *LicenseStr);
-int    (SOLVFUNC *CoinFreeSolver)(void);
+int    (SOLVCALL *CoinInitSolver)(char *LicenseStr);
+int    (SOLVCALL *CoinFreeSolver)(void);
 
-char*  (SOLVFUNC *CoinGetSolverName)(void);
-char*  (SOLVFUNC *CoinGetVersionStr)(void);
-double (SOLVFUNC *CoinGetVersion)(void);
-int    (SOLVFUNC *CoinGetFeatures)(void);
-int    (SOLVFUNC *CoinGetMethods)(void);
-double (SOLVFUNC *CoinGetInfinity)(void);
+char*  (SOLVCALL *CoinGetSolverName)(void);
+char*  (SOLVCALL *CoinGetVersionStr)(void);
+double (SOLVCALL *CoinGetVersion)(void);
+int    (SOLVCALL *CoinGetFeatures)(void);
+int    (SOLVCALL *CoinGetMethods)(void);
+double (SOLVCALL *CoinGetInfinity)(void);
 
-HPROB  (SOLVFUNC *CoinCreateProblem)(char *ProblemName);
+HPROB  (SOLVCALL *CoinCreateProblem)(char *ProblemName);
 
-int    (SOLVFUNC *CoinLoadProblem)(HPROB hProb, 
+int    (SOLVCALL *CoinLoadProblem)(HPROB hProb, 
 								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
 								   int ObjectSense, double* ObjectCoeffs, double ObjectConst,
 								   double* RHSValues, double* RangeValues, char* RowType, 
 								   int* MatrixBegin, int* MatrixCount, int* MatrixIndex,    
 								   double* MatrixValues, double* LowerBounds, double* UpperBounds, 
-								   double* InitValues, char** ColNames, char** RowNames);
+								   double* InitValues, char* ColNames, char* RowNames, char *objName);
 
-int    (SOLVFUNC *CoinLoadInteger)(HPROB hProb, char* ColumnType);
+int    (SOLVCALL *CoinLoadInteger)(HPROB hProb, char* ColumnType);
 
-int    (SOLVFUNC *CoinLoadPriority)(HPROB hProb, int PriorCount, int *PriorIndex, 
+int    (SOLVCALL *CoinLoadPriority)(HPROB hProb, int PriorCount, int *PriorIndex, 
 												int *PriorValues, int *BranchDir);
 
-int    (SOLVFUNC *CoinLoadSos)(HPROB hProb, int SosCount, int SosNZCount, 
+int    (SOLVCALL *CoinLoadSos)(HPROB hProb, int SosCount, int SosNZCount, 
 										 char *SosType, int *SosPrior, int *SosBegin,   
 										 int *SosIndex, double *SosRef);
 
-int    (SOLVFUNC *CoinLoadQuadratic)(HPROB hProb, int *QuadBegin, int *QuadCount, 
+int    (SOLVCALL *CoinLoadQuadratic)(HPROB hProb, int *QuadBegin, int *QuadCount, 
 												 int *QuadIndex, double *QuadValues);
 
-int    (SOLVFUNC *CoinLoadNonlinear)(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
+int    (SOLVCALL *CoinLoadNonlinear)(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
 												 int *NlpBegin, int *NlpOper, int *NlpArg1, 
 												 int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
 												 double *NlpValue1, double *NlpValue2);
 
-int    (SOLVFUNC *CoinUnloadProblem)(HPROB hProb);
+int    (SOLVCALL *CoinUnloadProblem)(HPROB hProb);
 
-void   (SOLVFUNC *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
-void   (SOLVFUNC *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
-void   (SOLVFUNC *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
+void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
+void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
+void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
 
-int    (SOLVFUNC *CoinOptimizeProblem)(HPROB hProb, int Method);
+int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
-int    (SOLVFUNC *CoinGetSolutionStatus)(HPROB hProb);
-char*  (SOLVFUNC *CoinGetSolutionText)(HPROB hProb, int SolutionStatus);
-double (SOLVFUNC *CoinGetObjectValue)(HPROB hProb);
-double (SOLVFUNC *CoinGetMipBestBound)(HPROB hProb);
+int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
+char*  (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus);
+double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
+double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);
 
-int    (SOLVFUNC *CoinGetIterCount)(HPROB hProb);
-int    (SOLVFUNC *CoinGetMipNodeCount)(HPROB hProb);
+int    (SOLVCALL *CoinGetIterCount)(HPROB hProb);
+int    (SOLVCALL *CoinGetMipNodeCount)(HPROB hProb);
 
-int    (SOLVFUNC *CoinGetSolutionValues)(HPROB hProb, double* Activity, double* ReducedCost, 
+int    (SOLVCALL *CoinGetSolutionValues)(HPROB hProb, double* Activity, double* ReducedCost, 
 													  double* SlackValues, double* ShadowPrice);
-int    (SOLVFUNC *CoinGetSolutionRanges)(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
+int    (SOLVCALL *CoinGetSolutionRanges)(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
 										           double *RhsLoRange, double *RhsUpRange);
-int    (SOLVFUNC *CoinGetSolutionBasis)(HPROB hProb, int *ColStatus, double *RowStatus);
+int    (SOLVCALL *CoinGetSolutionBasis)(HPROB hProb, int *ColStatus, double *RowStatus);
 
-void   (SOLVFUNC *CoinReadFile)(HPROB hProb, int FileType, char* ReadFilename);
-void   (SOLVFUNC *CoinWriteFile)(HPROB hProb, int FileType, char* WriteFilename);
+void   (SOLVCALL *CoinReadFile)(HPROB hProb, int FileType, char* ReadFilename);
+void   (SOLVCALL *CoinWriteFile)(HPROB hProb, int FileType, char* WriteFilename);
 
-void   (SOLVFUNC *CoinOpenLogFile)(HPROB hProb, char *LogFilename);
-void   (SOLVFUNC *CoinCloseLogFile)(HPROB hProb);
+void   (SOLVCALL *CoinOpenLogFile)(HPROB hProb, char *LogFilename);
+void   (SOLVCALL *CoinCloseLogFile)(HPROB hProb);
 
-int    (SOLVFUNC *CoinGetOptionCount)(HPROB hProb);
-int    (SOLVFUNC *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID, 
+int    (SOLVCALL *CoinGetOptionCount)(HPROB hProb);
+int    (SOLVCALL *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID, 
 									int *OptionType, char *OptionName, char *ShortName);
 
-int    (SOLVFUNC *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
-int    (SOLVFUNC *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
+int    (SOLVCALL *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
+int    (SOLVCALL *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
 
-int    (SOLVFUNC *CoinGetOptionChanged)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetOptionChanged)(HPROB hProb, int OptionID);
 
-int    (SOLVFUNC *CoinGetIntOption)(HPROB hProb, int OptionID);
-int    (SOLVFUNC *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
+int    (SOLVCALL *CoinGetIntOption)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
 
-double (SOLVFUNC *CoinGetRealOption)(HPROB hProb, int OptionID);
-int    (SOLVFUNC *CoinSetRealOption)(HPROB hProb, int OptionID, double RealValue);
+double (SOLVCALL *CoinGetRealOption)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinSetRealOption)(HPROB hProb, int OptionID, double RealValue);
 
-char*  (SOLVFUNC *CoinGetStringOption)(HPROB hProb, int OptionID);
-int    (SOLVFUNC *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringValue);
+char*  (SOLVCALL *CoinGetStringOption)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringValue);
 
 #endif
 
-#ifdef __cplusplus
+//#ifdef __cplusplus
 }
-#endif
+//#endif
 
 
 
