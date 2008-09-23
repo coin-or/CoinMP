@@ -88,9 +88,9 @@
 
 typedef void *HPROB;
 
-//#ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-//#endif
+#endif
 
 typedef int (*MSGLOGCALLBACK)(char *MessageStr);
 
@@ -284,9 +284,9 @@ int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringVa
 
 #endif
 
-//#ifdef __cplusplus
+#ifdef __cplusplus
 }
-//#endif
+#endif
 
 
 
