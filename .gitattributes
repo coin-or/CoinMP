@@ -19,6 +19,7 @@ CoinMP/configure -text
 CoinMP/examples/Makefile -text
 CoinMP/examples/example.c -text
 CoinMP/inc/config_coinmp.h.in -text
+CoinMP/src/CoinMP.def -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
 /Externals -text

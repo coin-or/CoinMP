@@ -62,6 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				ModuleDefinitionFile="..\..\..\..\CoinMP\src\CoinMP.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -136,6 +137,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				ModuleDefinitionFile="..\..\..\src\CoinMP.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -193,12 +195,15 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="..\..\..\..\Cbc\src\;..\..\..\..\Cgl\src\CglResidualCapacity;..\..\..\..\Cgl\src\CglLandP;..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\Cgl\src\CglClique;..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\Cgl\src\CglGomory;..\..\..\..\Cgl\src\CglPreProcess;..\..\..\..\Cgl\src\CglDuplicateRow;..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\Cgl\src\CglProbing;..\..\..\..\Cgl\src;..\..\..\..\Clp\src;..\..\..\..\Osi\src\OsiClp;..\..\..\..\Osi\src;..\..\..\..\CoinUtils\src;..\..\..\..\BuildTools\headers"
-						PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\..\src\CoinMP.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\CoinMP.def"
 				>
 			</File>
 			<File

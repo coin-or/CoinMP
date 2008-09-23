@@ -1,0 +1,49 @@
+
+LIBRARY "CoinMP"
+
+EXPORTS
+	CoinInitSolver
+	CoinFreeSolver
+	CoinGetSolverName
+	CoinGetVersionStr
+	CoinGetVersion
+	CoinGetFeatures
+	CoinGetMethods
+	CoinGetInfinity
+	CoinCreateProblem
+	CoinLoadProblem
+	CoinLoadInteger
+	CoinLoadPriority
+	CoinLoadSos
+	CoinLoadQuadratic
+	CoinLoadNonlinear
+	CoinUnloadProblem
+	CoinSetMsgLogCallback
+	CoinSetIterCallback
+	CoinSetMipNodeCallback
+	CoinOptimizeProblem
+	CoinGetSolutionStatus
+	CoinGetSolutionText
+	CoinGetObjectValue
+	CoinGetMipBestBound
+	CoinGetIterCount
+	CoinGetMipNodeCount
+	CoinGetSolutionValues
+	CoinGetSolutionRanges
+	CoinGetSolutionBasis
+	CoinReadFile
+	CoinWriteFile
+	CoinOpenLogFile
+	CoinCloseLogFile
+	CoinGetOptionCount
+	CoinGetOptionInfo
+	CoinGetIntOptionMinMax
+	CoinGetRealOptionMinMax
+	CoinGetOptionChanged
+	CoinGetIntOption
+	CoinSetIntOption
+	CoinGetRealOption
+	CoinSetRealOption
+	CoinGetStringOption
+	CoinSetStringOption
+	
