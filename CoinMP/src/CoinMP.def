@@ -18,6 +18,7 @@ EXPORTS
 	CoinLoadQuadratic
 	CoinLoadNonlinear
 	CoinUnloadProblem
+	CoinCheckProblem
 	CoinSetMsgLogCallback
 	CoinSetIterCallback
 	CoinSetMipNodeCallback
