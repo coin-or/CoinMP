@@ -1,5 +1,5 @@
 
-/* unitTest.c */
+/* unitTest.cpp */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -61,11 +61,6 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	fprintf(stdout, "Optimal Value:   %lg\n", objectValue);
  	fprintf(stdout, "---------------------------------------\n");
      
-	assert(solutionStatus==0);
-	assert(strcmp(solutionText,"Optimal solution found")==0);
-	if (optimalValue != 0.0) {
-		assert( fabs(objectValue-optimalValue) < 0.001 );
-	}
 	colCount = CoinGetColCount(hProb);
 	xVal = (double *)malloc(colCount * sizeof(double));
 	CoinGetSolutionValues(hProb, xVal, NULL, NULL, NULL);
@@ -76,6 +71,11 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 		}
 	}
 	fprintf(stdout, "---------------------------------------\n\n");
+	assert(solutionStatus==0);
+	assert(strcmp(solutionText,"Optimal solution found")==0);
+	if (optimalValue != 0.0) {
+		assert( fabs(objectValue-optimalValue) < 0.001 );
+	}
 }
 
 
@@ -192,7 +192,6 @@ void SolveProblemCoinTest(void)
 	int matrixIndex[14]={0,4,0,1,1,2,0,3,0,4,2,3,0,4};
 	double matrixValues[14]={3., 5.6, 1., 2., 1.1, 1., -2., 2.8, -1., 1., 1., -1.2, -1., 1.9};
     
-	//char *colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
 	char *colNames = "c1\0" "c2\0" "c3\0" "c4\0" "c5\0" "c6\0" "c7\0" "c8";
 	char *rowNames = "r1\0" "r2\0" "r3\0" "r4\0" "r5";
     
@@ -232,7 +231,6 @@ void SolveProblemBakery(void)
 	int matrixIndex[4] = { 0, 1, 0, 2};
 	double matrixValues[4] = { 0.1, 1, 0.2, 1};
 
-	//char *colNames[2] = {"Sun", "Moon"};
 	char *colNames = "Sun\0" "Moon";
 	char *rowNames = "c1\0" "c2\0" "c3";
     
@@ -293,11 +291,6 @@ void SolveProblemAfiro(void)
 		1, -1, 1, -1, 1, 1, -0.43, 1, 1, 0.109, -0.43, 1, 1, 0.108, -0.39, 1, 1, 
 		0.108, -0.37, 1, 1, 0.107, -1, 2.191, -1, 2.219, -1, 2.249, -1, 2.279, 1.4, 
 		-1, 1, -1, 1, 1, 1};
-
-	/*char *colnames[32] = {"x01", "x02", "x03", "x04", "x06", "x07", "x08", "x09", 
-		"x10", "x11", "x12", "x13", "x14", "x15", "x16", "x22", "x23", "x24", "x25", 
-		"x26", "x28", "x29", "x30", "x31", "x32", "x33", "x34", "x35", "x36", "x37", 
-		"x38", "x39"};*/
 
 	char *colnames = "x01\0" "x02\0" "x03\0" "x04\0" "x06\0" "x07\0" "x08\0" "x09\0" 
 		"x10\0" "x11\0" "x12\0" "x13\0" "x14\0" "x15\0" "x16\0" "x22\0" "x23\0" "x24\0" "x25\0" 
@@ -364,11 +357,6 @@ void SolveProblemP0033(void)
 		-400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400, 
 		-400, -200, -400};
 
-	/*char *colnames[33] = {"c157", "c158", "c159", "c160", "c161", "c162", "c163", 
-		"c164", "c165", "c166", "c167", "c168", "c169", "c170", "c171", "c172", 
-		"c173", "c174", "c175", "c176", "c177", "c178", "c179", "c180", "c181", 
-		"c182", "c183", "c184", "c185", "c186", "c187", "c188", "c189"};*/
-
 	char *colnames = "c157\0" "c158\0" "c159\0" "c160\0" "c161\0" "c162\0" "c163\0" 
 		"c164\0" "c165\0" "c166\0" "c167\0" "c168\0" "c169\0" "c170\0" "c171\0" "c172\0" 
 		"c173\0" "c174\0" "c175\0" "c176\0" "c177\0" "c178\0" "c179\0" "c180\0" "c181\0" 
@@ -415,8 +403,6 @@ void SolveProblemExmip1(void)
 	int midx[14]={0, 4, 0, 1, 1, 2, 0, 3, 0, 4, 2, 3, 0, 4};
 	double mval[14]={3, 5.6, 1, 2, 1.1, 1, -2, 2.8, -1, 1, 1, -1.2, -1, 1.9};
 
-	/*char *colnames[8] = {"col01", "col02", "col03", "col04", "col05", "col06", 
-		"col07", "col08"};*/
 	char *colnames = "col01\0" "col02\0" "col03\0" "col04\0" "col05\0" "col06\0" 
 		"col07\0" "col08";
 	char *rownames = "row01\0" "row02\0" "row03\0" "row04\0" "row05";
@@ -430,77 +416,7 @@ void SolveProblemExmip1(void)
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
-/*
 
-void SolveProblemLPSos1(void)
-{
-	char *probname = "LPSolveSos1";
-	int ncol = 5;
-	int nrow = 5;
-	int nels = 11;
-	int nrng = 0;
-	
-	char *objectname = "z";
-	int objsens = SOLV_OBJSENS_MAX;
-	double objconst = 0.0;
-	double dobj[5]={1, 1, 3, 2, 2};
-
-	double dclo[5]={0, 0, 0, 0, 0};
-	double dcup[5]={1e+037, 1e+037,  1e+037, 1e+037, 1e+037};
-
-	char rtyp[5]= {'L', 'L', 'L', 'L', 'L'};
-	double drhs[5]={30, 30, 40, 1, 1};
-
-	int mbeg[5+1]={0, 3, 5, 7, 9, 10};
-	int mcnt[5]={3, 2, 2, 2, 1};
-	int midx[11]={    0,1,2,  0,3,  0,1,  0,1,  4, 0};
-	double mval[11]={-1,1,1, -1,1, 1,1,  1,-3, 1, 1};
-
-	//char *colnames[5] = {"x1", "x2", "x3", "x4", "x5"};
-	char *colnames = "x1\0" "x2\0" "x3\0" "x4\0" "x5";
-	char *rownames = "c1\0" "c2\0" "c3\0" "c4\0" "c5";
-
-	int sosCount = 1;
-	int sosNZCount = 5;
-	int sosType[1] = {1};
-	int sosBegin[1+1] = {0, 5};
-	int sosIndex[5] = {0, 1, 2, 3, 4};
-
-	double optimalValue = 90.0;
-
-	RunSosTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
-	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL);
-}
-*/
-/*
-	char *objectname = "z";
-	int objsens = SOLV_OBJSENS_MAX;
-	double objconst = 0.0;
-	double dobj[5]={1, 1, 3, 2, 2};
-
-	double dclo[5]={0, 0, 0, 0, 0};
-	double dcup[5]={40, 1, 1e+037, 1e+037, 1};
-
-	char rtyp[2]= {'L', 'L'};
-	double drhs[2]={30, 30};
-
-	int mbeg[5+1]={0, 2, 3, 5, 7, 7};
-	int mcnt[8]={2, 1, 2, 2, 0};
-	int midx[14]={0, 1, 0, 0, 1, 0, 1};
-	double mval[14]={-1, 1, -1, 1, 1, 1, -3};
-
-	char *colnames = "x1\0" "x2\0" "x3\0" "x4\0" "x5";
-	char *rownames = "c1\0" "c2";
-
-	int sosCount = 1;
-	int sosNZCount = 5;
-	int sosType[1] = {1};
-	int sosBegin[1+1] = {0, 5};
-	int sosIndex[5] = {0, 1, 2, 3, 4};
-
-*/
 
 void SolveProblemGamsSos1a(void)
 {
@@ -527,7 +443,6 @@ void SolveProblemGamsSos1a(void)
 	int midx[3]={0, 0, 0};
 	double mval[3]={1, 1, 1};
 
-	//char *colnames[3] = {"x1", "x2", "x3"};
 	char *colnames = "x1\0" "x2\0" "x3";
 	char *rownames = "xsum";
 
@@ -570,7 +485,6 @@ void SolveProblemGamsSos2a(void)
 	int midx[15]={0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 2, 3, 4, 3, 4};
 	double mval[15]={1, 1, 1, 1, 2, 2, 1, 3, 3, -1, -1, -1, 1, 1, 1};
 
-	//char *colnames[7] = {"w1", "w2", "w3", "x", "fx", "fplus", "fminus"};
 	char *colnames = "w1\0" "w2\0" "w3\0" "x\0" "fx\0" "fplus\0" "fminus";
 	char *rownames = "wsum\0" "xdef\0" "fxdef\0" "gapplus\0" "gapminus";
 
@@ -606,7 +520,6 @@ int main (int argc, char *argv[])
 	SolveProblemExmip1();
 	SolveProblemGamsSos1a();
 	SolveProblemGamsSos2a();
-	//SolveProblemLPSos1();
 	fprintf(stdout, "All unit tests completed successfully\n" );
 	CoinFreeSolver();
 	return 0;
