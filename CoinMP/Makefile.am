@@ -69,6 +69,7 @@ uninstall-local: uninstall-doc
 	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
 	rm -f $(DESTDIR)$(examplesdir)
 
+
 ########################################################################
 #                         Maintainer Stuff                             #
 ########################################################################
