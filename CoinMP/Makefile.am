@@ -58,7 +58,7 @@ addlibsfile = coinmp_addlibs.txt
 addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)
 
 examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.c
-examplesdir = $(prefix)/examples/$(PACKAGE_NAME)
+examplesdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/examples
 
 install-exec-local: install-doc
 	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
