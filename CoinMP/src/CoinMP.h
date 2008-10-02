@@ -70,6 +70,10 @@
 #define SOLV_FEATURE_SP            0x00010000L
 
 
+#define SOLV_LOADNAMES_DEFAULT      0
+#define SOLV_LOADNAMES_LIST         1
+#define SOLV_LOADNAMES_BUFFER       2
+
 #define SOLV_OBJSENS_MAX   -1
 #define SOLV_OBJSENS_MIN    1
 
@@ -144,7 +148,7 @@ SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb,
 					double* LowerBounds, double* UpperBounds, char* RowType, 
 					double* RHSValues, double* RangeValues, int* MatrixBegin,  
 					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-					char* ColNames, char* RowNames, char *objName);
+					char** ColNames, char** RowNames, char *objName);
 
 SOLVAPI int    SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues);
 
@@ -170,16 +174,7 @@ SOLVAPI int    SOLVCALL CoinUnloadProblem(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinCheckProblem(HPROB hProb);
 
-SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
-SOLVAPI int    SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
-SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
-
-SOLVAPI int    SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method);
-
-SOLVAPI int    SOLVCALL CoinGetSolutionStatus(HPROB hProb);
-SOLVAPI int    SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText);
-SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb);
-SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
 
 SOLVAPI int    SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName);
 
@@ -188,6 +183,18 @@ SOLVAPI int    SOLVCALL CoinGetRowCount(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName);
 SOLVAPI int    SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName);
+
+SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
+SOLVAPI int    SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
+SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
+
+SOLVAPI int    SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method);
+
+SOLVAPI int    SOLVCALL CoinGetSolutionStatus(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText);
+
+SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb);
+SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinGetIterCount(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetMipNodeCount(HPROB hProb);
@@ -246,7 +253,7 @@ int    (SOLVCALL *CoinLoadProblem)(HPROB hProb,
 								   double* LowerBounds, double* UpperBounds, char* RowType, 
 								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
 								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-								   char* ColNames, char* RowNames, char *objName);
+								   char** ColNames, char** RowNames, char *objName);
 
 int    (SOLVCALL *CoinLoadInitValues)(HPROB hProb, double* InitValues);
 
@@ -271,16 +278,13 @@ int    (SOLVCALL *CoinUnloadProblem)(HPROB hProb);
 
 int    (SOLVCALL *CoinCheckProblem)(HPROB hProb);
 
+int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType);
+
 void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
 void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
 
 int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
-
-int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
-int    (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus, char* SolutionText);
-double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
-double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);
 
 int    (SOLVCALL *CoinGetProblemName)(HPROB hProb, char *ProbName);
 
@@ -289,6 +293,12 @@ int    (SOLVCALL *CoinGetRowCount)(HPROB hProb);
 
 int    (SOLVCALL *CoinGetColName)(HPROB hProb, int col, char *ColName);
 int    (SOLVCALL *CoinGetRowName)(HPROB hProb, int row, char *RowName);
+
+int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
+int    (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus, char* SolutionText);
+
+double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
+double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);
 
 int    (SOLVCALL *CoinGetIterCount)(HPROB hProb);
 int    (SOLVCALL *CoinGetMipNodeCount)(HPROB hProb);

@@ -19,6 +19,12 @@ EXPORTS
 	CoinLoadNonlinear
 	CoinUnloadProblem
 	CoinCheckProblem
+	CoinSetLoadNamesType
+	CoinGetProblemName
+	CoinGetColCount
+	CoinGetRowCount
+	CoinGetColName
+	CoinGetRowName
 	CoinSetMsgLogCallback
 	CoinSetIterCallback
 	CoinSetMipNodeCallback
