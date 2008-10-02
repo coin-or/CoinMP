@@ -57,7 +57,7 @@ AM_CPPFLAGS += \
 	-I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
 	-I`$(CYGPATH_W) $(CBCOBJDIR)/inc` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src`
+	-I`$(CYGPATH_W) $(OSISRCDIR)/src` \
 	-I`$(CYGPATH_W) $(OSIOBJDIR)/inc`
 
 # List additional defines
