@@ -352,7 +352,8 @@ AM_CPPFLAGS = -I`$(CYGPATH_W) $(CGLSRCDIR)/src` -I`$(CYGPATH_W) \
 	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` -I`$(CYGPATH_W) \
 	$(CBCSRCDIR)/src` -I`$(CYGPATH_W) $(CBCOBJDIR)/inc` \
 	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp` -I`$(CYGPATH_W) \
-	$(OSISRCDIR)/src` -DCOIN_NO_CLP_MESSAGE -DUSE_COINMPCONFIG
+	$(OSISRCDIR)/src` -I`$(CYGPATH_W) $(OSIOBJDIR)/inc` \
+	-DCOIN_NO_CLP_MESSAGE -DUSE_COINMPCONFIG
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
@@ -668,7 +669,6 @@ uninstall-am: uninstall-includecoinHEADERS uninstall-info-am \
 	uninstall-am uninstall-includecoinHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES uninstall-local
 
-	-I`$(CYGPATH_W) $(OSIOBJDIR)/inc`
 
 install-exec-local:
 	echo "#ifndef HAVE_CONFIG_H" >bla
