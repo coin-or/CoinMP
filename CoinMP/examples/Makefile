@@ -1,4 +1,4 @@
-CoinDir  := ../..
+CoinDir  := ../../../../..
 #CoinMPDir := ..
 
 CC       := gcc
