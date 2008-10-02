@@ -152,7 +152,7 @@ void RunSosTestProblem(char *problemName, double optimalValue, int colCount, int
 	else {
 		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
 	}
-	sprintf(filename, "e:\\vb\\CoinMP\\unitTest\\%s.mps", problemName);
+	sprintf(filename, "%s.mps", problemName);
 	result = CoinWriteFile(hProb, SOLV_FILE_MPS, filename);
 	result = CoinOptimizeProblem(hProb, 0);
 	GetAndCheckSolution(optimalValue, hProb);
