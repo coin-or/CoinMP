@@ -81,16 +81,18 @@ SOLVAPI int SOLVCALL CoinFreeSolver(void)
 /************************************************************************/
 
 
-SOLVAPI int  SOLVCALL CoinGetSolverName(char* SolverName)
+SOLVAPI int  SOLVCALL CoinGetSolverName(char* SolverName, int buflen)
 {
-	strcpy(SolverName, "CoinMP");
+	strncpy(SolverName, "CoinMP", buflen-1);
+	SolverName[buflen-1] = '\0';
 	return (int)strlen(SolverName);
 }
 
 
-SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr)
+SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr, int buflen)
 {
-	strcpy(VersionStr, "1.3");
+	strncpy(VersionStr, "1.3", buflen-1);
+	VersionStr[buflen-1] = '\0';
 	return (int)strlen(VersionStr);
 }
 
@@ -1046,11 +1048,12 @@ SOLVAPI int SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType)
 /************************************************************************/
 
 
-SOLVAPI int SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName)
+SOLVAPI int SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName, int buflen)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strcpy(ProbName, pCoin->ProblemName);
+	strncpy(ProbName, pCoin->ProblemName, buflen-1);
+	ProbName[buflen-1] = '\0';
 	return (int)strlen(ProbName);
 }
 
@@ -1073,20 +1076,22 @@ SOLVAPI int SOLVCALL CoinGetRowCount(HPROB hProb)
 
 
 
-SOLVAPI int SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName)
+SOLVAPI int SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName, int buflen)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strcpy(ColName, pCoin->ColNamesList[col]);
+	strncpy(ColName, pCoin->ColNamesList[col], buflen-1);
+	ColName[buflen-1] = '\0';
 	return (int)strlen(ColName);
 }
 
 
-SOLVAPI int SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName)
+SOLVAPI int SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName, int buflen)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strcpy(RowName, pCoin->RowNamesList[row]);
+	strncpy(RowName, pCoin->RowNamesList[row], buflen-1);
+	RowName[buflen-1] = '\0';
 	return (int)strlen(RowName);
 }
 
@@ -1439,7 +1444,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionStatus(HPROB hProb)
 
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText)
+SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen)
 {
    PCOIN pCoin = (PCOIN)hProb;
 
@@ -1454,8 +1459,8 @@ SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* 
 			sprintf(pCoin->SolutionText, "Unknown solution status (%d)", SolutionStatus);
 			break;
 	}
-	strcpy(SolutionText, pCoin->SolutionText);
-	strcat(SolutionText, "\0");
+	strncpy(SolutionText, pCoin->SolutionText, buflen-1);
+	SolutionText[buflen-1] = '\0';
 	return (int)strlen(SolutionText);
 }
 
@@ -1591,7 +1596,9 @@ SOLVAPI int SOLVCALL CoinReadFile(HPROB hProb, int FileType, char* ReadFilename)
    PCOIN pCoin = (PCOIN)hProb;
 
 	switch (FileType) {
-		case SOLV_FILE_MPS:		pCoin->clp->readMps(ReadFilename, 1, 0);    break;
+		case SOLV_FILE_MPS:		
+			pCoin->clp->readMps(ReadFilename, 1, 0);    
+			break;
 
 		case SOLV_FILE_LP: 
 		case SOLV_FILE_BASIS: 
@@ -1610,7 +1617,9 @@ SOLVAPI int SOLVCALL CoinWriteFile(HPROB hProb, int FileType, char* WriteFilenam
 	PCOIN pCoin = (PCOIN)hProb;
 
 	switch (FileType) {
-		case SOLV_FILE_MPS:		pCoin->clp->writeMps(WriteFilename);    break;
+		case SOLV_FILE_MPS:		
+			pCoin->clp->writeMps(WriteFilename);   
+			break;
 
 		case SOLV_FILE_LP: 
 		case SOLV_FILE_BASIS: 
@@ -1813,15 +1822,21 @@ SOLVAPI int SOLVCALL CoinGetOptionCount(HPROB hProb)
 
 
 SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType,
-										int* OptionType, char* OptionName, char* ShortName)
+										int* OptionType, char* OptionName, char* ShortName, int buflen)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (OptionID)   *OptionID = OptionTable[OptionNr].OptionID;
 	if (OptionType) *OptionType = OptionTable[OptionNr].OptionType;
-	if (OptionName) strcpy(OptionName, OptionTable[OptionNr].OptionName);
-	if (ShortName)  strcpy(ShortName, OptionTable[OptionNr].ShortName);
+	if (OptionName) {
+		strncpy(OptionName, OptionTable[OptionNr].OptionName, buflen-1);
+		OptionName[buflen-1] = '\0';
+	}
+	if (ShortName) {
+		strncpy(ShortName, OptionTable[OptionNr].ShortName, buflen-1);
+		ShortName[buflen-1] = '\0';
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1948,7 +1963,7 @@ SOLVAPI int SOLVCALL CoinSetRealOption(HPROB hProb,int OptionID, double RealValu
 }
 
 
-SOLVAPI int SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue)
+SOLVAPI int SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue, int buflen)
 {
    PCOIN pCoin = (PCOIN)hProb;
 

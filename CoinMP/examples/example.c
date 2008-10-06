@@ -50,9 +50,9 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	char ColName[100];
 	char problemName[200];
 
-	CoinGetProblemName(hProb, problemName);
+	CoinGetProblemName(hProb, problemName, sizeof(problemName));
 	solutionStatus = CoinGetSolutionStatus(hProb);
-	CoinGetSolutionText(hProb,solutionStatus, solutionText);
+	CoinGetSolutionText(hProb,solutionStatus, solutionText, sizeof(solutionText));
 	objectValue =  CoinGetObjectValue(hProb);
       
  	fprintf(stdout, "\n---------------------------------------\n");
@@ -67,7 +67,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	CoinGetSolutionValues(hProb, xValues, NULL, NULL, NULL);
 	for (i = 0; i < colCount; i++) {
 		if (xValues[i] != 0.0) {
-			CoinGetColName(hProb, i, ColName);
+			CoinGetColName(hProb, i, ColName, sizeof(ColName));
 			fprintf(stdout, "%s = %lg\n", ColName, xValues[i]);
 		}
 	}
@@ -548,7 +548,7 @@ int main (int argc, char *argv[])
 	double CoinVersion;
 
 	CoinInitSolver("");
-	CoinGetSolverName(SolverName);
+	CoinGetSolverName(SolverName, sizeof(SolverName));
 	CoinVersion = CoinGetVersion();
 	fprintf(stdout, "UnitTest: %s version %lg\n\n",SolverName, CoinVersion);
 	SolveProblemCoinTest();

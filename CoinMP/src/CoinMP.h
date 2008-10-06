@@ -133,8 +133,8 @@ typedef int (SOLVCALL *MIPNODECALLBACK)(int    IterCount,
 SOLVAPI int    SOLVCALL CoinInitSolver(char* LicenseStr);
 SOLVAPI int    SOLVCALL CoinFreeSolver(void);
 
-SOLVAPI int    SOLVCALL CoinGetSolverName(char* SolverName);
-SOLVAPI int    SOLVCALL CoinGetVersionStr(char* VersionStr);
+SOLVAPI int    SOLVCALL CoinGetSolverName(char* SolverName, int buflen);
+SOLVAPI int    SOLVCALL CoinGetVersionStr(char* VersionStr, int buflen);
 SOLVAPI double SOLVCALL CoinGetVersion(void);
 SOLVAPI int    SOLVCALL CoinGetFeatures(void);
 SOLVAPI int    SOLVCALL CoinGetMethods(void);
@@ -176,13 +176,13 @@ SOLVAPI int    SOLVCALL CoinCheckProblem(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
 
-SOLVAPI int    SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName);
+SOLVAPI int    SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName, int buflen);
 
 SOLVAPI int    SOLVCALL CoinGetColCount(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetRowCount(HPROB hProb);
 
-SOLVAPI int    SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName);
-SOLVAPI int    SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName);
+SOLVAPI int    SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName, int buflen);
+SOLVAPI int    SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName, int buflen);
 
 SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 SOLVAPI int    SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
@@ -191,7 +191,7 @@ SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipN
 SOLVAPI int    SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method);
 
 SOLVAPI int    SOLVCALL CoinGetSolutionStatus(HPROB hProb);
-SOLVAPI int    SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText);
+SOLVAPI int    SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen);
 
 SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb);
 SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb);
@@ -213,7 +213,7 @@ SOLVAPI int    SOLVCALL CoinCloseLogFile(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinGetOptionCount(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int *OptionID, int *GroupType,
-								 int *OptionType, char *OptionName, char *ShortName);
+								 int *OptionType, char *OptionName, char *ShortName, int buflen);
 
 SOLVAPI int    SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 SOLVAPI int    SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
@@ -226,7 +226,7 @@ SOLVAPI int    SOLVCALL CoinSetIntOption(HPROB hProb, int OptionID, int IntValue
 SOLVAPI double SOLVCALL CoinGetRealOption(HPROB hProb, int OptionID);
 SOLVAPI int    SOLVCALL CoinSetRealOption(HPROB hProb, int OptionID, double RealValue);
 
-SOLVAPI int    SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue);
+SOLVAPI int    SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue, int buflen);
 SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, char* StringValue);
 
 
@@ -238,8 +238,8 @@ SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, char* Str
 int    (SOLVCALL *CoinInitSolver)(char *LicenseStr);
 int    (SOLVCALL *CoinFreeSolver)(void);
 
-int    (SOLVCALL *CoinGetSolverName)(char *SolverName);
-int    (SOLVCALL *CoinGetVersionStr)(char *VersionStr);
+int    (SOLVCALL *CoinGetSolverName)(char *SolverName, int buflen);
+int    (SOLVCALL *CoinGetVersionStr)(char *VersionStr, int buflen);
 double (SOLVCALL *CoinGetVersion)(void);
 int    (SOLVCALL *CoinGetFeatures)(void);
 int    (SOLVCALL *CoinGetMethods)(void);
@@ -286,16 +286,16 @@ void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCa
 
 int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
-int    (SOLVCALL *CoinGetProblemName)(HPROB hProb, char *ProbName);
+int    (SOLVCALL *CoinGetProblemName)(HPROB hProb, char *ProbName, int buflen);
 
 int    (SOLVCALL *CoinGetColCount)(HPROB hProb);
 int    (SOLVCALL *CoinGetRowCount)(HPROB hProb);
 
-int    (SOLVCALL *CoinGetColName)(HPROB hProb, int col, char *ColName);
-int    (SOLVCALL *CoinGetRowName)(HPROB hProb, int row, char *RowName);
+int    (SOLVCALL *CoinGetColName)(HPROB hProb, int col, char *ColName, int buflen);
+int    (SOLVCALL *CoinGetRowName)(HPROB hProb, int row, char *RowName, int buflen);
 
 int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
-int    (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus, char* SolutionText);
+int    (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen);
 
 double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
 double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);
@@ -316,8 +316,8 @@ void   (SOLVCALL *CoinOpenLogFile)(HPROB hProb, char *LogFilename);
 void   (SOLVCALL *CoinCloseLogFile)(HPROB hProb);
 
 int    (SOLVCALL *CoinGetOptionCount)(HPROB hProb);
-int    (SOLVCALL *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID, 
-									int *OptionType, char *OptionName, char *ShortName);
+int    (SOLVCALL *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int *OptionID, int *OptionType, 
+									char *OptionName, char *ShortName, int buflen);
 
 int    (SOLVCALL *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue);
 int    (SOLVCALL *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue);
@@ -330,7 +330,7 @@ int    (SOLVCALL *CoinSetIntOption)(HPROB hProb, int OptionID, int IntValue);
 double (SOLVCALL *CoinGetRealOption)(HPROB hProb, int OptionID);
 int    (SOLVCALL *CoinSetRealOption)(HPROB hProb, int OptionID, double RealValue);
 
-int    (SOLVCALL *CoinGetStringOption)(HPROB hProb, int OptionID, char* StringValue);
+int    (SOLVCALL *CoinGetStringOption)(HPROB hProb, int OptionID, char* StringValue, int buflen);
 int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, char *StringValue);
 
 #endif
