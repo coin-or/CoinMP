@@ -817,6 +817,12 @@ SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorInd
 }
 
 
+SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int *SemiIndex)
+{
+	return SOLV_CALL_FAILED;
+}
+
+
 SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount, 
 								int* SosType, int* SosPrior, int* SosBegin, 
 								int* SosIndex, double* SosRef)
@@ -1437,16 +1443,17 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 
 SOLVAPI int SOLVCALL CoinGetSolutionStatus(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
 	return pCoin->SolutionStatus;
 }
 
 
+  
 
 SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
 	switch (SolutionStatus) {
 		case 0:	strcpy(pCoin->SolutionText, "Optimal solution found");		break;
