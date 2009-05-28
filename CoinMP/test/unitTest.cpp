@@ -32,8 +32,8 @@ int SOLVCALL MipNodeCallback(int    IterCount,
 				double BestInteger,
 				int    IsMipImproved)
 {
-	fprintf(stdout, "NODE: iter=%d, node=%d, bound=%lg, best=%lg, improved=%int\n",
-		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved);
+	fprintf(stdout, "NODE: iter=%d, node=%d, bound=%lg, best=%lg, %s\n",
+		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "");
 	return 0;
 }
 
