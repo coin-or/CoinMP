@@ -48,6 +48,17 @@ CoinMP/examples/csharp/Properties/Settings.Designer.cs -text
 CoinMP/examples/csharp/Properties/Settings.settings -text
 CoinMP/examples/csharp/SolveProblem.cs -text
 CoinMP/examples/example.c -text
+CoinMP/examples/vb6/CoinMPTestVB6.exe -text
+CoinMP/examples/vb6/CoinMPTestVB6.vbp -text
+CoinMP/examples/vb6/FrmCoinMP.frm -text
+CoinMP/examples/vb6/LibCoinMP.bas -text
+CoinMP/examples/vb6/LogWrite.bas -text
+CoinMP/examples/vb6/RunProblem.bas -text
+CoinMP/examples/vb6/SolveAfiro.bas -text
+CoinMP/examples/vb6/SolveBakery.bas -text
+CoinMP/examples/vb6/SolveCoinTest.bas -text
+CoinMP/examples/vb6/SolveExMip1.bas -text
+CoinMP/examples/vb6/SolveP0033.bas -text
 CoinMP/inc/config_coinmp.h.in -text
 CoinMP/src/CoinMP.def -text
 CoinMP/src/Makefile.in -text
