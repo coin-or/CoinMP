@@ -67,7 +67,7 @@ install-exec-local: install-doc
 
 uninstall-local: uninstall-doc
 	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
-	rm -f $(DESTDIR)$(examplesdir)
+	rm -rf $(DESTDIR)$(examplesdir)
 
 
 ########################################################################
