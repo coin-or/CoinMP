@@ -4,11 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Version      :  1.3                                                 */
+/*  Version      :  1.4                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2008                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2009                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -150,6 +150,14 @@ SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb,
 					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
 					char** ColNames, char** RowNames, char *objName);
 
+SOLVAPI int    SOLVCALL CoinLoadProblemBuf(HPROB hProb, 
+					int ColCount, int RowCount, int NZCount, int RangeCount, 
+					int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+					double* LowerBounds, double* UpperBounds, char* RowType, 
+					double* RHSValues, double* RangeValues, int* MatrixBegin,  
+					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
+					char* ColNamesBuf, char* RowNamesBuf, char *objName);
+
 SOLVAPI int    SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues);
 
 SOLVAPI int    SOLVCALL CoinLoadInteger(HPROB hProb, char* ColumnType);
@@ -256,6 +264,14 @@ int    (SOLVCALL *CoinLoadProblem)(HPROB hProb,
 								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
 								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
 								   char** ColNames, char** RowNames, char *objName);
+
+int    (SOLVCALL *CoinLoadProblemBuf)(HPROB hProb, 
+								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
+								   int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+								   double* LowerBounds, double* UpperBounds, char* RowType, 
+								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
+								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
+								   char* ColNamesBuf, char* RowNamesBuf, char *objName);
 
 int    (SOLVCALL *CoinLoadInitValues)(HPROB hProb, double* InitValues);
 

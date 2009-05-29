@@ -4,11 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
-/*  Version      :  1.3                                                 */
+/*  Version      :  1.4                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2008                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2009                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -91,7 +91,7 @@ SOLVAPI int  SOLVCALL CoinGetSolverName(char* SolverName, int buflen)
 
 SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr, int buflen)
 {
-	strncpy(VersionStr, "1.3", buflen-1);
+	strncpy(VersionStr, "1.4", buflen-1);
 	VersionStr[buflen-1] = '\0';
 	return (int)strlen(VersionStr);
 }
@@ -99,7 +99,7 @@ SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr, int buflen)
 
 SOLVAPI double SOLVCALL CoinGetVersion(void)
 {
-	return 1.3;
+	return 1.4;
 }
 
 
@@ -570,25 +570,35 @@ int coinComputeRowLowerUpper(PCOIN pCoin, char *RowType, double *RHSValues, doub
 	return 1;
 }
 
+int coinGetLenNameBuf(char *NameBuf, int Count)
+{
+	int i, len;
+	int lenBuf;
+	char *pName;
 
-int coinGetLenNameBuf(char **NameList, int Count, int LoadNameType)
+	lenBuf = 0;
+	pName = &NameBuf[0];
+	for (i = 0; i < Count; i++) {
+		len = (int)strlen(pName) + 1;
+		lenBuf += len;
+		pName = pName + len;
+	}
+	return lenBuf;
+}
+
+
+int coinGetLenNameBufType(char **NameList, int Count, int LoadNameType)
 {
 	int i, len;
 	int lenBuf;
 	char *NameBuf;
-	char *pName;
 
 	lenBuf = 0;
 	switch (LoadNameType) {
 
 		case SOLV_LOADNAMES_BUFFER:
 			NameBuf = (char *)NameList;
-			pName = &NameBuf[0];
-			for (i = 0; i < Count; i++) {
-				len = (int)strlen(pName) + 1;
-				lenBuf += len;
-				pName = pName + len;
-			}
+			lenBuf = coinGetLenNameBuf(NameBuf, Count);
 			break;
 
 		case SOLV_LOADNAMES_DEFAULT:
@@ -651,6 +661,7 @@ void coinLoadNamesList(PCOIN pCoin, char** ColNamesList, char** RowNamesList, ch
 	}
 }
 
+
 SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
@@ -671,8 +682,8 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 	pCoin->ObjectSense = ObjectSense;
 	pCoin->ObjectConst = ObjectConst;
 
-	if (ColNames)   pCoin->lenColNamesBuf = coinGetLenNameBuf(ColNames, ColCount, pCoin->LoadNamesType);
-	if (RowNames)   pCoin->lenRowNamesBuf = coinGetLenNameBuf(RowNames, RowCount, pCoin->LoadNamesType);
+	if (ColNames)   pCoin->lenColNamesBuf = coinGetLenNameBufType(ColNames, ColCount, pCoin->LoadNamesType);
+	if (RowNames)   pCoin->lenRowNamesBuf = coinGetLenNameBufType(RowNames, RowCount, pCoin->LoadNamesType);
 	if (ObjectName) pCoin->lenObjNameBuf  = (int)strlen(ObjectName) + 1;
 
 	if (ObjectCoeffs) pCoin->ObjectCoeffs = (double *) malloc(pCoin->ColCount     * sizeof(double));
@@ -732,6 +743,29 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 	return SOLV_CALL_SUCCESS;
 }
 
+// CoinLoadProblemBuf accepts ColNames/RowNames as character buffer with \0 after each name
+
+SOLVAPI int SOLVCALL CoinLoadProblemBuf(HPROB hProb, 
+				int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* RHSValues, double* RangeValues, int* MatrixBegin, 
+				int* MatrixCount, int* MatrixIndex, double* MatrixValues, 
+				char* ColNames, char* RowNames, char *ObjectName)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+	int StoreLoadNamesType;
+	int result;
+
+	StoreLoadNamesType = pCoin->LoadNamesType;
+	pCoin->LoadNamesType = SOLV_LOADNAMES_BUFFER;
+	result = CoinLoadProblem(hProb, ColCount, RowCount, NZCount, RangeCount,
+				ObjectSense, ObjectConst, ObjectCoeffs, LowerBounds, UpperBounds, RowType,
+				RHSValues, RangeValues, MatrixBegin, MatrixCount, MatrixIndex, MatrixValues,
+				(char **)ColNames, (char **)RowNames, ObjectName);
+	pCoin->LoadNamesType = StoreLoadNamesType;
+	return result;
+}
 
 
 SOLVAPI int SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues)
