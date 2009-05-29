@@ -12,6 +12,8 @@ EXPORTS
 	CoinGetInfinity
 	CoinCreateProblem
 	CoinLoadProblem
+	CoinLoadProblemBuf
+	CoinLoadInitValues
 	CoinLoadInteger
 	CoinLoadPriority
 	CoinLoadSemiCont
