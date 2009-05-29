@@ -120,6 +120,43 @@ void RunTestProblem(char *problemName, double optimalValue, int colCount, int ro
 }
 
 
+void RunTestProblemBuf(char *problemName, double optimalValue, int colCount, int rowCount, 
+	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double *objectCoeffs, 
+	  double *lowerBounds, double *upperBounds, char *rowType, double *rhsValues, double *rangeValues, 
+	  int *matrixBegin, int *matrixCount, int *matrixIndex, double *matrixValues, char *colNamesBuf, 
+	  char *rowNamesBuf, char *objectName, double *initValues, char *columnType)
+{
+	HPROB hProb;
+	int result;
+	char filename[260];
+    
+	fprintf(stdout, "Solve Problem: %s\n", problemName);
+	hProb = CoinCreateProblem(problemName);  
+	result = CoinLoadProblemBuf(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
+					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
+					matrixIndex, matrixValues, colNamesBuf, rowNamesBuf, objectName);
+	if (columnType) {
+		result = CoinLoadInteger(hProb, columnType);
+	}
+	result = CoinCheckProblem(hProb);
+	if (result != SOLV_CALL_SUCCESS) {
+		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
+	}
+	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	if (!columnType)
+		result = CoinSetIterCallback(hProb, &IterCallback);
+	else {
+		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
+	}
+	result = CoinOptimizeProblem(hProb, 0);
+	sprintf(filename, "%s.mps", problemName);
+	result = CoinWriteFile(hProb, SOLV_FILE_MPS, filename);
+	GetAndCheckSolution(optimalValue, hProb);
+	CoinUnloadProblem(hProb);
+}
+
+
 void RunSosTestProblem(char *problemName, double optimalValue, int colCount, int rowCount, 
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double *objectCoeffs, 
 	  double *lowerBounds, double *upperBounds, char *rowType, double *rhsValues, double *rangeValues, 
