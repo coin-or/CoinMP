@@ -25,6 +25,7 @@ CoinMP/test/Makefile.in -text
 /Externals -text
 /Externals.new -text
 /Externals.rel -text
+/Externals.sta -text
 /Externals.stab -text
 /INSTALL -text
 /LICENSE -text
