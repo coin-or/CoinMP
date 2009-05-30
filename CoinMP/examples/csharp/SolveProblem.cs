@@ -61,8 +61,8 @@ namespace CoinMPTest
             int result;
             int length;
             int i;
-            StringBuilder solutionText = new StringBuilder(100);
-            StringBuilder colName = new StringBuilder(100);
+            StringBuilder solutionText = new StringBuilder(200);
+            String colName;
 
             logTxt.NewLine();
             logTxt.WriteLine("Solve Problem: " + problemName);
@@ -96,7 +96,7 @@ namespace CoinMPTest
             result = CoinMP.CoinWriteFile(hProb, 1, problemName + ".mps");  // SOLV_FILE_MPS
 
             solutionStatus = CoinMP.CoinGetSolutionStatus(hProb);
-            length = CoinMP.CoinGetSolutionText(hProb, solutionStatus, solutionText, solutionText.Capacity);
+            length = CoinMP.CoinGetSolutionTextBuf(hProb, solutionStatus,solutionText, solutionText.Capacity);
             objectValue = CoinMP.CoinGetObjectValue(hProb);
 
             logTxt.WriteLine("Problem Name:    " + problemName);
@@ -118,7 +118,7 @@ namespace CoinMPTest
             {
                 if (activity[i] != 0.0)
                 {
-                    length = CoinMP.CoinGetColName(hProb, i, colName, colName.Capacity);
+                    colName = CoinMP.CoinGetColName(hProb, i);
                     logTxt.WriteLine(colName + " = " + activity[i]);
                 }
             }

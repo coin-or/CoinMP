@@ -22,7 +22,7 @@ namespace CoinMPTest
             InitializeComponent();
 
             result = CoinMP.CoinInitSolver("");
-            length = CoinMP.CoinGetSolverName(solverName, solverName.Capacity);
+            length = CoinMP.CoinGetSolverNameBuf(solverName, solverName.Capacity);
             version = CoinMP.CoinGetVersion();
 
             LogHandler.EmptyText(txtLog);
