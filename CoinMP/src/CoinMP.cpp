@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*  COINMP.DLL                                        Maximal Software  */
+/*  CoinMP.dll                                        Maximal Software  */
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
@@ -81,17 +81,29 @@ SOLVAPI int SOLVCALL CoinFreeSolver(void)
 /************************************************************************/
 
 
-SOLVAPI int  SOLVCALL CoinGetSolverName(char* SolverName, int buflen)
+SOLVAPI char* SOLVCALL CoinGetSolverName(void)
 {
-	strncpy(SolverName, "CoinMP", buflen-1);
+	return "CoinMP";
+}
+
+
+SOLVAPI int  SOLVCALL CoinGetSolverNameBuf(char* SolverName, int buflen)
+{
+	strncpy(SolverName, CoinGetSolverName(), buflen-1);
 	SolverName[buflen-1] = '\0';
 	return (int)strlen(SolverName);
 }
 
 
-SOLVAPI int  SOLVCALL CoinGetVersionStr(char *VersionStr, int buflen)
+SOLVAPI char* SOLVCALL CoinGetVersionStr(void)
 {
-	strncpy(VersionStr, "1.4", buflen-1);
+	return "1.4";
+}
+
+
+SOLVAPI int  SOLVCALL CoinGetVersionStrBuf(char* VersionStr, int buflen)
+{
+	strncpy(VersionStr, CoinGetVersionStr(), buflen-1);
 	VersionStr[buflen-1] = '\0';
 	return (int)strlen(VersionStr);
 }
@@ -147,7 +159,7 @@ void CBMessageHandler::setCallback(MSGLOGCALLBACK msgCallback)
 
 int CBMessageHandler::print()
 {
-	msgCallback_((char *)messageBuffer());
+	msgCallback_((char* )messageBuffer());
 	return CoinMessageHandler::print();
 }
 
@@ -391,40 +403,40 @@ typedef struct {
 				int lenRowNamesBuf;
 				int lenObjNameBuf;
 
-				double *ObjectCoeffs;
-				double *RHSValues;
-				double *RangeValues;
-				char *RowType;
-				int *MatrixBegin;
-				int *MatrixCount;
-				int *MatrixIndex; 
-				double *MatrixValues;
-				double *LowerBounds;
-				double *UpperBounds;
-				char *ColNamesBuf;
-				char *RowNamesBuf;
-				char **ColNamesList;
-				char **RowNamesList;
-				char *ObjectName;
+				double* ObjectCoeffs;
+				double* RHSValues;
+				double* RangeValues;
+				char* RowType;
+				int* MatrixBegin;
+				int* MatrixCount;
+				int* MatrixIndex; 
+				double* MatrixValues;
+				double* LowerBounds;
+				double* UpperBounds;
+				char* ColNamesBuf;
+				char* RowNamesBuf;
+				char** ColNamesList;
+				char** RowNamesList;
+				char* ObjectName;
 
-				char *ColType;
+				char* ColType;
 
 				int SosCount;
 				int SosNZCount;
-				int *SosType;
-				int *SosPrior;
-				int *SosBegin;
-				int *SosIndex;
-				double *SosRef;
+				int* SosType;
+				int* SosPrior;
+				int* SosBegin;
+				int* SosIndex;
+				double* SosRef;
 
-				double *InitValues;
+				double* InitValues;
 
-				double *RowLower;
-				double *RowUpper;
+				double* RowLower;
+				double* RowUpper;
 
 				int IntCount;
 				int BinCount;
-				char *IsInt;
+				char* IsInt;
 				int SolveAsMIP;
 
 				int SolutionStatus;
@@ -519,7 +531,7 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(char* ProblemName)
 }
 
 
-int coinComputeRowLowerUpper(PCOIN pCoin, char *RowType, double *RHSValues, double *RangeValues)
+int coinComputeRowLowerUpper(PCOIN pCoin, char* RowType, double* RHSValues, double* RangeValues)
 {
 	int i;
 	double RangeABS;
@@ -570,11 +582,11 @@ int coinComputeRowLowerUpper(PCOIN pCoin, char *RowType, double *RHSValues, doub
 	return 1;
 }
 
-int coinGetLenNameBuf(char *NameBuf, int Count)
+int coinGetLenNameBuf(char* NameBuf, int Count)
 {
 	int i, len;
 	int lenBuf;
-	char *pName;
+	char* pName;
 
 	lenBuf = 0;
 	pName = &NameBuf[0];
@@ -587,17 +599,17 @@ int coinGetLenNameBuf(char *NameBuf, int Count)
 }
 
 
-int coinGetLenNameBufType(char **NameList, int Count, int LoadNameType)
+int coinGetLenNameBufType(char** NameList, int Count, int LoadNameType)
 {
 	int i, len;
 	int lenBuf;
-	char *NameBuf;
+	char* NameBuf;
 
 	lenBuf = 0;
 	switch (LoadNameType) {
 
 		case SOLV_LOADNAMES_BUFFER:
-			NameBuf = (char *)NameList;
+			NameBuf = (char* )NameList;
 			lenBuf = coinGetLenNameBuf(NameBuf, Count);
 			break;
 
@@ -616,7 +628,7 @@ int coinGetLenNameBufType(char **NameList, int Count, int LoadNameType)
 }
 
 
-int coinSetupNamesList(char **NamesList, char *NamesBuf, char **argNamesList, int Count, int LoadNamesType)
+int coinSetupNamesList(char** NamesList, char* NamesBuf, char** argNamesList, int Count, int LoadNamesType)
 {
 	int i,k,len;
 
@@ -637,7 +649,7 @@ int coinSetupNamesList(char **NamesList, char *NamesBuf, char **argNamesList, in
 
 
 
-void coinLoadNamesList(PCOIN pCoin, char** ColNamesList, char** RowNamesList, char *objectName)
+void coinLoadNamesList(PCOIN pCoin, char** ColNamesList, char** RowNamesList, char* objectName)
 {
 	int i;
 
@@ -668,7 +680,7 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 				double* LowerBounds, double* UpperBounds, char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues, 
-				char** ColNames, char** RowNames, char *ObjectName)
+				char** ColNames, char** RowNames, char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -686,25 +698,25 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 	if (RowNames)   pCoin->lenRowNamesBuf = coinGetLenNameBufType(RowNames, RowCount, pCoin->LoadNamesType);
 	if (ObjectName) pCoin->lenObjNameBuf  = (int)strlen(ObjectName) + 1;
 
-	if (ObjectCoeffs) pCoin->ObjectCoeffs = (double *) malloc(pCoin->ColCount     * sizeof(double));
-	if (RHSValues)    pCoin->RHSValues    = (double *) malloc(pCoin->RowCount     * sizeof(double));
-	if (RangeValues)  pCoin->RangeValues  = (double *) malloc(pCoin->RowCount     * sizeof(double));
-	if (RowType)      pCoin->RowType      = (char *)   malloc(pCoin->RowCount     * sizeof(char));
-	if (MatrixBegin)  pCoin->MatrixBegin  = (int *)    malloc((pCoin->ColCount+1) * sizeof(int));
-	if (MatrixCount)  pCoin->MatrixCount  = (int *)    malloc(pCoin->ColCount     * sizeof(int));
-	if (MatrixIndex)  pCoin->MatrixIndex  = (int *)    malloc(pCoin->NZCount      * sizeof(int)); 
-	if (MatrixValues) pCoin->MatrixValues = (double *) malloc(pCoin->NZCount      * sizeof(double));
-	if (LowerBounds)  pCoin->LowerBounds  = (double *) malloc(pCoin->ColCount     * sizeof(double));
-	if (UpperBounds)  pCoin->UpperBounds  = (double *) malloc(pCoin->ColCount     * sizeof(double));
-	if (ColNames)     pCoin->ColNamesList = (char **)  malloc(pCoin->ColCount     * sizeof(char *));
-	if (RowNames)     pCoin->RowNamesList = (char **)  malloc(pCoin->RowCount     * sizeof(char *));
-	if (ColNames)     pCoin->ColNamesBuf  = (char *)   malloc(pCoin->lenColNamesBuf * sizeof(char));
-	if (RowNames)     pCoin->RowNamesBuf  = (char *)   malloc(pCoin->lenRowNamesBuf * sizeof(char));
-	if (ObjectName)   pCoin->ObjectName   = (char *)   malloc(pCoin->lenObjNameBuf  * sizeof(char));
+	if (ObjectCoeffs) pCoin->ObjectCoeffs = (double*) malloc(pCoin->ColCount     * sizeof(double));
+	if (RHSValues)    pCoin->RHSValues    = (double*) malloc(pCoin->RowCount     * sizeof(double));
+	if (RangeValues)  pCoin->RangeValues  = (double*) malloc(pCoin->RowCount     * sizeof(double));
+	if (RowType)      pCoin->RowType      = (char*)   malloc(pCoin->RowCount     * sizeof(char));
+	if (MatrixBegin)  pCoin->MatrixBegin  = (int*)    malloc((pCoin->ColCount+1) * sizeof(int));
+	if (MatrixCount)  pCoin->MatrixCount  = (int*)    malloc(pCoin->ColCount     * sizeof(int));
+	if (MatrixIndex)  pCoin->MatrixIndex  = (int*)    malloc(pCoin->NZCount      * sizeof(int)); 
+	if (MatrixValues) pCoin->MatrixValues = (double*) malloc(pCoin->NZCount      * sizeof(double));
+	if (LowerBounds)  pCoin->LowerBounds  = (double*) malloc(pCoin->ColCount     * sizeof(double));
+	if (UpperBounds)  pCoin->UpperBounds  = (double*) malloc(pCoin->ColCount     * sizeof(double));
+	if (ColNames)     pCoin->ColNamesList = (char**)  malloc(pCoin->ColCount     * sizeof(char* ));
+	if (RowNames)     pCoin->RowNamesList = (char**)  malloc(pCoin->RowCount     * sizeof(char* ));
+	if (ColNames)     pCoin->ColNamesBuf  = (char*)   malloc(pCoin->lenColNamesBuf * sizeof(char));
+	if (RowNames)     pCoin->RowNamesBuf  = (char*)   malloc(pCoin->lenRowNamesBuf * sizeof(char));
+	if (ObjectName)   pCoin->ObjectName   = (char*)   malloc(pCoin->lenObjNameBuf  * sizeof(char));
 
 	if (pCoin->RowCount > 0) {
-		pCoin->RowLower = (double *)malloc(pCoin->RowCount*sizeof(double));
-		pCoin->RowUpper = (double *)malloc(pCoin->RowCount*sizeof(double));
+		pCoin->RowLower = (double* )malloc(pCoin->RowCount*sizeof(double));
+		pCoin->RowUpper = (double* )malloc(pCoin->RowCount*sizeof(double));
 		if (!pCoin->RowLower || !pCoin->RowUpper) {
 			return SOLV_CALL_FAILED;
 		}
@@ -723,8 +735,8 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 	if (pCoin->ObjectName)   memcpy(pCoin->ObjectName,   ObjectName,   pCoin->lenObjNameBuf  * sizeof(char));
 
 	if (pCoin->LoadNamesType == SOLV_LOADNAMES_BUFFER) {
-		if (pCoin->ColNamesBuf)  memcpy(pCoin->ColNamesBuf,  (char *)ColNames,     pCoin->lenColNamesBuf * sizeof(char));
-		if (pCoin->RowNamesBuf)  memcpy(pCoin->RowNamesBuf,  (char *)RowNames,     pCoin->lenRowNamesBuf * sizeof(char));
+		if (pCoin->ColNamesBuf)  memcpy(pCoin->ColNamesBuf,  (char* )ColNames,     pCoin->lenColNamesBuf * sizeof(char));
+		if (pCoin->RowNamesBuf)  memcpy(pCoin->RowNamesBuf,  (char* )RowNames,     pCoin->lenRowNamesBuf * sizeof(char));
 	}
 	coinSetupNamesList(pCoin->ColNamesList, pCoin->ColNamesBuf, ColNames, ColCount, pCoin->LoadNamesType);
 	coinSetupNamesList(pCoin->RowNamesList, pCoin->RowNamesBuf, RowNames, RowCount, pCoin->LoadNamesType);
@@ -751,7 +763,7 @@ SOLVAPI int SOLVCALL CoinLoadProblemBuf(HPROB hProb,
 				double* LowerBounds, double* UpperBounds, char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues, 
-				char* ColNames, char* RowNames, char *ObjectName)
+				char* ColNames, char* RowNames, char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	int StoreLoadNamesType;
@@ -762,7 +774,7 @@ SOLVAPI int SOLVCALL CoinLoadProblemBuf(HPROB hProb,
 	result = CoinLoadProblem(hProb, ColCount, RowCount, NZCount, RangeCount,
 				ObjectSense, ObjectConst, ObjectCoeffs, LowerBounds, UpperBounds, RowType,
 				RHSValues, RangeValues, MatrixBegin, MatrixCount, MatrixIndex, MatrixValues,
-				(char **)ColNames, (char **)RowNames, ObjectName);
+				(char**)ColNames, (char**)RowNames, ObjectName);
 	pCoin->LoadNamesType = StoreLoadNamesType;
 	return result;
 }
@@ -772,7 +784,7 @@ SOLVAPI int SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	if (InitValues)   pCoin->InitValues   = (double *) malloc(pCoin->ColCount     * sizeof(double));
+	if (InitValues)   pCoin->InitValues   = (double* ) malloc(pCoin->ColCount     * sizeof(double));
 
 	if (pCoin->InitValues)   memcpy(pCoin->InitValues,   InitValues,   pCoin->ColCount     * sizeof(double));
 	return SOLV_CALL_SUCCESS;
@@ -788,13 +800,13 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 		return SOLV_CALL_FAILED;
 	}
 	if (ColType) {
-		pCoin->ColType = (char *)malloc(pCoin->ColCount * sizeof(char));
+		pCoin->ColType = (char* )malloc(pCoin->ColCount * sizeof(char));
 		if (!pCoin->ColType) {
 			return SOLV_CALL_FAILED;
 		}
 		memcpy(pCoin->ColType, ColType, pCoin->ColCount * sizeof(char));
 	}
-	pCoin->IsInt = (char *)malloc(pCoin->ColCount*sizeof(char));
+	pCoin->IsInt = (char* )malloc(pCoin->ColCount*sizeof(char));
 	if (!pCoin->IsInt) {
 		return SOLV_CALL_FAILED;
 	}
@@ -844,14 +856,14 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 
 
 
-SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int *PriorIndex, 
-									  int *PriorValues, int *BranchDir)
+SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
+									  int* PriorValues, int* BranchDir)
 {
 	return SOLV_CALL_FAILED;
 }
 
 
-SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int *SemiIndex)
+SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex)
 {
 	return SOLV_CALL_FAILED;
 }
@@ -863,7 +875,7 @@ SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	int sos, count;
-	int *which;
+	int* which;
 	int type;
 
 	if ((SosCount == 0) || (SosNZCount == 0)) {
@@ -872,11 +884,11 @@ SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 	pCoin->SosCount = SosCount;
 	pCoin->SosNZCount = SosNZCount;
 
-	if (SosType)  pCoin->SosType  = (int *)malloc(SosCount     * sizeof(int));
-	if (SosPrior) pCoin->SosPrior = (int *)malloc(SosCount     * sizeof(int));
-	if (SosBegin) pCoin->SosBegin = (int *)malloc((SosCount+1) * sizeof(int));
-	if (SosIndex) pCoin->SosIndex = (int *)malloc(SosNZCount   * sizeof(int));
-	if (SosRef)   pCoin->SosRef   = (double *)malloc(SosNZCount* sizeof(double));
+	if (SosType)  pCoin->SosType  = (int* )malloc(SosCount     * sizeof(int));
+	if (SosPrior) pCoin->SosPrior = (int* )malloc(SosCount     * sizeof(int));
+	if (SosBegin) pCoin->SosBegin = (int* )malloc((SosCount+1) * sizeof(int));
+	if (SosIndex) pCoin->SosIndex = (int* )malloc(SosNZCount   * sizeof(int));
+	if (SosRef)   pCoin->SosRef   = (double* )malloc(SosNZCount* sizeof(double));
 
 	if (pCoin->SosType)  memcpy(pCoin->SosType,  SosType,  SosCount     * sizeof(int));
 	if (pCoin->SosPrior) memcpy(pCoin->SosPrior, SosPrior, SosCount     * sizeof(int));
@@ -908,17 +920,17 @@ SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 }
 
 
-SOLVAPI int SOLVCALL CoinLoadQuadratic(HPROB hProb, int *QuadBegin, int *QuadCount, 
-										int *QuadIndex, double *QuadValues)
+SOLVAPI int SOLVCALL CoinLoadQuadratic(HPROB hProb, int* QuadBegin, int* QuadCount, 
+										int* QuadIndex, double* QuadValues)
 {
 	return SOLV_CALL_FAILED;
 }
 
 
 SOLVAPI int SOLVCALL CoinLoadNonlinear(HPROB hProb, int NlpTreeCount, int NlpLineCount, 
-										int *NlpBegin, int *NlpOper, int *NlpArg1, 
-										int *NlpArg2, int *NlpIndex1, int *NlpIndex2, 
-										double *NlpValue1, double *NlpValue2)
+										int* NlpBegin, int* NlpOper, int* NlpArg1, 
+										int* NlpArg2, int* NlpIndex1, int* NlpIndex2, 
+										double* NlpValue1, double* NlpValue2)
 {
 	return SOLV_CALL_FAILED;
 }
@@ -1088,11 +1100,19 @@ SOLVAPI int SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType)
 /************************************************************************/
 
 
-SOLVAPI int SOLVCALL CoinGetProblemName(HPROB hProb, char *ProbName, int buflen)
+SOLVAPI char* SOLVCALL CoinGetProblemName(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strncpy(ProbName, pCoin->ProblemName, buflen-1);
+	return pCoin->ProblemName;
+}
+
+
+SOLVAPI int SOLVCALL CoinGetProblemNameBuf(HPROB hProb, char* ProbName, int buflen)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	strncpy(ProbName, CoinGetProblemName(hProb), buflen-1);
 	ProbName[buflen-1] = '\0';
 	return (int)strlen(ProbName);
 }
@@ -1116,21 +1136,37 @@ SOLVAPI int SOLVCALL CoinGetRowCount(HPROB hProb)
 
 
 
-SOLVAPI int SOLVCALL CoinGetColName(HPROB hProb, int col, char *ColName, int buflen)
+SOLVAPI char* SOLVCALL CoinGetColName(HPROB hProb, int col)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strncpy(ColName, pCoin->ColNamesList[col], buflen-1);
+	return pCoin->ColNamesList[col];
+}
+
+
+SOLVAPI int SOLVCALL CoinGetColNameBuf(HPROB hProb, int col, char* ColName, int buflen)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	strncpy(ColName, CoinGetColName(hProb, col), buflen-1);
 	ColName[buflen-1] = '\0';
 	return (int)strlen(ColName);
 }
 
 
-SOLVAPI int SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName, int buflen)
+SOLVAPI char* SOLVCALL CoinGetRowName(HPROB hProb, int row)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	strncpy(RowName, pCoin->RowNamesList[row], buflen-1);
+	return pCoin->RowNamesList[row];
+}
+
+
+SOLVAPI int SOLVCALL CoinGetRowNameBuf(HPROB hProb, int row, char* RowName, int buflen)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	strncpy(RowName, CoinGetRowName(hProb, row), buflen-1);
 	RowName[buflen-1] = '\0';
 	return (int)strlen(RowName);
 }
@@ -1141,7 +1177,7 @@ SOLVAPI int SOLVCALL CoinGetRowName(HPROB hProb, int row, char *RowName, int buf
 /************************************************************************/
 
 
-int coinWriteMsgLog(char *FormatStr, ...)
+int coinWriteMsgLog(char* FormatStr, ...)
 {
 	va_list pVa;
 	char strbuf[256];
@@ -1405,7 +1441,7 @@ int coinSetupSosObject(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	int sos, count;
-	int *which;
+	int* which;
 	int type;
 
 	for (sos = 0; sos < pCoin->SosCount; sos++) {
@@ -1449,7 +1485,7 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 			//coinSetCglOptions(hProb);  BK: CbcMain1 should be calling the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			const int argc = 3;
-			const char *argv[] = {"CoinMP", "-solve", "-quit"};
+			const char* argv[] = {"CoinMP", "-solve", "-quit"};
 			CbcMain1(argc,argv,*pCoin->cbc);
 			pCoin->SolutionStatus = pCoin->cbc->status();
 			}
@@ -1485,7 +1521,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionStatus(HPROB hProb)
 
   
 
-SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen)
+SOLVAPI char* SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -1500,7 +1536,13 @@ SOLVAPI int SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus, char* 
 			sprintf(pCoin->SolutionText, "Unknown solution status (%d)", SolutionStatus);
 			break;
 	}
-	strncpy(SolutionText, pCoin->SolutionText, buflen-1);
+	return pCoin->SolutionText;
+}
+
+
+SOLVAPI int SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen)
+{
+	strncpy(SolutionText, CoinGetSolutionText(hProb, SolutionStatus), buflen-1);
 	SolutionText[buflen-1] = '\0';
 	return (int)strlen(SolutionText);
 }
@@ -1566,10 +1608,10 @@ SOLVAPI int SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double
 											 double* SlackValues, double* ShadowPrice)
 {
    PCOIN pCoin = (PCOIN)hProb;
-	const double *columnPrimal;
-	const double *columnDual;
-	const double *rowPrimal;
-	const double *rowDual;
+	const double* columnPrimal;
+	const double* columnDual;
+	const double* rowPrimal;
+	const double* rowDual;
 	int i;
 
 	if (pCoin->SolveAsMIP) {
@@ -1612,15 +1654,15 @@ SOLVAPI int SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double
 
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionRanges(HPROB hProb, double *ObjLoRange, double *ObjUpRange,
-											 double *RhsLoRange, double *RhsUpRange)
+SOLVAPI int SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, double* ObjUpRange,
+											 double* RhsLoRange, double* RhsUpRange)
 {
 	return SOLV_CALL_FAILED;
 }
 
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int *ColStatus, double *RowStatus)
+SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus)
 {
 	return SOLV_CALL_FAILED;
 }
@@ -1862,27 +1904,63 @@ SOLVAPI int SOLVCALL CoinGetOptionCount(HPROB hProb)
 }
 
 
-SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType,
-										int* OptionType, char* OptionName, char* ShortName, int buflen)
+SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType, int* OptionType)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (OptionID)   *OptionID = OptionTable[OptionNr].OptionID;
 	if (OptionType) *OptionType = OptionTable[OptionNr].OptionType;
+	if (GroupType)  *GroupType = OptionTable[OptionNr].GroupType;
+	return SOLV_CALL_SUCCESS;
+}
+
+
+SOLVAPI char* SOLVCALL CoinGetOptionName(HPROB hProb, int OptionNr)
+{
+	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+		return "";
+	}
+	return OptionTable[OptionNr].OptionName;
+}
+
+
+SOLVAPI int SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionNr, char* OptionName, int buflen)
+{
+	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+		return SOLV_CALL_FAILED;
+	}
 	if (OptionName) {
-		strncpy(OptionName, OptionTable[OptionNr].OptionName, buflen-1);
+		strncpy(OptionName, CoinGetOptionName(hProb, OptionNr), buflen-1);
 		OptionName[buflen-1] = '\0';
 	}
+	return SOLV_CALL_SUCCESS;
+}
+
+
+SOLVAPI char* SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionNr)
+{
+	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+		return "";
+	}
+	return OptionTable[OptionNr].ShortName;
+}
+
+
+SOLVAPI int SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionNr, char* ShortName, int buflen)
+{
+	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+		return SOLV_CALL_FAILED;
+	}
 	if (ShortName) {
-		strncpy(ShortName, OptionTable[OptionNr].ShortName, buflen-1);
+		strncpy(ShortName, CoinGetOptionShortName(hProb, OptionNr), buflen-1);
 		ShortName[buflen-1] = '\0';
 	}
 	return SOLV_CALL_SUCCESS;
 }
 
 
-SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinValue, int *MaxValue)
+SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int* MinValue, int* MaxValue)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
@@ -1893,7 +1971,7 @@ SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int *MinV
 }
 
 
-SOLVAPI int SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double *MinValue, double *MaxValue)
+SOLVAPI int SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double* MinValue, double* MaxValue)
 {
 	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
@@ -2004,7 +2082,15 @@ SOLVAPI int SOLVCALL CoinSetRealOption(HPROB hProb,int OptionID, double RealValu
 }
 
 
-SOLVAPI int SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID, char* StringValue, int buflen)
+SOLVAPI char* SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID)
+{
+   PCOIN pCoin = (PCOIN)hProb;
+
+   return "";
+}
+
+
+SOLVAPI int SOLVCALL CoinGetStringOptionBuf(HPROB hProb, int OptionID, char* StringValue, int buflen)
 {
    PCOIN pCoin = (PCOIN)hProb;
 

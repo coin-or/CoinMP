@@ -5,7 +5,9 @@ EXPORTS
 	CoinInitSolver
 	CoinFreeSolver
 	CoinGetSolverName
+	CoinGetSolverNameBuf
 	CoinGetVersionStr
+	CoinGetVersionStrBuf
 	CoinGetVersion
 	CoinGetFeatures
 	CoinGetMethods
@@ -24,16 +26,20 @@ EXPORTS
 	CoinCheckProblem
 	CoinSetLoadNamesType
 	CoinGetProblemName
+	CoinGetProblemNameBuf
 	CoinGetColCount
 	CoinGetRowCount
 	CoinGetColName
+	CoinGetColNameBuf
 	CoinGetRowName
+	CoinGetRowNameBuf
 	CoinSetMsgLogCallback
 	CoinSetIterCallback
 	CoinSetMipNodeCallback
 	CoinOptimizeProblem
 	CoinGetSolutionStatus
 	CoinGetSolutionText
+	CoinGetSolutionTextBuf
 	CoinGetObjectValue
 	CoinGetMipBestBound
 	CoinGetIterCount
@@ -47,6 +53,10 @@ EXPORTS
 	CoinCloseLogFile
 	CoinGetOptionCount
 	CoinGetOptionInfo
+	CoinGetOptionName
+	CoinGetOptionNameBuf
+	CoinGetOptionShortName
+	CoinGetOptionShortNameBuf
 	CoinGetIntOptionMinMax
 	CoinGetRealOptionMinMax
 	CoinGetOptionChanged
@@ -55,5 +65,6 @@ EXPORTS
 	CoinGetRealOption
 	CoinSetRealOption
 	CoinGetStringOption
+	CoinGetStringOptionBuf
 	CoinSetStringOption
 	
