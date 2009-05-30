@@ -50,8 +50,8 @@ Public Const SOLV_FILE_IIS       As Long = 8
 Public Declare Function CoinInitSolver Lib "CoinMP.dll" (ByVal licenseStr As String) As Long
 Public Declare Function CoinFreeSolver Lib "CoinMP.dll" () As Long
 
-Public Declare Function CoinGetSolverName Lib "CoinMP.dll" (ByVal solverName As String, ByVal buflen As Long) As Long
-Public Declare Function CoinGetVersionStr Lib "CoinMP.dll" (ByVal versionStr As String, ByVal buflen As Long) As Long
+Public Declare Function CoinGetSolverNameBuf Lib "CoinMP.dll" (ByVal solverName As String, ByVal buflen As Long) As Long
+Public Declare Function CoinGetVersionStrBuf Lib "CoinMP.dll" (ByVal versionStr As String, ByVal buflen As Long) As Long
 Public Declare Function CoinGetVersion Lib "CoinMP.dll" () As Double
 Public Declare Function CoinGetFeatures Lib "CoinMP.dll" () As Long
 Public Declare Function CoinGetMethods Lib "CoinMP.dll" () As Long
@@ -100,17 +100,17 @@ Public Declare Function CoinSetLoadNamesType Lib "CoinMP.dll" (ByVal hProb As Lo
     ByVal LoadNamesType As Long) As Long
 
 
-Public Declare Function CoinGetProblemName Lib "CoinMP.dll" (ByVal hProb As Long, _
+Public Declare Function CoinGetProblemNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal ProbName As String, ByVal buflen As Long) As Long
 
 Public Declare Function CoinGetColCount Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
 Public Declare Function CoinGetRowCount Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
-Public Declare Function CoinGetColName Lib "CoinMP.dll" (ByVal hProb As Long, _
+Public Declare Function CoinGetColNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal col As Long, ByVal colName As String, ByVal buflen As Long) As Long
     
-Public Declare Function CoinGetRowName Lib "CoinMP.dll" (ByVal hProb As Long, _
+Public Declare Function CoinGetRowNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal row As Long, ByVal RowName As String, ByVal buflen As Long) As Long
 
 
@@ -130,7 +130,7 @@ Public Declare Function CoinOptimizeProblem Lib "CoinMP.dll" (ByVal hProb As Lon
     
 Public Declare Function CoinGetSolutionStatus Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
-Public Declare Function CoinGetSolutionText Lib "CoinMP.dll" (ByVal hProb As Long, _
+Public Declare Function CoinGetSolutionTextBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal solutionStatus As Long, ByVal solutionText As String, ByVal buflen As Long) As Long
     
 Public Declare Function CoinGetObjectValue Lib "CoinMP.dll" (ByVal hProb As Long) As Double
@@ -169,7 +169,13 @@ Public Declare Function CoinGetOptionCount Lib "CoinMP.dll" (ByVal hProb As Long
 
 Public Declare Function CoinGetOptionInfo Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionNr As Long, ByRef OptionID As Long, ByRef GroupType As Long, _
-    ByRef OptionType As Long, ByVal OptionName As String, ByVal ShortName As String) As Long
+    ByRef OptionType As Long) As Long
+
+Public Declare Function CoinGetOptionNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
+    ByVal OptionNr As Long, ByVal OptionName As String, ByVal buflen As Long) As Long
+
+Public Declare Function CoinGetOptionShortNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
+    ByVal OptionNr As Long, ByVal ShortName As String, ByVal buflen As Long) As Long
 
 Public Declare Function CoinGetIntOptionMinMax Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionNr As Long, ByRef MinValue As Long, ByRef MaxValue As Long) As Long
@@ -192,7 +198,7 @@ Public Declare Function CoinGetRealOption Lib "CoinMP.dll" (ByVal hProb As Long,
 Public Declare Function CoinSetRealOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, ByVal RealValue As Double) As Long
 
-Public Declare Function CoinGetStringOption Lib "CoinMP.dll" (ByVal hProb As Long, _
+Public Declare Function CoinGetStringOptionBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, ByVal StringValue As String, ByVal buflen As Long) As Long
     
 Public Declare Function CoinSetStringOption Lib "CoinMP.dll" (ByVal hProb As Long, _

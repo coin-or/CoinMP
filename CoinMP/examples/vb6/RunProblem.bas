@@ -69,7 +69,7 @@ Dim ch As String
     solutionStatus = CoinGetSolutionStatus(hProb)
     
     solutionText = String(MAX_NAME_LEN, vbNullChar)
-    length = CoinGetSolutionText(hProb, solutionStatus, solutionText, MAX_NAME_LEN)
+    length = CoinGetSolutionTextBuf(hProb, solutionStatus, solutionText, MAX_NAME_LEN)
     solutionText = Left(solutionText, length)
     
     objectValue = CoinGetObjectValue(hProb)
@@ -91,7 +91,7 @@ Dim ch As String
     For i = 0 To colCount - 1
         If activity(i) <> 0# Then
             colName = String(MAX_NAME_LEN, vbNullChar)
-            length = CoinGetColName(hProb, i, colName, MAX_NAME_LEN)
+            length = CoinGetColNameBuf(hProb, i, colName, MAX_NAME_LEN)
             colName = Left(colName, length)
             LogWriteLine colName & " = " & activity(i)
         End If

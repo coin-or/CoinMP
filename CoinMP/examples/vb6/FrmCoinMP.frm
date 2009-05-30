@@ -70,7 +70,7 @@ Dim version As Double
     result = CoinInitSolver("")
     
     solverName = String(MAX_NAME_LEN, vbNullChar)
-    length = CoinGetSolverName(solverName, MAX_NAME_LEN)
+    length = CoinGetSolverNameBuf(solverName, MAX_NAME_LEN)
     solverName = Left(solverName, length)
     
     version = CoinGetVersion()
