@@ -133,8 +133,10 @@ typedef int (SOLVCALL *MIPNODECALLBACK)(int    IterCount,
 SOLVAPI int    SOLVCALL CoinInitSolver(char* LicenseStr);
 SOLVAPI int    SOLVCALL CoinFreeSolver(void);
 
+/* FIXME function should return a const char* */
 SOLVAPI char*  SOLVCALL CoinGetSolverName(void);
 SOLVAPI int    SOLVCALL CoinGetSolverNameBuf(char* SolverName, int buflen);
+/* FIXME function should return a const char* */
 SOLVAPI char*  SOLVCALL CoinGetVersionStr(void);
 SOLVAPI int    SOLVCALL CoinGetVersionStrBuf(char* VersionStr, int buflen);
 SOLVAPI double SOLVCALL CoinGetVersion(void);
@@ -232,9 +234,11 @@ SOLVAPI int    SOLVCALL CoinCloseLogFile(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetOptionCount(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType, int* OptionType);
 
+/* FIXME function should return a const char* */
 SOLVAPI char*  SOLVCALL CoinGetOptionName(HPROB hProb, int OptionNr);
 SOLVAPI int    SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionNr, char* OptionName, int buflen);
 
+/* FIXME function should return a const char* */
 SOLVAPI char*  SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionNr);
 SOLVAPI int    SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionNr, char* ShortName, int buflen);
 
@@ -249,6 +253,7 @@ SOLVAPI int    SOLVCALL CoinSetIntOption(HPROB hProb, int OptionID, int IntValue
 SOLVAPI double SOLVCALL CoinGetRealOption(HPROB hProb, int OptionID);
 SOLVAPI int    SOLVCALL CoinSetRealOption(HPROB hProb, int OptionID, double RealValue);
 
+/* FIXME function should return a const char* */
 SOLVAPI char*  SOLVCALL CoinGetStringOption(HPROB hProb, int OptionID);
 SOLVAPI int    SOLVCALL CoinGetStringOptionBuf(HPROB hProb, int OptionID, char* StringValue, int buflen);
 SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, char* StringValue);
