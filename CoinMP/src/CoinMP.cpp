@@ -1894,7 +1894,7 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 	  "MipCutSimpleRounding",   "CutSimpRound", GRP_MIPCUTS,        0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_SIMPROUND,
 	  "MipSimpleRoundFrequency","SimpRoundFreq",GRP_MIPCUTS,       -1,       -1,-MAXINT,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPSIMPROUND_FREQ,
 
-	  "MipUseCbcMain",          "UseCbcMain",   GRP_MIPSTRAT,       1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPUSECBCMAIN,
+	  "MipUseCbcMain",          "UseCbcMain",   GRP_MIPSTRAT,       1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPUSECBCMAIN
 	};
 
 
@@ -1912,7 +1912,7 @@ SOLVAPI int SOLVCALL CoinGetOptionCount(HPROB hProb)
 
 SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType, int* OptionType)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (OptionID)   *OptionID = OptionTable[OptionNr].OptionID;
@@ -1924,7 +1924,7 @@ SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID,
 
 SOLVAPI char* SOLVCALL CoinGetOptionName(HPROB hProb, int OptionNr)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return "";
 	}
 	return OptionTable[OptionNr].OptionName;
@@ -1933,7 +1933,7 @@ SOLVAPI char* SOLVCALL CoinGetOptionName(HPROB hProb, int OptionNr)
 
 SOLVAPI int SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionNr, char* OptionName, int buflen)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (OptionName) {
@@ -1946,7 +1946,7 @@ SOLVAPI int SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionNr, char* Optio
 
 SOLVAPI char* SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionNr)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return "";
 	}
 	return OptionTable[OptionNr].ShortName;
@@ -1955,7 +1955,7 @@ SOLVAPI char* SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionNr)
 
 SOLVAPI int SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionNr, char* ShortName, int buflen)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (ShortName) {
@@ -1968,7 +1968,7 @@ SOLVAPI int SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionNr, char* 
 
 SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int* MinValue, int* MaxValue)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (MinValue)   *MinValue = ROUND(OptionTable[OptionNr].MinValue);
@@ -1979,7 +1979,7 @@ SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int* MinV
 
 SOLVAPI int SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double* MinValue, double* MaxValue)
 {
-	if ((OptionNr < 0) && (OptionNr >= OPTIONCOUNT)) {
+	if ((OptionNr < 0) || (OptionNr >= OPTIONCOUNT)) {
 		return SOLV_CALL_FAILED;
 	}
 	if (MinValue)   *MinValue = OptionTable[OptionNr].MinValue;
