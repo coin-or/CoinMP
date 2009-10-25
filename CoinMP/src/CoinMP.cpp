@@ -942,7 +942,13 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
    PCOIN pCoin = (PCOIN)hProb;
 	
 	if (pCoin) {
+		delete pCoin->msghandler;
+		delete pCoin->iterhandler;
+		delete pCoin->nodehandler;
 		delete pCoin->clp;
+		delete pCoin->clp_presolve;
+		delete pCoin->cbc;
+
 		if (pCoin->ObjectCoeffs) free(pCoin->ObjectCoeffs);
 		if (pCoin->RHSValues)    free(pCoin->RHSValues);
 		if (pCoin->RangeValues)  free(pCoin->RangeValues);
