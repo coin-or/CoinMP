@@ -147,8 +147,8 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinGetColCount(IntPtr hProb);
         [DllImport("coinmp.dll")] public static extern int CoinGetRowCount(IntPtr hProb);
 
-        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionValues(IntPtr hProb, double[] activity,
-                        double[] reducedCost, double[] slackValues, double[] shadowPrice);
+        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionValues(IntPtr hProb, [In, Out] double[] activity,
+                [In, Out] double[] reducedCost, [In, Out] double[] slackValues, [In, Out] double[] shadowPrice);
 
         [DllImport("coinmp.dll")] public static extern String CoinGetColName(IntPtr hProb, int col);
         [DllImport("coinmp.dll")] public static extern int CoinGetColNameBuf(IntPtr hProb, int col, StringBuilder colName, int buflen);
