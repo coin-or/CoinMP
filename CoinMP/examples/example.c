@@ -42,13 +42,13 @@ int SOLVCALL MipNodeCallback(int    IterCount,
 void GetAndCheckSolution(double optimalValue, HPROB hProb)
 {
 	int solutionStatus;
-	char* solutionText;
+	const char* solutionText;
 	double objectValue;
 	int i;
 	int colCount;
 	double* xValues;
-	char* ColName;
-	char* problemName;
+	const char* ColName;
+	const char* problemName;
 
 	problemName = CoinGetProblemName(hProb);
 	solutionStatus = CoinGetSolutionStatus(hProb);
@@ -584,7 +584,7 @@ void SolveProblemGamsSos2a(void)
 
 int main (int argc, char* argv[])
 {
-	char* SolverName;
+	const char* SolverName;
 	double CoinVersion;
 
 	CoinInitSolver("");
