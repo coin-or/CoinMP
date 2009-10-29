@@ -420,6 +420,7 @@ int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, const char* St
 #define COIN_REAL_MIPINFWEIGHT     31
 #define COIN_REAL_MIPCUTOFF        32
 #define COIN_REAL_MIPABSGAP        33
+#define COIN_REAL_MIPFRACGAP       34
 
 #define COIN_INT_MIPCUT_PROBING          110
 #define COIN_INT_MIPPROBE_FREQ           111
