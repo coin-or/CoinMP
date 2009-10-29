@@ -1301,10 +1301,10 @@ int coinSetClpOptions(HPROB hProb)
 
 	if (CoinGetOptionChanged(hProb, COIN_INT_MAXITER))			pCoin->clp->setMaximumIterations(CoinGetIntOption(hProb, COIN_INT_MAXITER));
 
-	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJLIM));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJLIM))		pCoin->clp->setDualObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_DUALOBJLIM));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJTOL))	pCoin->clp->setPrimalTolerance(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJTOL));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJTOL))		pCoin->clp->setDualTolerance(CoinGetIntOption(hProb, COIN_REAL_DUALOBJTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetRealOption(hProb, COIN_REAL_PRIMALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJLIM))		pCoin->clp->setDualObjectiveLimit(CoinGetRealOption(hProb, COIN_REAL_DUALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJTOL))	pCoin->clp->setPrimalTolerance(CoinGetRealOption(hProb, COIN_REAL_PRIMALOBJTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJTOL))		pCoin->clp->setDualTolerance(CoinGetRealOption(hProb, COIN_REAL_DUALOBJTOL));
 
 	if (CoinGetOptionChanged(hProb, COIN_INT_PRIMALPIVOTALG)) {
 		ClpPrimalColumnSteepest primalSteepest(CoinGetIntOption(hProb, COIN_INT_PRIMALPIVOTALG));
@@ -1318,7 +1318,7 @@ int coinSetClpOptions(HPROB hProb)
 
 	if (CoinGetOptionChanged(hProb, COIN_INT_CRASHIND)) { 
 		if (CoinGetIntOption(hProb, COIN_INT_CRASHIND)) {
-			pCoin->clp->crash(CoinGetIntOption(hProb, COIN_REAL_CRASHGAP),
+			pCoin->clp->crash(CoinGetRealOption(hProb, COIN_REAL_CRASHGAP),
 								CoinGetIntOption(hProb, COIN_INT_CRASHPIVOT));
 		}
 	}
