@@ -844,6 +844,7 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 		for (i = 0; i < pCoin->ColCount; i++) {
 			if (pCoin->IsInt[i]) {
 				pCoin->cbc->solver()->setInteger(i);
+				pCoin->osi->setInteger(i);
 			}
 		}
 #ifdef NEW_STYLE_CBCMAIN
@@ -1711,7 +1712,7 @@ SOLVAPI int SOLVCALL CoinWriteFile(HPROB hProb, int FileType, const char* WriteF
 
 	switch (FileType) {
 		case SOLV_FILE_MPS:		
-			pCoin->clp->writeMps(WriteFilename);   
+			pCoin->osi->writeMps(WriteFilename,"", pCoin->ObjectSense);   
 			break;
 
 		case SOLV_FILE_LP: 
