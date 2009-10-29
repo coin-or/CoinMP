@@ -527,6 +527,10 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->SolutionStatus = 0;
 	strcpy(pCoin->SolutionText, "");
 
+	pCoin->MessageLogCallback = NULL;
+	pCoin->IterationCallback = NULL;
+	pCoin->MipNodeCallback = NULL;
+
 	return (HPROB)pCoin;
 }
 
@@ -1184,7 +1188,9 @@ int coinWriteMsgLog(const char* FormatStr, ...)
 
 	va_start(pVa,FormatStr);
 	vsprintf(strbuf,FormatStr,pVa);
-	global_pCoin->MessageLogCallback(strbuf);
+	if (global_pCoin->MessageLogCallback) {
+		global_pCoin->MessageLogCallback(strbuf);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1201,7 +1207,9 @@ int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, doubl
 			}
 		}
 	}
-	global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
+	if (global_pCoin->IterationCallback) {
+		global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1212,7 +1220,9 @@ int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double B
 		coinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
 		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
 	}
-	global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	if (global_pCoin->MipNodeCallback) {
+		global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
