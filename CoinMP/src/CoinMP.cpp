@@ -1367,6 +1367,7 @@ int coinSetClpOptions(HPROB hProb)
 	if (CoinGetOptionChanged(hProb, COIN_INT_SCALING))			pCoin->clp->scaling(CoinGetIntOption(hProb,COIN_INT_SCALING));
 	if (CoinGetOptionChanged(hProb, COIN_INT_PERTURBATION))		pCoin->clp->setPerturbation(CoinGetIntOption(hProb, COIN_INT_PERTURBATION));
 
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MAXSECONDS))		pCoin->clp->setMaximumSeconds(CoinGetIntOption(hProb, COIN_REAL_MAXSECONDS));
 	if (CoinGetOptionChanged(hProb, COIN_INT_MAXITER))			pCoin->clp->setMaximumIterations(CoinGetIntOption(hProb, COIN_INT_MAXITER));
 
 	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetRealOption(hProb, COIN_REAL_PRIMALOBJLIM));
