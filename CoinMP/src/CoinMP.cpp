@@ -1560,8 +1560,12 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 	else {
 #ifdef NEW_STYLE_CBCMAIN
 		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
-			//coinSetClpOptions(hProb);
-			//coinSetCbcOptions(hProb);
+			if (!pCoin->CbcMain0Already) {
+				CbcMain0(*pCoin->cbc);
+				pCoin->CbcMain0Already = 1;
+			}
+			coinSetClpOptions(hProb);
+			coinSetCbcOptions(hProb);
 			//coinSetCglOptions(hProb);  BK: CbcMain1 should be calling the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			const int argc = 3;
