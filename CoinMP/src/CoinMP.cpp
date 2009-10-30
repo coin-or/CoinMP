@@ -1797,7 +1797,7 @@ typedef struct {
         } SOLVOPTINFO, *PSOLVOPT;
 
 
-#define OPTIONCOUNT    67
+#define OPTIONCOUNT    68
 
 
 
