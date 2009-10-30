@@ -440,6 +440,11 @@ typedef struct {
 				int* SosIndex;
 				double* SosRef;
 
+				int PriorCount;
+				int* PriorIndex;
+				int* PriorValues;
+				int* BranchDir;
+
 				int SolutionStatus;
 				char SolutionText[200];
 
@@ -516,6 +521,7 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->SolveAsMIP	= 0;
 	pCoin->IntCount		= 0;
 	pCoin->BinCount		= 0;
+	pCoin->numInts		= 0;
 	pCoin->IsInt		= NULL;
 
 	pCoin->SosCount		= 0;
@@ -525,6 +531,11 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->SosBegin		= NULL;
 	pCoin->SosIndex		= NULL;
 	pCoin->SosRef		= NULL;
+
+	pCoin->PriorCount	= 0;
+	pCoin->PriorIndex	= NULL;
+	pCoin->PriorValues	= NULL;
+	pCoin->BranchDir	= NULL;
 
 	pCoin->SolutionStatus = 0;
 	strcpy(pCoin->SolutionText, "");
@@ -847,6 +858,7 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 			if (pCoin->IsInt[i]) {
 				pCoin->cbc->solver()->setInteger(i);
 				pCoin->osi->setInteger(i);
+				pCoin->numInts++;
 			}
 		}
 #ifdef NEW_STYLE_CBCMAIN
@@ -987,6 +999,9 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 		if (pCoin->SosIndex)	 free(pCoin->SosIndex);
 		if (pCoin->SosRef)		 free(pCoin->SosRef);
 
+		if (pCoin->PriorIndex)	 free(pCoin->PriorIndex);
+		if (pCoin->PriorValues)	 free(pCoin->PriorValues);
+		if (pCoin->BranchDir)	 free(pCoin->BranchDir);
 	}
 	free(pCoin);
 	pCoin = NULL;
