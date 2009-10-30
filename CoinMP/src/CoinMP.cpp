@@ -878,7 +878,57 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
 									  int* PriorValues, int* BranchDir)
 {
-	return SOLV_CALL_FAILED;
+	PCOIN pCoin = (PCOIN)hProb;
+	int *priorVar;
+	int *priorCbc;
+	int i,k;
+
+	pCoin->PriorCount = PriorCount;
+	if (PriorIndex)  pCoin->PriorIndex  = (int* )malloc(PriorCount * sizeof(int));
+	if (PriorValues) pCoin->PriorValues = (int* )malloc(PriorCount * sizeof(int));
+	if (BranchDir)	 pCoin->BranchDir   = (int* )malloc(PriorCount * sizeof(int));
+	if (pCoin->PriorIndex)  memcpy(pCoin->PriorIndex,  PriorIndex,  PriorCount * sizeof(int));
+	if (pCoin->PriorValues) memcpy(pCoin->PriorValues, PriorValues, PriorCount * sizeof(int));
+	if (pCoin->BranchDir)   memcpy(pCoin->BranchDir,   BranchDir,   PriorCount * sizeof(int));
+
+	if (!pCoin->SolveAsMIP) {
+		return SOLV_CALL_FAILED;
+	}
+	if (!pCoin->IsInt) {
+		return SOLV_CALL_FAILED;
+	}
+
+	priorVar = (int *)malloc(pCoin->ColCount * sizeof(int));
+	if (!priorVar) {
+		return SOLV_CALL_FAILED;
+	}
+	//reset the priorVar
+	for (i = 0; i < pCoin->ColCount; i++) {
+		priorVar[i] = 1000;
+	}
+	for (i = 0; i < PriorCount; i++) {
+		if ((PriorIndex[i] < 0) || (PriorIndex[i] >= pCoin->ColCount)) {
+			free(priorVar);
+			return SOLV_CALL_FAILED;
+		}
+		priorVar[PriorIndex[i]] = PriorValues[i];
+	}
+	//Create an array to give to cbc
+	priorCbc = (int *)malloc(pCoin->numInts * sizeof(int));
+	if (!priorCbc) {
+		free(priorVar);
+		return SOLV_CALL_FAILED;
+	}
+	k = 0;
+	for (i = 0; i < pCoin->ColCount; i++) {
+		if (pCoin->IsInt[i]) {
+			priorCbc[k++] = priorVar[i];
+		}
+	}
+	pCoin->cbc->passInPriorities(priorCbc, false);
+	free(priorCbc);
+	free(priorVar);
+	return SOLV_CALL_SUCCESS;
 }
 
 
