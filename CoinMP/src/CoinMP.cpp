@@ -429,6 +429,7 @@ typedef struct {
 				int SolveAsMIP;
 				int IntCount;
 				int BinCount;
+				int numInts;
 				char* IsInt;
 
 				int SosCount;
@@ -438,6 +439,11 @@ typedef struct {
 				int* SosBegin;
 				int* SosIndex;
 				double* SosRef;
+
+				int PriorCount;
+				int* PriorIndex;
+				int* PriorValues;
+				int* BranchDir;
 
 				int SolutionStatus;
 				char SolutionText[200];
@@ -515,6 +521,7 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->SolveAsMIP	= 0;
 	pCoin->IntCount		= 0;
 	pCoin->BinCount		= 0;
+	pCoin->numInts		= 0;
 	pCoin->IsInt		= NULL;
 
 	pCoin->SosCount		= 0;
@@ -524,6 +531,11 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->SosBegin		= NULL;
 	pCoin->SosIndex		= NULL;
 	pCoin->SosRef		= NULL;
+
+	pCoin->PriorCount	= 0;
+	pCoin->PriorIndex	= NULL;
+	pCoin->PriorValues	= NULL;
+	pCoin->BranchDir	= NULL;
 
 	pCoin->SolutionStatus = 0;
 	strcpy(pCoin->SolutionText, "");
@@ -845,6 +857,8 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 		for (i = 0; i < pCoin->ColCount; i++) {
 			if (pCoin->IsInt[i]) {
 				pCoin->cbc->solver()->setInteger(i);
+				pCoin->osi->setInteger(i);
+				pCoin->numInts++;
 			}
 		}
 #ifdef NEW_STYLE_CBCMAIN
@@ -864,7 +878,57 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
 									  int* PriorValues, int* BranchDir)
 {
-	return SOLV_CALL_FAILED;
+	PCOIN pCoin = (PCOIN)hProb;
+	int *priorVar;
+	int *priorCbc;
+	int i,k;
+
+	pCoin->PriorCount = PriorCount;
+	if (PriorIndex)  pCoin->PriorIndex  = (int* )malloc(PriorCount * sizeof(int));
+	if (PriorValues) pCoin->PriorValues = (int* )malloc(PriorCount * sizeof(int));
+	if (BranchDir)	 pCoin->BranchDir   = (int* )malloc(PriorCount * sizeof(int));
+	if (pCoin->PriorIndex)  memcpy(pCoin->PriorIndex,  PriorIndex,  PriorCount * sizeof(int));
+	if (pCoin->PriorValues) memcpy(pCoin->PriorValues, PriorValues, PriorCount * sizeof(int));
+	if (pCoin->BranchDir)   memcpy(pCoin->BranchDir,   BranchDir,   PriorCount * sizeof(int));
+
+	if (!pCoin->SolveAsMIP) {
+		return SOLV_CALL_FAILED;
+	}
+	if (!pCoin->IsInt) {
+		return SOLV_CALL_FAILED;
+	}
+
+	priorVar = (int *)malloc(pCoin->ColCount * sizeof(int));
+	if (!priorVar) {
+		return SOLV_CALL_FAILED;
+	}
+	//reset the priorVar
+	for (i = 0; i < pCoin->ColCount; i++) {
+		priorVar[i] = 1000;
+	}
+	for (i = 0; i < PriorCount; i++) {
+		if ((PriorIndex[i] < 0) || (PriorIndex[i] >= pCoin->ColCount)) {
+			free(priorVar);
+			return SOLV_CALL_FAILED;
+		}
+		priorVar[PriorIndex[i]] = PriorValues[i];
+	}
+	//Create an array to give to cbc
+	priorCbc = (int *)malloc(pCoin->numInts * sizeof(int));
+	if (!priorCbc) {
+		free(priorVar);
+		return SOLV_CALL_FAILED;
+	}
+	k = 0;
+	for (i = 0; i < pCoin->ColCount; i++) {
+		if (pCoin->IsInt[i]) {
+			priorCbc[k++] = priorVar[i];
+		}
+	}
+	pCoin->cbc->passInPriorities(priorCbc, false);
+	free(priorCbc);
+	free(priorVar);
+	return SOLV_CALL_SUCCESS;
 }
 
 
@@ -985,6 +1049,9 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 		if (pCoin->SosIndex)	 free(pCoin->SosIndex);
 		if (pCoin->SosRef)		 free(pCoin->SosRef);
 
+		if (pCoin->PriorIndex)	 free(pCoin->PriorIndex);
+		if (pCoin->PriorValues)	 free(pCoin->PriorValues);
+		if (pCoin->BranchDir)	 free(pCoin->BranchDir);
 	}
 	free(pCoin);
 	pCoin = NULL;
