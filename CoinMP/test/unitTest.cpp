@@ -61,8 +61,8 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	fprintf(stdout, "Solution Result: %s\n", solutionText );
 	fprintf(stdout, "Solution Status: %d\n", solutionStatus);
 	fprintf(stdout, "Optimal Value:   %lg\n", objectValue);
- 	fprintf(stdout, "---------------------------------------\n");
-     
+	fprintf(stdout, "---------------------------------------\n");
+
 	colCount = CoinGetColCount(hProb);
 	xValues = (double* )malloc(colCount * sizeof(double));
 	CoinGetSolutionValues(hProb, xValues, NULL, NULL, NULL);
@@ -223,8 +223,8 @@ void SolveProblemCoinTest(void)
 	double objectConst = 0.0;
 	double objectCoeffs[8] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
-	double lowerBounds[8] = { 0., 0., 0., 0., 0., 0., 0.  };
-	double upperBounds[8] = { 1000000., 1000000., 1000000., 1000000., 1000000., 1000000., 1000000., 1000000.   };
+	double lowerBounds[8] = { 0., 0., 0., 0., 0., 0., 0. };
+	double upperBounds[8] = { 1000000., 1000000., 1000000., 1000000., 1000000., 1000000., 1000000., 1000000. };
 
 	char rowType[5] = { 'L', 'L', 'L', 'L', 'L' };
 	double rhsValues[5] = { 14., 80., 50., 50., 50. };
@@ -265,9 +265,9 @@ void SolveProblemBakery(void)
 	double objectConst = - 4000.0 / 30.0;
 	double objectCoeffs[2] = { 0.05 , 0.08 };
 
-	double lowerBounds[2] = { 0, 0  };
-	double upperBounds[2] = { 1000000, 1000000   };
-    
+	double lowerBounds[2] = { 0, 0 };
+	double upperBounds[2] = { 1000000, 1000000 };
+
 	char rowType[3] = { 'L', 'L' , 'L' };
 	double rhsValues[3] = { 1400 , 8000 , 5000 };
 
@@ -400,16 +400,16 @@ void SolveProblemP0033(void)
 		4, 4, 3, 3, 4, 4, 3, 3, 3, 3, 1, 1};
 
 	int midx[98]={0, 8, 9, 0, 12, 13, 0, 5, 6, 9, 0, 5, 6, 7, 1, 5, 6, 10, 11, 1, 
-		5, 6, 8, 9, 1, 14, 2, 5, 6, 10, 11, 2, 5, 6, 8, 9, 3, 4, 3, 10, 11, 3, 5, 6,
+		5, 6, 8, 9, 1, 14, 2, 5, 6, 10, 11, 2, 5, 6, 8, 9, 3, 4, 3, 10, 11, 3, 5, 6, 
 		11, 3, 5, 6, 9, 5, 6, 8, 9, 3, 4, 4, 12, 13, 12, 13, 13, 13, 5, 6, 10, 11, 5, 
 		6, 10, 11, 5, 6, 11, 5, 6, 11, 5, 6, 8, 9, 5, 6, 8, 9, 5, 6, 9, 5, 6, 9, 5, 6, 
 		7, 5, 6, 7, 14, 14};
 
 	double mval[98]={1, -300, -300, 1, -300, -300, 1, 300, -300, -300, 1, 300, 
-		-300, -300, 1, 285, -285, -285, -285, 1, 285, -285, -285, -285, 1, -285, 1,
+		-300, -300, 1, 285, -285, -285, -285, 1, 285, -285, -285, -285, 1, -285, 1, 
 		265, -265, -265, -265, 1, 265, -265, -265, -265, 1, -230, 1, -230, -230, 1, 
 		230, -230, -230, 1, 230, -230, -230, 190, -190, -190, -190, 1, -200, -400, 
-		-200, -200, -400, -400, -200, -400, 200, -200, -200, -200, 400, -400, -400,
+		-200, -200, -400, -400, -200, -400, 200, -200, -200, -200, 400, -400, -400, 
 		-400, 200, -200, -200, 400, -400, -400, 200, -200, -200, -200, 400, -400, 
 		-400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400, 
 		-400, -200, -400};
