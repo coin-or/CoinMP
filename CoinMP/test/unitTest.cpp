@@ -94,9 +94,6 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
     
 	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
-	/*if (LoadNamesType > 0) {
-		result = CoinSetLoadNamesType(hProb, LoadNamesType);
-	}*/
 	result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
 					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
