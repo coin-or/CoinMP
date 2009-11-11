@@ -62,6 +62,7 @@ CoinMP/examples/vb6/SolveCoinTest.bas -text
 CoinMP/examples/vb6/SolveExMip1.bas -text
 CoinMP/examples/vb6/SolveP0033.bas -text
 CoinMP/inc/config_coinmp.h.in -text
+CoinMP/makezip.bat -text
 CoinMP/src/CoinMP.def -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
