@@ -86,17 +86,14 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
 	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
 	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
-	  char** rowNames, char* objectName, double* initValues, char* columnType, int LoadNamesType)
+	  char** rowNames, char* objectName, double* initValues, char* columnType)
 {
 	HPROB hProb;
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s\n", problemName);
+	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
-	if (LoadNamesType > 0) {
-		result = CoinSetLoadNamesType(hProb, LoadNamesType);
-	}
 	result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
 					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
@@ -109,7 +106,7 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
 	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
-	if (!columnType)
+	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
 		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
@@ -133,7 +130,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s\n", problemName);
+	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
 	result = CoinLoadProblemBuf(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -147,7 +144,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
 	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
-	if (!columnType)
+	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
 		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
@@ -165,14 +162,14 @@ void RunSosTestProblem(char* problemName, double optimalValue, int colCount, int
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
 	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
 	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
-	  char** rowNames, char* objectName, double* initValues, char* columnType, int LoadNamesType,
-	  int sosCount, int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef)
+	  char** rowNames, char* objectName, double* initValues, char* columnType, int sosCount, 
+	  int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef)
 {
 	HPROB hProb;
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s\n", problemName);
+	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -187,7 +184,7 @@ void RunSosTestProblem(char* problemName, double optimalValue, int colCount, int
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
 	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
-	if (!columnType)
+	if ((columnType == NULL) && (sosCount == 0))
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
 		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
@@ -251,7 +248,7 @@ void SolveProblemCoinTest(void)
 	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
 	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
 	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
-	  colNames, rowNames, objectName, initValues, NULL, 0);
+	  colNames, rowNames, objectName, initValues, NULL);
 }
 
 
@@ -291,7 +288,7 @@ void SolveProblemBakery(void)
 	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
 	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
 	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
-	  colNames, rowNames, objectName, NULL, NULL, 0);
+	  colNames, rowNames, objectName, NULL, NULL);
 }
 
 
@@ -365,7 +362,7 @@ void SolveProblemAfiro(void)
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL, 0);
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL);
 }
 
 
@@ -442,7 +439,7 @@ void SolveProblemP0033(void)
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp, 0);
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
 
@@ -485,7 +482,7 @@ void SolveProblemExmip1(void)
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, drng, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp, 0);
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
 
@@ -531,7 +528,7 @@ void SolveProblemGamsSos1a(void)
 
 	RunSosTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, NULL, drlo, drup, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL, 0,
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL);
 }
 
@@ -576,7 +573,7 @@ void SolveProblemGamsSos2a(void)
 
 	RunSosTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL, 0,
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL);
 }
 
