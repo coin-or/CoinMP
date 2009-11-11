@@ -1785,7 +1785,7 @@ SOLVAPI int SOLVCALL CoinWriteFile(HPROB hProb, int FileType, const char* WriteF
 
 	switch (FileType) {
 		case SOLV_FILE_MPS:		
-			pCoin->clp->writeMps(WriteFilename);   
+			pCoin->osi->writeMps(WriteFilename, "", pCoin->ObjectSense);   
 			break;
 
 		case SOLV_FILE_LP: 
