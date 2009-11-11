@@ -70,6 +70,7 @@ namespace Coin.CoinMP
         public const int SOLV_CHECK_ROWNAMES = 16;
         public const int SOLV_CHECK_ROWNAMSLEN = 17;
 
+
         private static string GenerateNamesBuf(string[] namesList)
         {
             int i;
@@ -88,22 +89,23 @@ namespace Coin.CoinMP
 
         public delegate int MsgLogDelegate(string messageStr);
 
-        public delegate int IterDelegate(int iterCount,
+        public delegate int IterDelegate(int    iterCount,
                                          double objectValue,
-                                         int isFeasible,
+                                         int    isFeasible,
                                          double infeasValue);
 
-        public delegate int MipNodeDelegate(int iterCount,
-                                            int mipNodeCount,
+        public delegate int MipNodeDelegate(int    iterCount,
+                                            int    mipNodeCount,
                                             double bestBound,
                                             double bestInteger,
-                                            int isMipImproved);
+                                            int    isMipImproved);
 
         [DllImport("coinmp.dll")] public static extern int CoinInitSolver(string licenseStr);
         [DllImport("coinmp.dll")] public static extern int CoinFreeSolver();
 
         [DllImport("coinmp.dll")] public static extern string CoinGetSolverName();
         [DllImport("coinmp.dll")] public static extern int CoinGetSolverNameBuf(StringBuilder solverName, int buflen);
+
         [DllImport("coinmp.dll")] public static extern string CoinGetVersionStr();
         [DllImport("coinmp.dll")] public static extern int CoinGetVersionStrBuf(StringBuilder versionStr, int buflen);
         [DllImport("coinmp.dll")] public static extern double CoinGetVersion();
@@ -205,7 +207,7 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinGetSolutionStatus(IntPtr hProb);
 
         [DllImport("coinmp.dll")] public static extern string CoinGetSolutionText(IntPtr hProbs, int solutionStatus);
-        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionTextBuf(IntPtr hProbs, int solutionStatus, 
+        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionTextBuf(IntPtr hProbs, int solutionStatus,
                         StringBuilder solutionText, int buflen);
 
         [DllImport("coinmp.dll")] public static extern double CoinGetObjectValue(IntPtr hProb);
