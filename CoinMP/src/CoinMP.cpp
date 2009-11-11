@@ -1367,12 +1367,13 @@ int coinSetClpOptions(HPROB hProb)
 	if (CoinGetOptionChanged(hProb, COIN_INT_SCALING))			pCoin->clp->scaling(CoinGetIntOption(hProb,COIN_INT_SCALING));
 	if (CoinGetOptionChanged(hProb, COIN_INT_PERTURBATION))		pCoin->clp->setPerturbation(CoinGetIntOption(hProb, COIN_INT_PERTURBATION));
 
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MAXSECONDS))		pCoin->clp->setMaximumSeconds(CoinGetIntOption(hProb, COIN_REAL_MAXSECONDS));
 	if (CoinGetOptionChanged(hProb, COIN_INT_MAXITER))			pCoin->clp->setMaximumIterations(CoinGetIntOption(hProb, COIN_INT_MAXITER));
 
-	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJLIM));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJLIM))		pCoin->clp->setDualObjectiveLimit(CoinGetIntOption(hProb, COIN_REAL_DUALOBJLIM));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJTOL))	pCoin->clp->setPrimalTolerance(CoinGetIntOption(hProb, COIN_REAL_PRIMALOBJTOL));
-	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJTOL))		pCoin->clp->setDualTolerance(CoinGetIntOption(hProb, COIN_REAL_DUALOBJTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJLIM))	pCoin->clp->setPrimalObjectiveLimit(CoinGetRealOption(hProb, COIN_REAL_PRIMALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJLIM))		pCoin->clp->setDualObjectiveLimit(CoinGetRealOption(hProb, COIN_REAL_DUALOBJLIM));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_PRIMALOBJTOL))	pCoin->clp->setPrimalTolerance(CoinGetRealOption(hProb, COIN_REAL_PRIMALOBJTOL));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_DUALOBJTOL))		pCoin->clp->setDualTolerance(CoinGetRealOption(hProb, COIN_REAL_DUALOBJTOL));
 
 	if (CoinGetOptionChanged(hProb, COIN_INT_PRIMALPIVOTALG)) {
 		ClpPrimalColumnSteepest primalSteepest(CoinGetIntOption(hProb, COIN_INT_PRIMALPIVOTALG));
@@ -1386,7 +1387,7 @@ int coinSetClpOptions(HPROB hProb)
 
 	if (CoinGetOptionChanged(hProb, COIN_INT_CRASHIND)) { 
 		if (CoinGetIntOption(hProb, COIN_INT_CRASHIND)) {
-			pCoin->clp->crash(CoinGetIntOption(hProb, COIN_REAL_CRASHGAP),
+			pCoin->clp->crash(CoinGetRealOption(hProb, COIN_REAL_CRASHGAP),
 								CoinGetIntOption(hProb, COIN_INT_CRASHPIVOT));
 		}
 	}
@@ -1443,6 +1444,7 @@ int coinSetCbcOptions(HPROB hProb)
 	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPINFWEIGHT))	pCoin->cbc->setInfeasibilityWeight(CoinGetRealOption(hProb, COIN_REAL_MIPINFWEIGHT));
 	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPCUTOFF))		pCoin->cbc->setDblParam(CbcModel::CbcCutoffIncrement,CoinGetRealOption(hProb, COIN_REAL_MIPCUTOFF));
 	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPABSGAP))		pCoin->cbc->setAllowableGap(CoinGetRealOption(hProb, COIN_REAL_MIPABSGAP));
+	if (CoinGetOptionChanged(hProb, COIN_REAL_MIPFRACGAP))		pCoin->cbc->setAllowableFractionGap(CoinGetRealOption(hProb, COIN_REAL_MIPFRACGAP));
 	return 1;
 }
 
@@ -1558,8 +1560,12 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 	else {
 #ifdef NEW_STYLE_CBCMAIN
 		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
-			//coinSetClpOptions(hProb);
-			//coinSetCbcOptions(hProb);
+			if (!pCoin->CbcMain0Already) {
+				CbcMain0(*pCoin->cbc);
+				pCoin->CbcMain0Already = 1;
+			}
+			coinSetClpOptions(hProb);
+			coinSetCbcOptions(hProb);
 			//coinSetCglOptions(hProb);  BK: CbcMain1 should be calling the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			const int argc = 3;
@@ -1861,7 +1867,7 @@ typedef struct {
         } SOLVOPTINFO, *PSOLVOPT;
 
 
-#define OPTIONCOUNT    67
+#define OPTIONCOUNT    68
 
 
 
@@ -1911,6 +1917,7 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 	  "MipInfeasWeight",        "MipInfWeight", GRP_MIPTOL,       0.0,      0.0,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPINFWEIGHT, 
 	  "MipCutoffIncrement",     "MipCutIncr",   GRP_MIPTOL,      1e-5,     1e-5,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPCUTOFF, 
 	  "MipAllowableGap",        "MipAbsGap",    GRP_MIPTOL,     1e-10,    1e-10,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPABSGAP, 
+	  "MipFractionalGap",       "MipFracGap",   GRP_MIPTOL,     1e-10,    1e-10,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPFRACGAP, 
 
 	  /* Probing */
 	  "MipCutProbing",          "CutProbing",   GRP_MIPCUTS,        1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_PROBING,
