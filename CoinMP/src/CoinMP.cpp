@@ -419,7 +419,17 @@ typedef struct {
 				char** RowNamesList;
 				char* ObjectName;
 
+				double* InitValues;
+
+				double* RowLower;
+				double* RowUpper;
+
 				char* ColType;
+
+				int SolveAsMIP;
+				int IntCount;
+				int BinCount;
+				char* IsInt;
 
 				int SosCount;
 				int SosNZCount;
@@ -428,16 +438,6 @@ typedef struct {
 				int* SosBegin;
 				int* SosIndex;
 				double* SosRef;
-
-				double* InitValues;
-
-				double* RowLower;
-				double* RowUpper;
-
-				int IntCount;
-				int BinCount;
-				char* IsInt;
-				int SolveAsMIP;
 
 				int SolutionStatus;
 				char SolutionText[200];
@@ -504,28 +504,33 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->ColNamesList = NULL;
 	pCoin->RowNamesList = NULL;
 	pCoin->ObjectName   = NULL;
-	pCoin->ColType      = NULL;
 
-	pCoin->SosCount   = 0;
-	pCoin->SosNZCount = 0;
-	pCoin->SosType    = NULL;
-	pCoin->SosPrior   = NULL;
-	pCoin->SosBegin   = NULL;
-	pCoin->SosIndex   = NULL;
-	pCoin->SosRef     = NULL;
+	pCoin->InitValues	= NULL;
 
-	pCoin->InitValues   = NULL;
+	pCoin->RowLower		= NULL;
+	pCoin->RowUpper		= NULL;
 
-	pCoin->RowLower = NULL;
-	pCoin->RowUpper = NULL;
+	pCoin->ColType		= NULL;
 
-	pCoin->IntCount = 0;
-	pCoin->BinCount = 0;
-	pCoin->IsInt = 0;
-	pCoin->SolveAsMIP = 0;
+	pCoin->SolveAsMIP	= 0;
+	pCoin->IntCount		= 0;
+	pCoin->BinCount		= 0;
+	pCoin->IsInt		= NULL;
+
+	pCoin->SosCount		= 0;
+	pCoin->SosNZCount	= 0;
+	pCoin->SosType		= NULL;
+	pCoin->SosPrior		= NULL;
+	pCoin->SosBegin		= NULL;
+	pCoin->SosIndex		= NULL;
+	pCoin->SosRef		= NULL;
 
 	pCoin->SolutionStatus = 0;
 	strcpy(pCoin->SolutionText, "");
+
+	pCoin->MessageLogCallback = NULL;
+	pCoin->IterationCallback = NULL;
+	pCoin->MipNodeCallback = NULL;
 
 	return (HPROB)pCoin;
 }
@@ -966,19 +971,19 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 		if (pCoin->RowNamesList) free(pCoin->RowNamesList);
 		if (pCoin->ObjectName)   free(pCoin->ObjectName);
 
-		if (pCoin->ColType)      free(pCoin->ColType);
-
-		if (pCoin->SosType)  free(pCoin->SosType);
-		if (pCoin->SosPrior) free(pCoin->SosPrior);
-		if (pCoin->SosBegin) free(pCoin->SosBegin);
-		if (pCoin->SosIndex) free(pCoin->SosIndex);
-		if (pCoin->SosRef)   free(pCoin->SosRef);
-
 		if (pCoin->InitValues)   free(pCoin->InitValues);
 
-		if (pCoin->RowLower) free(pCoin->RowLower);
-		if (pCoin->RowUpper) free(pCoin->RowUpper);
-		if (pCoin->IsInt)    free(pCoin->IsInt);
+		if (pCoin->RowLower)	 free(pCoin->RowLower);
+		if (pCoin->RowUpper)	 free(pCoin->RowUpper);
+
+		if (pCoin->ColType)		 free(pCoin->ColType);
+		if (pCoin->IsInt)		 free(pCoin->IsInt);
+
+		if (pCoin->SosType)		 free(pCoin->SosType);
+		if (pCoin->SosPrior)	 free(pCoin->SosPrior);
+		if (pCoin->SosBegin)	 free(pCoin->SosBegin);
+		if (pCoin->SosIndex)	 free(pCoin->SosIndex);
+		if (pCoin->SosRef)		 free(pCoin->SosRef);
 
 	}
 	free(pCoin);
@@ -1184,7 +1189,9 @@ int coinWriteMsgLog(const char* FormatStr, ...)
 
 	va_start(pVa,FormatStr);
 	vsprintf(strbuf,FormatStr,pVa);
-	global_pCoin->MessageLogCallback(strbuf);
+	if (global_pCoin->MessageLogCallback) {
+		global_pCoin->MessageLogCallback(strbuf);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1201,7 +1208,9 @@ int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, doubl
 			}
 		}
 	}
-	global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
+	if (global_pCoin->IterationCallback) {
+		global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1212,7 +1221,9 @@ int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double B
 		coinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
 		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
 	}
-	global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	if (global_pCoin->MipNodeCallback) {
+		global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	}
 	return SOLV_CALL_SUCCESS;
 }
 
