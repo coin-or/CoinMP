@@ -22,6 +22,7 @@
 
 #include "CoinProblem.h"
 #include "CoinResult.h"
+#include "CoinSolver.h"
 
 
 #include <cfloat>
@@ -395,10 +396,8 @@ typedef struct {
 
 				PPROBLEM  pProblem;
 				PRESULT   pResult;
+				PSOLVER   pSolver;
 
-				MSGLOGCALLBACK  MessageLogCallback;
-				ITERCALLBACK    IterationCallback;
-				MIPNODECALLBACK MipNodeCallback;
 				} COININFO, *PCOIN;
  
 
@@ -430,12 +429,9 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 
 	pCoin->pProblem = coinCreateProblemObject();
 	pCoin->pResult = coinCreateResultObject();
+	pCoin->pSolver = coinCreateSolverObject();
 
 	coinSetProblemName(pCoin->pProblem, ProblemName);
-
-	pCoin->MessageLogCallback = NULL;
-	pCoin->IterationCallback = NULL;
-	pCoin->MipNodeCallback = NULL;
 
 	return (HPROB)pCoin;
 }
@@ -989,8 +985,8 @@ int coinWriteMsgLog(const char* FormatStr, ...)
 
 	va_start(pVa,FormatStr);
 	vsprintf(strbuf,FormatStr,pVa);
-	if (global_pCoin->MessageLogCallback) {
-		global_pCoin->MessageLogCallback(strbuf);
+	if (global_pCoin->pSolver->MsgLogCallback) {
+		global_pCoin->pSolver->MsgLogCallback(strbuf);
 	}
 	return SOLV_CALL_SUCCESS;
 }
@@ -1008,8 +1004,8 @@ int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, doubl
 			}
 		}
 	}
-	if (global_pCoin->IterationCallback) {
-		global_pCoin->IterationCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
+	if (global_pCoin->pSolver->IterCallback) {
+		global_pCoin->pSolver->IterCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
 	}
 	return SOLV_CALL_SUCCESS;
 }
@@ -1021,8 +1017,8 @@ int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double B
 		coinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
 		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
 	}
-	if (global_pCoin->MipNodeCallback) {
-		global_pCoin->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
+	if (global_pCoin->pSolver->MipNodeCallback) {
+		global_pCoin->pSolver->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
 	}
 	return SOLV_CALL_SUCCESS;
 }
@@ -1034,7 +1030,7 @@ SOLVAPI int SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCal
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	pCoin->MessageLogCallback = MsgLogCallback;
+	pCoin->pSolver->MsgLogCallback = MsgLogCallback;
 	delete pCoin->msghandler;
 	pCoin->msghandler = new CBMessageHandler();
 	pCoin->msghandler->setCallback(MsgLogCallback);
@@ -1051,7 +1047,7 @@ SOLVAPI int SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	pCoin->IterationCallback = IterCallback;
+	pCoin->pSolver->IterCallback = IterCallback;
 	delete pCoin->iterhandler;
 	pCoin->iterhandler = new CBIterHandler(pCoin->clp);
 	pCoin->iterhandler->setIterCallback(IterCallback);
@@ -1064,7 +1060,7 @@ SOLVAPI int SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNode
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	pCoin->MipNodeCallback = MipNodeCallback;
+	pCoin->pSolver->MipNodeCallback = MipNodeCallback;
 	delete pCoin->nodehandler;
 
 	//JPF: pCoin->nodehandler = new CBNodeHandler(pCoin->clp);
@@ -1578,6 +1574,9 @@ SOLVAPI int SOLVCALL CoinWriteFile(HPROB hProb, int FileType, const char* WriteF
 
 SOLVAPI int SOLVCALL CoinOpenLogFile(HPROB hProb, const char* logFilename)
 {
+	PCOIN pCoin = (PCOIN)hProb;
+
+	strcpy(pCoin->pSolver->LogFilename, logFilename);
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -1593,57 +1592,7 @@ SOLVAPI int SOLVCALL CoinCloseLogFile(HPROB hProb)
 /*  Option Table                                                        */
 /************************************************************************/
 
-#undef MAXINT
-#undef MAXREAL
-
-#define MAXINT          2100000000L
-#define MAXREAL         COIN_DBL_MAX
-
-#define ROUND(x)       (((x)>0)?((long)((x)+0.5)):((long)((x)-0.5)))
-
-
-#define OPT_NONE			0
-#define OPT_ONOFF			1
-#define OPT_LIST			2
-#define OPT_INT				3
-#define OPT_REAL			4
-#define OPT_STRING			5
-
-#define GRP_NONE			0
-#define GRP_OTHER			0
-
-#define GRP_SIMPLEX			1
-#define GRP_PREPROC			2
-#define GRP_LOGFILE			3
-#define GRP_LIMITS			4
-#define GRP_MIPSTRAT		5
-#define GRP_MIPCUTS			6
-#define GRP_MIPTOL			7
-#define GRP_BARRIER			8
-#define GRP_NETWORK			9
-
-
-
-
-typedef int    OPTINT;
-typedef double OPTVAL;
-
-typedef struct {
-			char   OptionName[32];
-			char   ShortName[32];
-			int    GroupType;
-			OPTVAL DefaultValue;
-			OPTVAL CurrentValue;
-			OPTVAL MinValue;
-			OPTVAL MaxValue;
-			int		OptionType;
-			int    changed;
-			int    OptionID;
-        } SOLVOPTINFO, *PSOLVOPT;
-
-
 #define OPTIONCOUNT    68
-
 
 
 SOLVOPTINFO OptionTable[OPTIONCOUNT] = {

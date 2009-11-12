@@ -68,6 +68,8 @@ CoinMP/src/CoinProblem.c -text
 CoinMP/src/CoinProblem.h -text
 CoinMP/src/CoinResult.c -text
 CoinMP/src/CoinResult.h -text
+CoinMP/src/CoinSolver.c -text
+CoinMP/src/CoinSolver.h -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
 /Externals -text

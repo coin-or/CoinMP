@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\CoinSolver.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Cbc\src\unitTestClp.cpp"
 				>
 			</File>
@@ -239,6 +243,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\CoinResult.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\CoinSolver.h"
 				>
 			</File>
 			<File
