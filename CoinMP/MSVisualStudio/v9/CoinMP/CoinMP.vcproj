@@ -200,6 +200,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\src\CoinCbc.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\CoinMP.cpp"
 				>
 			</File>
@@ -231,6 +235,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\Cbc\src\CbcSolver.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\CoinCbc.h"
 				>
 			</File>
 			<File
