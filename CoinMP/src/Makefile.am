@@ -18,8 +18,10 @@ lib_LTLIBRARIES = libCoinMP.la
 
 # List all source files for this library, including headers
 libCoinMP_la_SOURCES = \
-	CoinMP.h \
-	CoinMP.cpp \
+	CoinMP.cpp CoinMP.h \
+	CoinProblem.c CoinProblem.h \
+	CoinResult.c CoinResult.h \
+	CoinSolver.c CoinSolver.h \
 	CoinMPConfig.h
 
 # This is for libtool (on Windows)
