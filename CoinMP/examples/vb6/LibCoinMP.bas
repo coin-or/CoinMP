@@ -28,10 +28,6 @@ Public Const SOLV_FEATURE_MINLP  As Long = &H80
 
 Public Const SOLV_FEATURE_SP     As Long = &H10000
 
-Public Const SOLV_LOADNAMES_DEFAULT As Long = 0
-Public Const SOLV_LOADNAMES_LIST    As Long = 1
-Public Const SOLV_LOADNAMES_BUF     As Long = 2
-
 Public Const SOLV_OBJSENS_MAX    As Long = -1
 Public Const SOLV_OBJSENS_MIN    As Long = 1
 
@@ -95,9 +91,6 @@ Public Declare Function CoinLoadNonlinear Lib "CoinMP.dll" (ByVal hProb As Long,
 Public Declare Function CoinUnloadProblem Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
 Public Declare Function CoinCheckProblem Lib "CoinMP.dll" (ByVal hProb As Long) As Long
-
-Public Declare Function CoinSetLoadNamesType Lib "CoinMP.dll" (ByVal hProb As Long, _
-    ByVal LoadNamesType As Long) As Long
 
 
 Public Declare Function CoinGetProblemNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _

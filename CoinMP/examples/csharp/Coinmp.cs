@@ -34,10 +34,6 @@ namespace Coin.CoinMP
 
         public const int SOLV_FEATURE_SP = 0x10000;
 
-        public const int SOLV_LOADNAMES_DEFAULT = 0;
-        public const int SOLV_LOADNAMES_LIST = 1;
-        public const int SOLV_LOADNAMES_BUF = 2;
-
         public const int SOLV_OBJSENS_MAX = -1;
         public const int SOLV_OBJSENS_MIN = 1;
 
@@ -175,8 +171,6 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinUnloadProblem(IntPtr hProb);
 
         [DllImport("coinmp.dll")] public static extern int CoinCheckProblem(IntPtr hProb);
-
-        [DllImport("coinmp.dll")] public static extern int CoinSetLoadNamesType(IntPtr hProb, int loadNamesType);
 
         [DllImport("coinmp.dll")] public static extern string CoinGetProblemName(IntPtr hProb);
         [DllImport("coinmp.dll")] public static extern int CoinGetProblemNameBuf(IntPtr hProb,
