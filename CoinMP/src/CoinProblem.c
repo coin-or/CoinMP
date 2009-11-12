@@ -44,21 +44,21 @@ PPROBLEM coinCreateProblemObject()
 
 	pProblem->InitValues   = NULL;
 
-	pProblem->RowLower = NULL;
-	pProblem->RowUpper = NULL;
+	pProblem->RowLower     = NULL;
+	pProblem->RowUpper     = NULL;
 
 	pProblem->ColType      = NULL;
 
-	pProblem->SolveAsMIP = 0;
-	pProblem->IntCount = 0;
-	pProblem->BinCount = 0;
-	pProblem->numInts = 0;
-	pProblem->IsInt = NULL;
+	pProblem->SolveAsMIP   = 0;
+	pProblem->IntCount     = 0;
+	pProblem->BinCount     = 0;
+	pProblem->numInts      = 0;
+	pProblem->IsInt        = NULL;
 
-	pProblem->PriorCount = 0;
-	pProblem->PriorIndex = NULL;
-	pProblem->PriorValues = NULL;
-	pProblem->BranchDir = NULL;
+	pProblem->PriorCount   = 0;
+	pProblem->PriorIndex   = NULL;
+	pProblem->PriorValues  = NULL;
+	pProblem->PriorBranch  = NULL;
 
 	pProblem->SosCount     = 0;
 	pProblem->SosNZCount   = 0;
@@ -119,9 +119,9 @@ void coinClearProblemObject(PPROBLEM pProblem)
 
 	if (pProblem->ColType)      free(pProblem->ColType);
 
-	if (pProblem->PriorIndex) free(pProblem->PriorIndex);
-	if (pProblem->PriorValues) free(pProblem->PriorValues);
-	if (pProblem->BranchDir) free(pProblem->BranchDir);
+	if (pProblem->PriorIndex)   free(pProblem->PriorIndex);
+	if (pProblem->PriorValues)  free(pProblem->PriorValues);
+	if (pProblem->PriorBranch)  free(pProblem->PriorBranch);
 
 	if (pProblem->SemiIndex)	free(pProblem->SemiIndex);
 	if (pProblem->SemiLower)	free(pProblem->SemiLower);

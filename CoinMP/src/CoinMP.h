@@ -167,13 +167,13 @@ SOLVAPI int    SOLVCALL CoinLoadInteger(HPROB hProb, char* ColumnType);
 
 
 SOLVAPI int    SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
-										  int* PriorValues, int* BranchDir);
-
-SOLVAPI int    SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex);
+										  int* PriorValues, int* PriorBranch);
 
 SOLVAPI int    SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount, 
 						   int* SosType, int* SosPrior, int* SosBegin,   
 						   int* SosIndex, double* SosRef);
+
+SOLVAPI int    SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex);
 
 SOLVAPI int    SOLVCALL CoinLoadQuadratic(HPROB hProb, int* QuadBegin, int* QuadCount, 
 								 int* QuadIndex, double* QuadValues);
@@ -295,7 +295,7 @@ int    (SOLVCALL *CoinLoadInitValues)(HPROB hProb, double* InitValues);
 int    (SOLVCALL *CoinLoadInteger)(HPROB hProb, char* ColumnType);
 
 int    (SOLVCALL *CoinLoadPriority)(HPROB hProb, int PriorCount, int* PriorIndex, 
-												int* PriorValues, int* BranchDir);
+												int* PriorValues, int* PriorBranch);
 
 int    (SOLVCALL *CoinLoadSemiCont)(HPROB hProb, int SemiCount, int* SemiIndex);
 

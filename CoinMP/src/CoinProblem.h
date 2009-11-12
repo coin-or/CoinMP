@@ -52,7 +52,7 @@ typedef struct {
 				int PriorCount;
 				int* PriorIndex;
 				int* PriorValues;
-				int* BranchDir;
+				int* PriorBranch;
 
 				int SosCount;
 				int SosNZCount;

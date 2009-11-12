@@ -336,26 +336,23 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 
 
 SOLVAPI int SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
-									  int* PriorValues, int* BranchDir)
+									  int* PriorValues, int* PriorBranch)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;
 
+	if (PriorCount == 0) {
+		return SOLV_CALL_FAILED;
+	}
 	pProblem->PriorCount = PriorCount;
 	if (PriorIndex)  pProblem->PriorIndex  = (int* )malloc(PriorCount * sizeof(int));
 	if (PriorValues) pProblem->PriorValues = (int* )malloc(PriorCount * sizeof(int));
-	if (BranchDir)	 pProblem->BranchDir   = (int* )malloc(PriorCount * sizeof(int));
+	if (PriorBranch) pProblem->PriorBranch = (int* )malloc(PriorCount * sizeof(int));
 	if (pProblem->PriorIndex)  memcpy(pProblem->PriorIndex,  PriorIndex,  PriorCount * sizeof(int));
 	if (pProblem->PriorValues) memcpy(pProblem->PriorValues, PriorValues, PriorCount * sizeof(int));
-	if (pProblem->BranchDir)   memcpy(pProblem->BranchDir,   BranchDir,   PriorCount * sizeof(int));
+	if (pProblem->PriorBranch) memcpy(pProblem->PriorBranch, PriorBranch, PriorCount * sizeof(int));
 
 	return SOLV_CALL_SUCCESS;
-}
-
-
-SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex)
-{
-	return SOLV_CALL_FAILED;
 }
 
 
@@ -383,6 +380,31 @@ SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 	if (pProblem->SosBegin) memcpy(pProblem->SosBegin, SosBegin, (SosCount+1) * sizeof(int));
 	if (pProblem->SosIndex) memcpy(pProblem->SosIndex, SosIndex, SosNZCount   * sizeof(int));
 	if (pProblem->SosRef)   memcpy(pProblem->SosRef,   SosRef,   SosNZCount   * sizeof(double));
+
+	pProblem->SolveAsMIP = 1;
+	return SOLV_CALL_SUCCESS;
+}
+
+
+
+SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+	PPROBLEM pProblem = pCoin->pProblem;
+
+	if (SemiCount == 0) {
+		return SOLV_CALL_FAILED;
+	}
+	if (!SemiIndex) {
+		return SOLV_CALL_FAILED;
+	}
+	pProblem->SemiCount = SemiCount;
+	pProblem->SemiIndex = (int* )malloc(pProblem->SemiCount * sizeof(int));
+	pProblem->SemiLower = (double *)malloc(pProblem->ColCount * sizeof(double));
+	if (!pProblem->SemiIndex || !pProblem->SemiLower) {
+		return SOLV_CALL_FAILED;
+	}
+	memcpy(pProblem->SemiIndex, SemiIndex, pProblem->SemiCount * sizeof(int));
 
 	pProblem->SolveAsMIP = 1;
 	return SOLV_CALL_SUCCESS;

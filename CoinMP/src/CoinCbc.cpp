@@ -23,6 +23,7 @@
 #include "CbcSolver.hpp"
 #include "CbcEventHandler.hpp"
 #include "CbcBranchActual.hpp"   // CbcSOS
+#include "CbcBranchLotSize.hpp"  // CbcLotsize
 
 #include "CglProbing.hpp"
 #include "CglGomory.hpp"
@@ -655,27 +656,6 @@ int CbcSetColumnIntegers(HCBC hCbc, PPROBLEM pProblem)
 }
 
 
-int CbcAddSosObjects(HCBC hCbc, PPROBLEM pProblem)
-{
-	int sos, count;
-	int* which;
-	int type;
-	PCBC pCbc = (PCBC)hCbc;
-
-	if (pProblem->SosCount == 0) {
-		return CBC_CALL_FAILED;
-	}
-	for (sos = 0; sos < pProblem->SosCount; sos++) {
-		count = pProblem->SosBegin[sos+1] - pProblem->SosBegin[sos];
-		which = &pProblem->SosIndex[pProblem->SosBegin[sos]];
-		type = pProblem->SosType[sos];
-		CbcObject *sosObject = new CbcSOS(pCbc->cbc, count, which, NULL, 0, type);
-		pCbc->cbc->addObjects(1, &sosObject);
-		delete sosObject;
-	}
-	return CBC_CALL_SUCCESS;
-}
-
 int CbcAddPriorObjects(HCBC hCbc, PPROBLEM pProblem)
 {
 	int *priorVar;
@@ -721,6 +701,50 @@ int CbcAddPriorObjects(HCBC hCbc, PPROBLEM pProblem)
 }
 
 
+int CbcAddSosObjects(HCBC hCbc, PPROBLEM pProblem)
+{
+	int sos, count;
+	int* which;
+	int type;
+	PCBC pCbc = (PCBC)hCbc;
+
+	if (pProblem->SosCount == 0) {
+		return CBC_CALL_FAILED;
+	}
+	for (sos = 0; sos < pProblem->SosCount; sos++) {
+		count = pProblem->SosBegin[sos+1] - pProblem->SosBegin[sos];
+		which = &pProblem->SosIndex[pProblem->SosBegin[sos]];
+		type = pProblem->SosType[sos];
+		CbcObject *sosObject = new CbcSOS(pCbc->cbc, count, which, NULL, 0, type);
+		pCbc->cbc->addObjects(1, &sosObject);
+		delete sosObject;
+	}
+	return CBC_CALL_SUCCESS;
+}
+
+
+int CbcAddSemiContObjects(HCBC hCbc, PPROBLEM pProblem)
+{
+	double points[4];
+	int i, semicol;
+	PCBC pCbc = (PCBC)hCbc;
+
+	if (pProblem->SemiCount == 0) {
+		return CBC_CALL_FAILED;
+	}
+	points[0] = 0.0;
+	points[1] = 0.0;
+	for (i = 0; i < pProblem->SemiCount; i++ ) {
+		semicol = pProblem->SemiIndex[i];
+		points[2] = pProblem->LowerBounds[semicol];
+		points[3] = pProblem->UpperBounds[semicol];
+		CbcObject *semiObject = new CbcLotsize(pCbc->cbc, semicol, 2, points, true);
+		pCbc->cbc->addObjects(1, &semiObject);
+		delete semiObject;
+	}
+	return CBC_CALL_SUCCESS;
+}
+
 
 
 int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
@@ -729,19 +753,30 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 	int result;
 	PCBC pCbc = (PCBC)hCbc;
 
+	if (pProblem->SemiCount > 0) { 
+		memcpy(pProblem->SemiLower, pProblem->LowerBounds, pProblem->ColCount * sizeof(double));
+		for (i = 0; i < pProblem->SemiCount; i++) {
+			col = pProblem->SemiIndex[i];
+			pProblem->LowerBounds[col] = 0.0;
+		}
+	}
 	pCbc->clp->setOptimizationDirection(pProblem->ObjectSense);
 	pCbc->clp->loadProblem(pProblem->ColCount, pProblem->RowCount, 
 							pProblem->MatrixBegin, pProblem->MatrixIndex, pProblem->MatrixValues,
 							pProblem->LowerBounds, pProblem->UpperBounds, pProblem->ObjectCoeffs, 
 							pProblem->RowLower, pProblem->RowUpper);
+	if (pProblem->SemiCount > 0) { 
+		memcpy(pProblem->LowerBounds, pProblem->SemiLower, pProblem->ColCount * sizeof(double));
+	}
 	CbcCopyNamesList(hCbc, pProblem);
 	if (pProblem->SolveAsMIP) {
 		if (!pCbc->cbc) {
 			pCbc->cbc = new CbcModel(*pCbc->osi);
 		}
 		result = CbcSetColumnIntegers(hCbc, pProblem);
-		result = CbcAddSosObjects(hCbc, pProblem);
 		result = CbcAddPriorObjects(hCbc, pProblem);
+		result = CbcAddSosObjects(hCbc, pProblem);
+		result = CbcAddSemiContObjects(hCbc, pProblem);
 	}
 	return CBC_CALL_SUCCESS;
 }
