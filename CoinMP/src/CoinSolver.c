@@ -81,12 +81,18 @@ void coinSetOptionTable(PSOLVER pSolver, OPTIONTABLE OptionTable, int OptionCoun
 
 int coinGetOptionCount(PSOLVER pSolver)
 {
+	if (pSolver == NULL) {
+		return 0;
+	}
 	return pSolver->OptionCount;
 }
 
 
 int coinGetOptionID(PSOLVER pSolver, int OptionNr)
 {
+	if ((OptionNr < 0) || (OptionNr >= pSolver->OptionCount)) {
+		return -1;
+	}
 	return pSolver->OptionTable[OptionNr].OptionID;
 }
 
@@ -150,13 +156,13 @@ int coinLocateOptionName(PSOLVER pSolver, char* OptionName)
 }
 
 
-char* coinGetOptionName(PSOLVER pSolver, int OptionID)
+const char* coinGetOptionName(PSOLVER pSolver, int OptionID)
 {
 	int OptionNr;
 
 	OptionNr = coinLocateOptionID(pSolver, OptionID);
 	if (OptionNr == -1) {
-		return GRP_NONE;
+		return "";
 	}
 	return pSolver->OptionTable[OptionNr].OptionName;
 }
@@ -180,13 +186,13 @@ int coinGetOptionNameBuf(PSOLVER pSolver, int OptionID, char* OptionName, int bu
 	return 0;
 }
 
-char* coinGetOptionShortName(PSOLVER pSolver, int OptionID)
+const char* coinGetOptionShortName(PSOLVER pSolver, int OptionID)
 {
 	int OptionNr;
 
 	OptionNr = coinLocateOptionID(pSolver, OptionID);
 	if (OptionNr == -1) {
-		return GRP_NONE;
+		return "";
 	}
 	return pSolver->OptionTable[OptionNr].ShortName;
 }

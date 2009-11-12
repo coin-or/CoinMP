@@ -114,9 +114,9 @@ int     coinGetOptionType(PSOLVER pSolver, int OptionID);
 int     coinGetOptionGroup(PSOLVER pSolver, int OptionID);
 
 int     coinLocateOptionName(PSOLVER pSolver, char* OptionName);
-char*   coinGetOptionName(PSOLVER pSolver, int OptionID);
+const char*   coinGetOptionName(PSOLVER pSolver, int OptionID);
 int     coinGetOptionNameBuf(PSOLVER pSolver, int OptionID, char* OptionName, int buflen);
-char*   coinGetOptionShortName(PSOLVER pSolver, int OptionNr);
+const char*   coinGetOptionShortName(PSOLVER pSolver, int OptionNr);
 int     coinGetOptionShortNameBuf(PSOLVER pSolver, int OptionNr, char* ShortName, int buflen);
 
 int     coinGetIntOptionDefaultValue(PSOLVER pSolver, int OptionID);
