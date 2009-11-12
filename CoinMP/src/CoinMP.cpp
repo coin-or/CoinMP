@@ -370,6 +370,83 @@ CbcEventHandler * CBNodeHandler::clone() const
 /************************************************************************/
 
 
+
+typedef struct {
+				int SolutionStatus;
+				char SolutionText[200];
+
+				double ObjectValue;
+				double MipBestBound;
+				int IterCount;
+				int MipNodeCount;
+
+				double* ColActivity;
+				double* ReducedCost;
+				double* SlackValues;
+				double* ShadowPrice;
+
+				double* ObjLoRange;
+				double* ObjUpRange;
+				double* RhsLoRange;
+				double* RhsUpRange;
+
+				int* ColStatus;
+				int* RowStatus;
+				} RESULTINFO, *PRESULT;
+
+
+PRESULT coinCreateResultObject(void)
+{
+	PRESULT pResult;
+
+	pResult = (PRESULT)malloc(sizeof(RESULTINFO));
+	memset(pResult, 0, sizeof(RESULTINFO));
+
+	pResult->SolutionStatus = 0;
+	strcpy(pResult->SolutionText, "");
+
+	pResult->ObjectValue  = 0.0;
+	pResult->MipBestBound = 0.0;
+	pResult->IterCount    = 0;
+	pResult->MipNodeCount = 0;
+
+	pResult->ColActivity = NULL;
+	pResult->ReducedCost = NULL;
+	pResult->SlackValues = NULL;
+	pResult->ShadowPrice = NULL;
+
+	pResult->ObjLoRange = NULL;
+	pResult->ObjUpRange = NULL;
+	pResult->RhsLoRange = NULL;
+	pResult->RhsUpRange = NULL;
+
+	pResult->ColStatus = NULL;
+	pResult->RowStatus = NULL;
+
+	return pResult;
+}
+
+
+void coinClearResultObject(PRESULT pResult)
+{
+	if (!pResult) {
+		return;
+	}
+	if (pResult->ColActivity)   free(pResult->ColActivity);
+	if (pResult->ReducedCost)   free(pResult->ReducedCost);
+	if (pResult->SlackValues)   free(pResult->SlackValues);
+	if (pResult->ShadowPrice)   free(pResult->ShadowPrice);
+
+	if (pResult->ObjLoRange)    free(pResult->ObjLoRange);
+	if (pResult->ObjUpRange)    free(pResult->ObjUpRange);
+	if (pResult->ObjUpRange)    free(pResult->ObjUpRange);
+	if (pResult->RhsUpRange)    free(pResult->RhsUpRange);
+
+	if (pResult->ColStatus)     free(pResult->ColStatus);
+	if (pResult->ColStatus)     free(pResult->ColStatus);
+	free(pResult);
+}
+
 typedef struct {
 				ClpSimplex *clp;
 				ClpSolve *clp_presolve;
@@ -446,8 +523,9 @@ typedef struct {
 				int* PriorValues;
 				int* BranchDir;
 
-				int SolutionStatus;
-				char SolutionText[200];
+				PRESULT   pResult;
+				//int SolutionStatus;
+				//char SolutionText[200];
 
 				MSGLOGCALLBACK  MessageLogCallback;
 				ITERCALLBACK    IterationCallback;
@@ -538,8 +616,9 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->PriorValues	= NULL;
 	pCoin->BranchDir	= NULL;
 
-	pCoin->SolutionStatus = 0;
-	strcpy(pCoin->SolutionText, "");
+	pCoin->pResult = coinCreateResultObject();
+	//pCoin->SolutionStatus = 0;
+	//strcpy(pCoin->SolutionText, "");
 
 	pCoin->MessageLogCallback = NULL;
 	pCoin->IterationCallback = NULL;
@@ -1053,6 +1132,7 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 		if (pCoin->PriorIndex)	 free(pCoin->PriorIndex);
 		if (pCoin->PriorValues)	 free(pCoin->PriorValues);
 		if (pCoin->BranchDir)	 free(pCoin->BranchDir);
+		coinClearResultObject(pCoin->pResult);
 	}
 	free(pCoin);
 	pCoin = NULL;
@@ -1541,6 +1621,72 @@ int coinSetupSosObject(HPROB hProb)
 /*  Optimization                                                        */
 /************************************************************************/
 
+int CbcRetrieveSolutionResults(HPROB hProb, PRESULT pResult)
+{
+	const double* columnPrimal;
+	const double* columnDual;
+	const double* rowPrimal;
+	const double* rowDual;
+	PCOIN pCoin = (PCOIN)hProb;
+
+	if (!pCoin->SolveAsMIP) {
+		pResult->SolutionStatus = pCoin->clp->status();
+		pResult->ObjectValue    = pCoin->clp->objectiveValue();
+		pResult->MipBestBound   = 0.0;
+		pResult->IterCount      = pCoin->clp->numberIterations();
+		pResult->MipNodeCount	  = 0;
+		}
+	else {
+		pResult->SolutionStatus = pCoin->cbc->status();
+		pResult->ObjectValue    = pCoin->cbc->getObjValue();
+		pResult->MipBestBound   = pCoin->cbc->getBestPossibleObjValue();
+		pResult->IterCount      = pCoin->cbc->getIterationCount();
+		pResult->MipNodeCount   = pCoin->cbc->getNodeCount();
+	}
+
+	switch (pResult->SolutionStatus) {
+		case 0:	strcpy(pResult->SolutionText, "Optimal solution found");		break;
+		case 1:	strcpy(pResult->SolutionText, "Problem primal infeasible");	break;
+		case 2:	strcpy(pResult->SolutionText, "Problem dual infeasible");		break;
+		case 3:	strcpy(pResult->SolutionText, "Stopped on iterations");			break;
+		case 4: strcpy(pResult->SolutionText, "Stopped due to errors");			break;
+		case 5: strcpy(pResult->SolutionText, "Stopped by user");		break;
+		default: 
+			sprintf(pResult->SolutionText, "Unknown CBC solution status (%d)", pResult->SolutionStatus);
+			break;
+	}
+
+	if (!pCoin->SolveAsMIP) {
+		columnPrimal = pCoin->clp->primalColumnSolution();
+		columnDual = pCoin->clp->dualColumnSolution();
+		rowPrimal = pCoin->clp->primalRowSolution();
+		rowDual = pCoin->clp->dualRowSolution();
+		pResult->ColActivity = (double*) malloc(pCoin->ColCount * sizeof(double));
+		pResult->ReducedCost = (double*) malloc(pCoin->ColCount * sizeof(double));
+		pResult->SlackValues = (double*) malloc(pCoin->RowCount * sizeof(double));
+		pResult->ShadowPrice = (double*) malloc(pCoin->RowCount * sizeof(double));
+		if (!pResult->ColActivity ||
+			!pResult->ReducedCost || 
+			!pResult->SlackValues || 
+			!pResult->ShadowPrice) {
+			return SOLV_CALL_FAILED;
+		}
+		memcpy(pResult->ColActivity, columnPrimal, pCoin->ColCount * sizeof(double));
+		memcpy(pResult->ReducedCost, columnDual, pCoin->ColCount * sizeof(double));
+		memcpy(pResult->SlackValues, rowPrimal, pCoin->RowCount * sizeof(double));
+		memcpy(pResult->ShadowPrice, rowDual, pCoin->RowCount * sizeof(double));
+		}
+	else {
+		columnPrimal = pCoin->cbc->solver()->getColSolution();
+		pResult->ColActivity = (double*) malloc(pCoin->ColCount * sizeof(double));
+		if (!pResult->ColActivity) {
+			return SOLV_CALL_FAILED;
+		}
+		memcpy(pResult->ColActivity, columnPrimal, pCoin->ColCount * sizeof(double));
+	}
+	return SOLV_CALL_SUCCESS;
+}
+
 
 extern int CbcOrClpRead_mode;
 
@@ -1556,7 +1702,7 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 		else {
 			pCoin->clp->initialSolve();
 		}
-		pCoin->SolutionStatus = pCoin->clp->status();
+		pCoin->pResult->SolutionStatus = pCoin->clp->status();
 		}
 	else {
 #ifdef NEW_STYLE_CBCMAIN
@@ -1572,7 +1718,7 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 			const int argc = 3;
 			const char* argv[] = {"CoinMP", "-solve", "-quit"};
 			CbcMain1(argc,argv,*pCoin->cbc);
-			pCoin->SolutionStatus = pCoin->cbc->status();
+			pCoin->pResult->SolutionStatus = pCoin->cbc->status();
 			}
 		else 
 #endif
@@ -1583,10 +1729,11 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 
 			pCoin->cbc->initialSolve();
 			pCoin->cbc->branchAndBound();
-			pCoin->SolutionStatus = pCoin->cbc->status();
+			pCoin->pResult->SolutionStatus = pCoin->cbc->status();
 		}
 	}	
-	return pCoin->SolutionStatus;
+	CbcRetrieveSolutionResults(hProb, pCoin->pResult);
+	return pCoin->pResult->SolutionStatus;
 }
 
 
@@ -1600,7 +1747,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionStatus(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return pCoin->SolutionStatus;
+	return pCoin->pResult->SolutionStatus;
 }
 
 
@@ -1610,18 +1757,7 @@ SOLVAPI const char* SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	switch (SolutionStatus) {
-		case 0:	strcpy(pCoin->SolutionText, "Optimal solution found");		break;
-		case 1:	strcpy(pCoin->SolutionText, "Problem primal infeasible");	break;
-		case 2:	strcpy(pCoin->SolutionText, "Problem dual infeasible");		break;
-		case 3:	strcpy(pCoin->SolutionText, "Stopped on iterations");			break;
-		case 4: strcpy(pCoin->SolutionText, "Stopped due to errors");			break;
-		case 5: strcpy(pCoin->SolutionText, "Stopped by user");		break;
-		default: 
-			sprintf(pCoin->SolutionText, "Unknown solution status (%d)", SolutionStatus);
-			break;
-	}
-	return pCoin->SolutionText;
+	return pCoin->pResult->SolutionText;
 }
 
 
@@ -1636,50 +1772,34 @@ SOLVAPI int SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, int SolutionStatus, cha
 
 SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-	if (!pCoin->SolveAsMIP) 
-		return pCoin->clp->objectiveValue() + pCoin->ObjectConst;
-	else {
-		return pCoin->cbc->getObjValue() + pCoin->ObjectConst;
-	}
+	return pCoin->pResult->ObjectValue + pCoin->ObjectConst;
 }
 
 
 SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-	if (!pCoin->SolveAsMIP) 
-		return 0;
-	else {
-		return pCoin->cbc->getBestPossibleObjValue();
-	}
+	return pCoin->pResult->MipBestBound;
 }
 
 
 
 SOLVAPI int SOLVCALL CoinGetIterCount(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-	if (!pCoin->SolveAsMIP) 
-		return pCoin->clp->numberIterations();
-	else {
-		return pCoin->cbc->getIterationCount();
-	}
+	return pCoin->pResult->IterCount;
 }
 
 
 SOLVAPI int SOLVCALL CoinGetMipNodeCount(HPROB hProb)
 {
-   PCOIN pCoin = (PCOIN)hProb;
+	PCOIN pCoin = (PCOIN)hProb;
 
-	if (!pCoin->SolveAsMIP) 
-		return 0;
-	else {
-		return pCoin->cbc->getNodeCount();
-	}
+	return pCoin->pResult->MipNodeCount;
 }
 
 
@@ -1692,47 +1812,20 @@ SOLVAPI int SOLVCALL CoinGetMipNodeCount(HPROB hProb)
 SOLVAPI int SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double* ReducedCost, 
 											 double* SlackValues, double* ShadowPrice)
 {
-   PCOIN pCoin = (PCOIN)hProb;
-	const double* columnPrimal;
-	const double* columnDual;
-	const double* rowPrimal;
-	const double* rowDual;
-	int i;
+	PCOIN pCoin = (PCOIN)hProb;
+	PRESULT pResult = pCoin->pResult;
 
-	if (pCoin->SolveAsMIP) {
-		if (Activity) {
-			columnPrimal = pCoin->cbc->solver()->getColSolution();
-			for (i = 0; i < pCoin->ColCount; i++) {
-				Activity[i] = columnPrimal[i];
-			}
-			return SOLV_CALL_SUCCESS;
-		}
-		return SOLV_CALL_FAILED;
+	if (Activity && pResult->ColActivity) {
+		memcpy(Activity, pResult->ColActivity, pCoin->ColCount * sizeof(double));
 	}
-
-	if (Activity) {
-		columnPrimal = pCoin->clp->primalColumnSolution();
-		for (i = 0; i < pCoin->ColCount; i++) {
-			Activity[i] = columnPrimal[i];
-		}
+	if (ReducedCost && pResult->ReducedCost) {
+		memcpy(ReducedCost, pResult->ReducedCost, pCoin->ColCount * sizeof(double));
 	}
-	if (ReducedCost) {
-		columnDual = pCoin->clp->dualColumnSolution();
-		for (i = 0; i < pCoin->ColCount; i++) {
-			ReducedCost[i] = columnDual[i];
-		}
+	if (SlackValues && pResult->SlackValues) {
+		memcpy(SlackValues, pResult->SlackValues, pCoin->RowCount * sizeof(double));
 	}
-	if (SlackValues) {
-		rowPrimal = pCoin->clp->primalRowSolution();
-		for (i = 0; i < pCoin->RowCount; i++) {
-			SlackValues[i] = rowPrimal[i];
-		}
-	}
-	if (ShadowPrice) {
-		rowDual = pCoin->clp->dualRowSolution();
-		for (i = 0; i < pCoin->RowCount; i++) {
-			ShadowPrice[i] = rowDual[i];
-		}
+	if (ShadowPrice && pResult->ShadowPrice) {
+		memcpy(ShadowPrice, pResult->ShadowPrice, pCoin->RowCount * sizeof(double));
 	}
 	return SOLV_CALL_SUCCESS;
 }
@@ -1742,14 +1835,38 @@ SOLVAPI int SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double
 SOLVAPI int SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, double* ObjUpRange,
 											 double* RhsLoRange, double* RhsUpRange)
 {
-	return SOLV_CALL_FAILED;
+	PCOIN pCoin = (PCOIN)hProb;
+	PRESULT pResult = pCoin->pResult;
+
+	if (ObjLoRange && pResult->ObjLoRange) {
+		memcpy(ObjLoRange, pResult->ObjLoRange, pCoin->ColCount * sizeof(double));
+	}
+	if (ObjUpRange && pResult->ObjUpRange) {
+		memcpy(ObjUpRange, pResult->ObjUpRange, pCoin->ColCount * sizeof(double));
+	}
+	if (RhsLoRange && pResult->RhsLoRange) {
+		memcpy(RhsLoRange, pResult->RhsLoRange, pCoin->RowCount * sizeof(double));
+	}
+	if (RhsUpRange && pResult->RhsUpRange) {
+		memcpy(RhsUpRange, pResult->RhsUpRange, pCoin->RowCount * sizeof(double));
+	}
+	return SOLV_CALL_SUCCESS;
 }
 
 
 
 SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus)
 {
-	return SOLV_CALL_FAILED;
+	PCOIN pCoin = (PCOIN)hProb;
+	PRESULT pResult = pCoin->pResult;
+
+	if (ColStatus && pResult->ColStatus) {
+		memcpy(ColStatus, pResult->ColStatus, pCoin->ColCount * sizeof(int));
+	}
+	if (RowStatus && pResult->RowStatus) {
+		memcpy(RowStatus, pResult->RowStatus, pCoin->RowCount * sizeof(int));
+	}
+	return SOLV_CALL_SUCCESS;
 }
 
 
