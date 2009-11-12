@@ -128,16 +128,21 @@ int coinGetOptionGroup(PSOLVER pSolver, int OptionID)
 }
 
 
+#ifdef _WIN32
+ #define STRING_COMPARE_NOCASE(s1, s2)  strcmpi(s1, s2)
+#else
+ #define STRING_COMPARE_NOCASE(s1, s2)  strcasecmp(s1, s2)
+#endif
 
 int coinLocateOptionName(PSOLVER pSolver, char* OptionName)
 {
 	int i;
 
 	for (i = 0; i < pSolver->OptionCount; i++) {
-		if (strcmpi(OptionName, pSolver->OptionTable[i].OptionName) != 0) {
+		if (STRING_COMPARE_NOCASE(OptionName, pSolver->OptionTable[i].OptionName) != 0) {
 			return pSolver->OptionTable[i].OptionID;
 		}
-		if (strcmpi(OptionName, pSolver->OptionTable[i].ShortName) != 0) {
+		if (STRING_COMPARE_NOCASE(OptionName, pSolver->OptionTable[i].ShortName) != 0) {
 			return pSolver->OptionTable[i].OptionID;
 		}
 	}
