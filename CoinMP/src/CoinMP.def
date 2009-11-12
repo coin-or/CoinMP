@@ -24,7 +24,6 @@ EXPORTS
 	CoinLoadNonlinear
 	CoinUnloadProblem
 	CoinCheckProblem
-	CoinSetLoadNamesType
 	CoinGetProblemName
 	CoinGetProblemNameBuf
 	CoinGetColCount

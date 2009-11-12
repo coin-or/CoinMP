@@ -188,7 +188,7 @@ SOLVAPI int    SOLVCALL CoinUnloadProblem(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinCheckProblem(HPROB hProb);
 
 // Depreciated, use CoinLoadProblemBuf instead
-SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
+//SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
 
 SOLVAPI const char*  SOLVCALL CoinGetProblemName(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetProblemNameBuf(HPROB hProb, char* ProblemName, int buflen);
@@ -315,7 +315,7 @@ int    (SOLVCALL *CoinUnloadProblem)(HPROB hProb);
 
 int    (SOLVCALL *CoinCheckProblem)(HPROB hProb);
 
-int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType);
+//int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType);
 
 void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
