@@ -65,7 +65,7 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libCoinMP_la_LIBADD =
 am_libCoinMP_la_OBJECTS = CoinMP.lo CoinProblem.lo CoinResult.lo \
-	CoinSolver.lo
+	CoinSolver.lo CoinCbc.lo
 libCoinMP_la_OBJECTS = $(am_libCoinMP_la_OBJECTS)
 depcomp = $(SHELL) $(top_srcdir)/../depcomp
 am__depfiles_maybe = depfiles
@@ -320,6 +320,7 @@ libCoinMP_la_SOURCES = \
 	CoinProblem.c CoinProblem.h \
 	CoinResult.c CoinResult.h \
 	CoinSolver.c CoinSolver.h \
+	CoinCbc.c CoinCbc.h \
 	CoinMPConfig.h
 
 
@@ -450,6 +451,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoinCbc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoinMP.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoinProblem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoinResult.Plo@am__quote@
