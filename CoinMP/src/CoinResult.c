@@ -1,7 +1,6 @@
 
-  /* CoinResult.h */
+/* CoinResult.h */
 
-// $Id$
 
 #include <stdlib.h>
 #include <string.h>

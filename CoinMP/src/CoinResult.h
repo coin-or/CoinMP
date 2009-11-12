@@ -1,7 +1,5 @@
 
-  /* CoinResult.h */
-
-// $Id$
+/* CoinResult.h */
 
 
 #ifndef _COINRESULT_H_
