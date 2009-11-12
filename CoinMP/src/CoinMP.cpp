@@ -20,6 +20,9 @@
 #include <stdarg.h>
 #include <memory.h>
 
+#include "CoinResult.h"
+
+
 #include <cfloat>
 
 #include "CoinHelperFunctions.hpp"
@@ -369,7 +372,7 @@ CbcEventHandler * CBNodeHandler::clone() const
 /*  Coin Problem Info Structure                                         */
 /************************************************************************/
 
-
+/*
 
 typedef struct {
 				int SolutionStatus;
@@ -446,7 +449,7 @@ void coinClearResultObject(PRESULT pResult)
 	if (pResult->ColStatus)     free(pResult->ColStatus);
 	free(pResult);
 }
-
+*/
 typedef struct {
 				ClpSimplex *clp;
 				ClpSolve *clp_presolve;
