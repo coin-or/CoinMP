@@ -627,7 +627,7 @@ void SolveProblemSemiCont(void)
 	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
-	  0, 0, NULL, NULL, NULL, NULL, NULL, semiCount, semiIndex, 
+	  0, 0, NULL, NULL, NULL, NULL, NULL, semiCount, semiIndex,
 	  0, NULL, NULL, NULL);
 }
 

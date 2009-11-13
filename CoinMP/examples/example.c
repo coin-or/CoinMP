@@ -158,12 +158,13 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 }
 
 
-void RunSosTestProblem(char* problemName, double optimalValue, int colCount, int rowCount, 
+void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int rowCount, 
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
 	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
 	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
 	  char** rowNames, char* objectName, double* initValues, char* columnType, int sosCount, 
-	  int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef)
+	  int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef,
+	  int semiCount, int* semiIndex, int priorCount, int* priorIndex, int* priorValues, int* priorBranch)
 {
 	HPROB hProb;
 	int result;
@@ -178,13 +179,21 @@ void RunSosTestProblem(char* problemName, double optimalValue, int colCount, int
 	if (columnType) {
 		result = CoinLoadInteger(hProb, columnType);
 	}
-	result = CoinLoadSos(hProb, sosCount, sosNZCount, sosType, sosPrior, sosBegin, sosIndex, sosRef);
+	if (priorCount > 0) {
+		result = CoinLoadPriority(hProb, priorCount, priorIndex, priorValues, priorBranch);
+	}
+	if (sosCount > 0) {
+		result = CoinLoadSos(hProb, sosCount, sosNZCount, sosType, sosPrior, sosBegin, sosIndex, sosRef);
+	}
+	if (semiCount > 0) {
+		result = CoinLoadSemiCont(hProb, semiCount, semiIndex);
+	}
 	result = CoinCheckProblem(hProb);
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
 	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
-	if ((columnType == NULL) && (sosCount == 0))
+	if ((columnType == NULL) && (sosCount == 0) && (semiCount == 0))
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
 		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
@@ -526,10 +535,11 @@ void SolveProblemGamsSos1a(void)
 
 	double optimalValue = 0.72;
 
-	RunSosTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, NULL, drlo, drup, mbeg, 
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
-	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL);
+	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
+	  0, NULL, 0, NULL, NULL, NULL);
 }
 
 
@@ -571,12 +581,55 @@ void SolveProblemGamsSos2a(void)
 
 	double optimalValue = 0.0;
 
-	RunSosTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
-	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL);
+	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
+	  0, NULL, 0, NULL, NULL, NULL);
 }
 
+
+void SolveProblemSemiCont(void)
+{
+	char* probname = "SemiCont";
+	int ncol = 4;
+	int nrow = 3;
+	int nels = 6;
+	int nrng = 0;
+	
+	char* objectname = "z";
+	int objsens = SOLV_OBJSENS_MIN;
+	double objconst = 0.0;
+	double dobj[7]={0.0, 1.0, 1.0, 0.0};
+
+	double dclo[7]={2.8, 0.0, 0.0, 0.0};
+	double dcup[7]={10.0, 1e+37, 1e+37, 1e+37};
+
+	char rtyp[5]= {'L', 'G', 'E'};
+	double drhs[5]={8.9, 8.9, 10.0};
+
+	int mbeg[4+1]={0, 1, 2, 3, 6};
+	int mcnt[4]={1, 1, 1, 3};
+	int midx[6]={2, 0, 1, 0, 1, 2};
+	double mval[15]={1, -1, 1, 1, 1, 1};
+
+	char* colnames[7] = {"s", "pup", "plo", "x"};
+	char* rownames[5] = {"bigx", "smallx", "f"};
+
+	//char* colnamesBuf = "s\0" "pup\0" "plo\0" "x\0";
+	//char* rownamesBuf = "bigx\0" "smallx\0" "f\0";
+
+	int semiCount = 1;
+	int semiIndex[1] = {0};
+
+	double optimalValue = 1.1;
+
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
+	  0, 0, NULL, NULL, NULL, NULL, NULL, semiCount, semiIndex,
+	  0, NULL, NULL, NULL);
+}
 
 
 int main (int argc, char* argv[])
@@ -595,6 +648,7 @@ int main (int argc, char* argv[])
 	SolveProblemExmip1();
 	SolveProblemGamsSos1a();
 	SolveProblemGamsSos2a();
+	SolveProblemSemiCont();
 	fprintf(stdout, "All unit tests completed successfully\n" );
 	CoinFreeSolver();
 	return 0;
