@@ -40,6 +40,11 @@
 #define NEW_STYLE_CBCMAIN
 
 
+const double COINMP_VERSION    = 1.5;
+const char*  COINMP_VERSIONSTR = "1.5";
+const char*  COINMP_NAME       = "CoinMP";
+
+
 /************************************************************************/
 /*  Solver Initialization                                               */
 /************************************************************************/
@@ -63,7 +68,7 @@ SOLVAPI int SOLVCALL CoinFreeSolver(void)
 
 SOLVAPI const char* SOLVCALL CoinGetSolverName(void)
 {
-	return "CoinMP";
+	return COINMP_NAME;
 }
 
 
@@ -77,7 +82,7 @@ SOLVAPI int  SOLVCALL CoinGetSolverNameBuf(char* SolverName, int buflen)
 
 SOLVAPI const char* SOLVCALL CoinGetVersionStr(void)
 {
-	return "1.4";
+	return COINMP_VERSIONSTR;
 }
 
 
@@ -91,7 +96,7 @@ SOLVAPI int  SOLVCALL CoinGetVersionStrBuf(char* VersionStr, int buflen)
 
 SOLVAPI double SOLVCALL CoinGetVersion(void)
 {
-	return 1.4;
+	return COINMP_VERSION;
 }
 
 
@@ -635,57 +640,7 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 	return CbcOptimizeProblem(pCoin->pProblem, pCoin->pResult, pCoin->pSolver, Method);
 }
 
-/*
-extern int CbcOrClpRead_mode;
 
-
-SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
-{		
-	PCOIN pCoin = (PCOIN)hProb;
-	PPROBLEM pProblem = pCoin->pProblem;
-
-	if (!pProblem->SolveAsMIP) {
-		coinSetClpOptions(hProb);
-		if (CoinGetOptionChanged(hProb, COIN_INT_PRESOLVETYPE))
-			pCoin->clp->initialSolve(*pCoin->clp_presolve);
-		else {
-			pCoin->clp->initialSolve();
-		}
-		pCoin->pResult->SolutionStatus = pCoin->clp->status();
-		}
-	else {
-#ifdef NEW_STYLE_CBCMAIN
-		if (CoinGetIntOption(hProb, COIN_INT_MIPUSECBCMAIN)) {
-			if (!pCoin->CbcMain0Already) {
-				CbcMain0(*pCoin->cbc);
-				pCoin->CbcMain0Already = 1;
-			}
-			coinSetClpOptions(hProb);
-			coinSetCbcOptions(hProb);
-			//coinSetCglOptions(hProb);  BK: CbcMain1 should be calling the Cgl's automatically
-			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
-			const int argc = 3;
-			const char* argv[] = {"CoinMP", "-solve", "-quit"};
-			CbcMain1(argc,argv,*pCoin->cbc);
-			pCoin->pResult->SolutionStatus = pCoin->cbc->status();
-			}
-		else 
-#endif
-		{
-			coinSetClpOptions(hProb);
-			coinSetCbcOptions(hProb);
-			coinSetCglOptions(hProb);
-
-			pCoin->cbc->initialSolve();
-			pCoin->cbc->branchAndBound();
-			pCoin->pResult->SolutionStatus = pCoin->cbc->status();
-		}
-	}	
-	CbcRetrieveSolutionResults(pProblem, hProb, pCoin->pResult);
-	return pCoin->pResult->SolutionStatus;
-}
-
-*/
 
 /************************************************************************/
 /*  Solution status                                                     */
