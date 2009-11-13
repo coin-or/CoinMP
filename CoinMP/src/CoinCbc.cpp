@@ -399,52 +399,7 @@ int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver)
 	return CBC_CALL_SUCCESS;
 }
 
-/*
-int coinWriteMsgLog(const char* FormatStr, ...)
-{
-	va_list pVa;
-	char strbuf[256];
 
-	va_start(pVa,FormatStr);
-	vsprintf(strbuf,FormatStr,pVa);
-	if (global_pCoin->pSolver->MsgLogCallback) {
-		global_pCoin->pSolver->MsgLogCallback(strbuf);
-	}
-	return CBC_CALL_SUCCESS;
-}
-
-
-int coinIterLogCallback(int IterCount, double ObjectValue, int IsFeasible, double InfeasValue)
-{
-	if (!global_pCoin->pProblem->SolveAsMIP) {
-		if (((IterCount < 100) && ((IterCount % 10) == 0)) ||
-			 ((IterCount % 100) == 0)) {
-			if (!IsFeasible)
-				coinWriteMsgLog("Iteration: %5d  %16.8lg  %16.8lg",IterCount, ObjectValue, InfeasValue);
-			else {
-				coinWriteMsgLog("Iteration: %5d  %16.8lg",IterCount, ObjectValue);
-			}
-		}
-	}
-	if (global_pCoin->pSolver->IterCallback) {
-		global_pCoin->pSolver->IterCallback(IterCount, ObjectValue, IsFeasible, InfeasValue);
-	}
-	return CBC_CALL_SUCCESS;
-}
-
-
-int coinNodeLogCallback(int IterCount, int NodeCount, double BestBound, double BestObject, int IsMipImproved)
-{
-	if ((NodeCount > 0) && (((NodeCount % 100) == 0) || (IsMipImproved))) {
-		coinWriteMsgLog("Node: %5d  %s  %16.8lg  %16.8lg", 
-		                   NodeCount, (IsMipImproved) ? "*" : " ", BestBound, BestObject);
-	}
-	if (global_pCoin->pSolver->MipNodeCallback) {
-		global_pCoin->pSolver->MipNodeCallback(IterCount, NodeCount, BestBound, BestObject, IsMipImproved);
-	}
-	return CBC_CALL_SUCCESS;
-}
-*/
 
 /************************************************************************/
 /*  Option Setting                                                      */
