@@ -23,7 +23,7 @@
 #include "CbcSolver.hpp"
 #include "CbcEventHandler.hpp"
 #include "CbcBranchActual.hpp"   // CbcSOS
-#include "CbcBranchLotSize.hpp"  // CbcLotsize
+#include "CbcBranchLotsize.hpp"  // CbcLotsize
 
 #include "CglProbing.hpp"
 #include "CglGomory.hpp"
