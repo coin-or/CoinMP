@@ -46,7 +46,7 @@ extern "C" {
 #define CBC_CALL_SUCCESS   0
 #define CBC_CALL_FAILED    -1
 
-int CbcOptimizeProblem(PPROBLEM pProblem, PRESULT pResult, PSOLVER pSolver, int Method);
+int CbcOptimizeProblem(PPROBLEM pProblem, PRESULT pResult, PSOLVER pSolver, POPTION pOption, int Method);
 
 int CbcReadMpsFile(PPROBLEM pProblem, const char *ReadFilename);
 int CbcWriteMpsFile(PPROBLEM pProblem, const char *WriteFilename);

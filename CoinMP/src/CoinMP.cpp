@@ -23,6 +23,7 @@
 #include "CoinProblem.h"
 #include "CoinResult.h"
 #include "CoinSolver.h"
+#include "CoinOption.h"
 
 #include "CoinCbc.h"
 
@@ -131,6 +132,7 @@ typedef struct {
 				PPROBLEM  pProblem;
 				PRESULT   pResult;
 				PSOLVER   pSolver;
+				POPTION   pOption;
 
 				} COININFO, *PCOIN;
  
@@ -154,9 +156,10 @@ SOLVAPI HPROB SOLVCALL CoinCreateProblem(const char* ProblemName)
 	pCoin->pProblem = coinCreateProblemObject();
 	pCoin->pResult = coinCreateResultObject();
 	pCoin->pSolver = coinCreateSolverObject();
+	pCoin->pOption = coinCreateOptionObject();
 
 	coinSetProblemName(pCoin->pProblem, ProblemName);
-	coinCopyOptionTable(pCoin->pSolver, CbcGetOptionTable(), CbcGetOptionCount());
+	coinCopyOptionTable(pCoin->pOption, CbcGetOptionTable(), CbcGetOptionCount());
 
 	return (HPROB)pCoin;
 }
@@ -170,6 +173,7 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 		coinClearProblemObject(pCoin->pProblem);
 		coinClearResultObject(pCoin->pResult);
 		coinClearSolverObject(pCoin->pSolver);
+		coinClearOptionObject(pCoin->pOption);
 	}
 	free(pCoin);
 	pCoin = NULL;
@@ -557,7 +561,7 @@ SOLVAPI int SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method)
 {		
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return CbcOptimizeProblem(pCoin->pProblem, pCoin->pResult, pCoin->pSolver, Method);
+	return CbcOptimizeProblem(pCoin->pProblem, pCoin->pResult, pCoin->pSolver, pCoin->pOption, Method);
 }
 
 
@@ -768,14 +772,14 @@ SOLVAPI int SOLVCALL CoinGetOptionCount(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionCount(pCoin->pSolver);
+	return coinGetOptionCount(pCoin->pOption);
 }
 
 SOLVAPI int    SOLVCALL CoinLocateOptionID(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinLocateOptionID(pCoin->pSolver, OptionID);
+	return coinLocateOptionID(pCoin->pOption, OptionID);
 }
 
 
@@ -783,7 +787,7 @@ SOLVAPI int    SOLVCALL CoinLocateOptionName(HPROB hProb, char* OptionName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinLocateOptionName(pCoin->pSolver, OptionName);
+	return coinLocateOptionName(pCoin->pOption, OptionName);
 }
 
 
@@ -792,7 +796,7 @@ SOLVAPI int SOLVCALL CoinGetOptionID(HPROB hProb, int OptionNr)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionID(pCoin->pSolver, OptionNr);
+	return coinGetOptionID(pCoin->pOption, OptionNr);
 }
 
 
@@ -801,10 +805,10 @@ SOLVAPI int SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID,
 	PCOIN pCoin = (PCOIN)hProb;
 	int optionID;
 
-	optionID = coinGetOptionID(pCoin->pSolver, OptionNr);
+	optionID = coinGetOptionID(pCoin->pOption, OptionNr);
 	if (OptionID)   *OptionID = optionID;
-	if (OptionType) *OptionType = coinGetOptionType(pCoin->pSolver, optionID);
-	if (GroupType)  *GroupType = coinGetOptionGroup(pCoin->pSolver, optionID);
+	if (OptionType) *OptionType = coinGetOptionType(pCoin->pOption, optionID);
+	if (GroupType)  *GroupType = coinGetOptionGroup(pCoin->pOption, optionID);
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -814,9 +818,9 @@ SOLVAPI int SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int* MinV
 	PCOIN pCoin = (PCOIN)hProb;
 	int optionID;
 
-	optionID = coinGetOptionID(pCoin->pSolver, OptionNr);
-	if (MinValue)   *MinValue = coinGetIntOptionMinValue(pCoin->pSolver, optionID);
-	if (MaxValue)   *MaxValue = coinGetIntOptionMaxValue(pCoin->pSolver, optionID);
+	optionID = coinGetOptionID(pCoin->pOption, OptionNr);
+	if (MinValue)   *MinValue = coinGetIntOptionMinValue(pCoin->pOption, optionID);
+	if (MaxValue)   *MaxValue = coinGetIntOptionMaxValue(pCoin->pOption, optionID);
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -826,9 +830,9 @@ SOLVAPI int SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double* 
 	PCOIN pCoin = (PCOIN)hProb;
 	int optionID;
 
-	optionID = coinGetOptionID(pCoin->pSolver, OptionNr);
-	if (MinValue)   *MinValue = coinGetRealOptionMinValue(pCoin->pSolver, optionID);
-	if (MaxValue)   *MaxValue = coinGetRealOptionMaxValue(pCoin->pSolver, optionID);
+	optionID = coinGetOptionID(pCoin->pOption, OptionNr);
+	if (MinValue)   *MinValue = coinGetRealOptionMinValue(pCoin->pOption, optionID);
+	if (MaxValue)   *MaxValue = coinGetRealOptionMaxValue(pCoin->pOption, optionID);
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -839,9 +843,9 @@ SOLVAPI int SOLVCALL CoinGetOptionNamesBuf(HPROB hProb, int OptionNr, char* Opti
 	PCOIN pCoin = (PCOIN)hProb;
 	int optionID;
 
-	optionID = coinGetOptionID(pCoin->pSolver, OptionNr);
-	if (OptionName) coinGetOptionNameBuf(pCoin->pSolver, optionID, OptionName, buflen);
-	if (ShortName) coinGetOptionShortNameBuf(pCoin->pSolver, optionID, ShortName, buflen);
+	optionID = coinGetOptionID(pCoin->pOption, OptionNr);
+	if (OptionName) coinGetOptionNameBuf(pCoin->pOption, optionID, OptionName, buflen);
+	if (ShortName) coinGetOptionShortNameBuf(pCoin->pOption, optionID, ShortName, buflen);
 	return SOLV_CALL_SUCCESS;
 }
 
@@ -853,7 +857,7 @@ SOLVAPI int SOLVCALL CoinGetOptionGroup(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionGroup(pCoin->pSolver, OptionID);
+	return coinGetOptionGroup(pCoin->pOption, OptionID);
 }
 
 
@@ -861,7 +865,7 @@ SOLVAPI int SOLVCALL CoinGetOptionType(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionType(pCoin->pSolver, OptionID);
+	return coinGetOptionType(pCoin->pOption, OptionID);
 }
 
 
@@ -871,7 +875,7 @@ SOLVAPI int    SOLVCALL CoinGetIntOptionDefaultValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetIntOptionDefaultValue(pCoin->pSolver, OptionID);
+	return coinGetIntOptionDefaultValue(pCoin->pOption, OptionID);
 }
 
 
@@ -879,7 +883,7 @@ SOLVAPI int    SOLVCALL CoinGetIntOptionMinValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetIntOptionMinValue(pCoin->pSolver, OptionID);
+	return coinGetIntOptionMinValue(pCoin->pOption, OptionID);
 }
 
 
@@ -887,7 +891,7 @@ SOLVAPI int    SOLVCALL CoinGetIntOptionMaxValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetIntOptionMaxValue(pCoin->pSolver, OptionID);
+	return coinGetIntOptionMaxValue(pCoin->pOption, OptionID);
 }
 
 
@@ -896,7 +900,7 @@ SOLVAPI double SOLVCALL CoinGetRealOptionDefaultValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetRealOptionDefaultValue(pCoin->pSolver, OptionID);
+	return coinGetRealOptionDefaultValue(pCoin->pOption, OptionID);
 }
 
 
@@ -904,7 +908,7 @@ SOLVAPI double SOLVCALL CoinGetRealOptionMinValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetRealOptionMinValue(pCoin->pSolver, OptionID);
+	return coinGetRealOptionMinValue(pCoin->pOption, OptionID);
 }
 
 
@@ -912,7 +916,7 @@ SOLVAPI double SOLVCALL CoinGetRealOptionMaxValue(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetRealOptionMaxValue(pCoin->pSolver, OptionID);
+	return coinGetRealOptionMaxValue(pCoin->pOption, OptionID);
 }
 
 
@@ -922,7 +926,7 @@ SOLVAPI const char* SOLVCALL CoinGetOptionName(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionName(pCoin->pSolver, OptionID);
+	return coinGetOptionName(pCoin->pOption, OptionID);
 }
 
 
@@ -930,7 +934,7 @@ SOLVAPI int SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionID, char* Optio
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionNameBuf(pCoin->pSolver, OptionID, OptionName, buflen);
+	return coinGetOptionNameBuf(pCoin->pOption, OptionID, OptionName, buflen);
 }
 
 
@@ -938,7 +942,7 @@ SOLVAPI const char* SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionShortName(pCoin->pSolver, OptionID);
+	return coinGetOptionShortName(pCoin->pOption, OptionID);
 }
 
 
@@ -946,7 +950,7 @@ SOLVAPI int SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionID, char* 
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionShortNameBuf(pCoin->pSolver, OptionID, ShortName, buflen);
+	return coinGetOptionShortNameBuf(pCoin->pOption, OptionID, ShortName, buflen);
 }
 
 
@@ -956,7 +960,7 @@ SOLVAPI int SOLVCALL CoinGetOptionChanged(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetOptionChanged(pCoin->pSolver, OptionID);
+	return coinGetOptionChanged(pCoin->pOption, OptionID);
 }
 
 
@@ -964,7 +968,7 @@ SOLVAPI int SOLVCALL CoinGetIntOption(HPROB hProb, int OptionID)
 {   
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetIntOption(pCoin->pSolver, OptionID);
+	return coinGetIntOption(pCoin->pOption, OptionID);
 }
   	
 
@@ -973,7 +977,7 @@ SOLVAPI int SOLVCALL CoinSetIntOption(HPROB hProb, int OptionID, int IntValue)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinSetIntOption(pCoin->pSolver, OptionID, IntValue);
+	return coinSetIntOption(pCoin->pOption, OptionID, IntValue);
 }
 
 
@@ -982,7 +986,7 @@ SOLVAPI double SOLVCALL CoinGetRealOption(HPROB hProb, int OptionID)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinGetRealOption(pCoin->pSolver, OptionID);
+	return coinGetRealOption(pCoin->pOption, OptionID);
 }
 
 
@@ -991,7 +995,7 @@ SOLVAPI int SOLVCALL CoinSetRealOption(HPROB hProb, int OptionID, double RealVal
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
-	return coinSetRealOption(pCoin->pSolver, OptionID, RealValue);
+	return coinSetRealOption(pCoin->pOption, OptionID, RealValue);
 }
 
 

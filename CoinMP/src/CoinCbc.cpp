@@ -5,6 +5,7 @@
 #include "CoinProblem.h"
 #include "CoinResult.h"
 #include "CoinSolver.h"
+#include "CoinOption.h"
 
 #include <cfloat>
 
@@ -337,10 +338,9 @@ void CbcClearSolverObject(HCBC hCbc)
 
 
 
-int CbcSetMsgLogCallback(HCBC hCbc, MSGLOGCALLBACK MsgLogCallback)
+int CbcSetMsgLogCallback(HCBC hCbc, int LogLevel, MSGLOGCALLBACK MsgLogCallback)
 {
 	PCBC pCbc = (PCBC)hCbc;
-	int LogLevel;
 
 	if (!MsgLogCallback) {
 		return CBC_CALL_FAILED;
@@ -349,7 +349,6 @@ int CbcSetMsgLogCallback(HCBC hCbc, MSGLOGCALLBACK MsgLogCallback)
 	delete pCbc->msghandler;
 	pCbc->msghandler = new CBMessageHandler();
 	pCbc->msghandler->setCallback(MsgLogCallback);
-	LogLevel = CbcGetIntOption(COIN_INT_LOGLEVEL);
 	pCbc->msghandler->setLogLevel(LogLevel);
 	if (pCbc->clp) pCbc->clp->passInMessageHandler(pCbc->msghandler);
 	if (pCbc->cbc) pCbc->cbc->passInMessageHandler(pCbc->msghandler);
@@ -391,9 +390,12 @@ int CbcSetMipNodeCallback(HCBC hCbc, MIPNODECALLBACK MipNodeCallback)
 }
 
 
-int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver)
+int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver, POPTION pOption)
 {
-	CbcSetMsgLogCallback(hCbc, pSolver->MsgLogCallback);
+	int LogLevel;
+
+	LogLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
+	CbcSetMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCallback);
 	CbcSetIterCallback(hCbc, pSolver->IterCallback);
 	CbcSetMipNodeCallback(hCbc, pSolver->MipNodeCallback);
 	return CBC_CALL_SUCCESS;
@@ -406,43 +408,43 @@ int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver)
 /************************************************************************/
 
 
-int CbcSetClpOptions(HCBC hCbc)
+int CbcSetClpOptions(HCBC hCbc, POPTION pOption)
 {
 	PCBC pCbc = (PCBC)hCbc;
 	ClpSolve::SolveType method;
 	ClpSolve::PresolveType presolve;
 
 	/* check if it has been changed, leave alone otherwise */
-	if (CbcGetOptionChanged(COIN_INT_SCALING))			pCbc->clp->scaling(CbcGetIntOption(COIN_INT_SCALING));
-	if (CbcGetOptionChanged(COIN_INT_PERTURBATION))		pCbc->clp->setPerturbation(CbcGetIntOption(COIN_INT_PERTURBATION));
+	if (coinGetOptionChanged(pOption, COIN_INT_SCALING))			pCbc->clp->scaling(coinGetIntOption(pOption, COIN_INT_SCALING));
+	if (coinGetOptionChanged(pOption, COIN_INT_PERTURBATION))		pCbc->clp->setPerturbation(coinGetIntOption(pOption, COIN_INT_PERTURBATION));
 
-	if (CbcGetOptionChanged(COIN_REAL_MAXSECONDS))		pCbc->clp->setMaximumSeconds(CbcGetRealOption(COIN_REAL_MAXSECONDS));
-	if (CbcGetOptionChanged(COIN_INT_MAXITER))			pCbc->clp->setMaximumIterations(CbcGetIntOption(COIN_INT_MAXITER));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MAXSECONDS))		pCbc->clp->setMaximumSeconds(coinGetRealOption(pOption, COIN_REAL_MAXSECONDS));
+	if (coinGetOptionChanged(pOption, COIN_INT_MAXITER))			pCbc->clp->setMaximumIterations(coinGetIntOption(pOption, COIN_INT_MAXITER));
 
-	if (CbcGetOptionChanged(COIN_REAL_PRIMALOBJLIM))	pCbc->clp->setPrimalObjectiveLimit(CbcGetRealOption(COIN_REAL_PRIMALOBJLIM));
-	if (CbcGetOptionChanged(COIN_REAL_DUALOBJLIM))		pCbc->clp->setDualObjectiveLimit(CbcGetRealOption(COIN_REAL_DUALOBJLIM));
-	if (CbcGetOptionChanged(COIN_REAL_PRIMALOBJTOL))	pCbc->clp->setPrimalTolerance(CbcGetRealOption(COIN_REAL_PRIMALOBJTOL));
-	if (CbcGetOptionChanged(COIN_REAL_DUALOBJTOL))		pCbc->clp->setDualTolerance(CbcGetRealOption(COIN_REAL_DUALOBJTOL));
+	if (coinGetOptionChanged(pOption, COIN_REAL_PRIMALOBJLIM))	pCbc->clp->setPrimalObjectiveLimit(coinGetRealOption(pOption, COIN_REAL_PRIMALOBJLIM));
+	if (coinGetOptionChanged(pOption, COIN_REAL_DUALOBJLIM))		pCbc->clp->setDualObjectiveLimit(coinGetRealOption(pOption, COIN_REAL_DUALOBJLIM));
+	if (coinGetOptionChanged(pOption, COIN_REAL_PRIMALOBJTOL))	pCbc->clp->setPrimalTolerance(coinGetRealOption(pOption, COIN_REAL_PRIMALOBJTOL));
+	if (coinGetOptionChanged(pOption, COIN_REAL_DUALOBJTOL))		pCbc->clp->setDualTolerance(coinGetRealOption(pOption, COIN_REAL_DUALOBJTOL));
 
-	if (CbcGetOptionChanged(COIN_INT_PRIMALPIVOTALG)) {
-		ClpPrimalColumnSteepest primalSteepest(CbcGetIntOption(COIN_INT_PRIMALPIVOTALG));
+	if (coinGetOptionChanged(pOption, COIN_INT_PRIMALPIVOTALG)) {
+		ClpPrimalColumnSteepest primalSteepest(coinGetIntOption(pOption, COIN_INT_PRIMALPIVOTALG));
 		pCbc->clp->setPrimalColumnPivotAlgorithm(primalSteepest);
 	}
 
-	if (CbcGetOptionChanged(COIN_INT_DUALPIVOTALG)) {
-		ClpDualRowSteepest dualSteepest(CbcGetIntOption(COIN_INT_DUALPIVOTALG));
+	if (coinGetOptionChanged(pOption, COIN_INT_DUALPIVOTALG)) {
+		ClpDualRowSteepest dualSteepest(coinGetIntOption(pOption, COIN_INT_DUALPIVOTALG));
 		pCbc->clp->setDualRowPivotAlgorithm(dualSteepest);
 	}
 
-	if (CbcGetOptionChanged(COIN_INT_CRASHIND)) { 
-		if (CbcGetIntOption(COIN_INT_CRASHIND)) {
-			pCbc->clp->crash(CbcGetRealOption(COIN_REAL_CRASHGAP),
-								CbcGetIntOption(COIN_INT_CRASHPIVOT));
+	if (coinGetOptionChanged(pOption, COIN_INT_CRASHIND)) { 
+		if (coinGetIntOption(pOption, COIN_INT_CRASHIND)) {
+			pCbc->clp->crash(coinGetRealOption(pOption, COIN_REAL_CRASHGAP),
+								coinGetIntOption(pOption, COIN_INT_CRASHPIVOT));
 		}
 	}
 
-	if (CbcGetOptionChanged(COIN_INT_SOLVEMETHOD)) {
-		switch (CbcGetIntOption(COIN_INT_SOLVEMETHOD)) {
+	if (coinGetOptionChanged(pOption, COIN_INT_SOLVEMETHOD)) {
+		switch (coinGetIntOption(pOption, COIN_INT_SOLVEMETHOD)) {
 			case 0: method = ClpSolve::useDual;				break;
 			case 1: method = ClpSolve::usePrimal;			break;
 			case 2: method = ClpSolve::usePrimalorSprint;	break;
@@ -454,8 +456,8 @@ int CbcSetClpOptions(HCBC hCbc)
 		pCbc->clp->setSolveType(method);   //ClpSolve::usePrimal
 	}
 
-	if (CbcGetOptionChanged(COIN_INT_PRESOLVETYPE)) {   
-		switch (CbcGetIntOption(COIN_INT_PRESOLVETYPE)) {
+	if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE)) {   
+		switch (coinGetIntOption(pOption, COIN_INT_PRESOLVETYPE)) {
 			case 0: presolve = ClpSolve::presolveOn;		 break;
 			case 1: presolve = ClpSolve::presolveOff;		 break;
 			case 2: presolve = ClpSolve::presolveNumber;	 break;
@@ -467,96 +469,96 @@ int CbcSetClpOptions(HCBC hCbc)
 }
 
 
-int CbcSetCbcOptions(HCBC hCbc)
+int CbcSetCbcOptions(HCBC hCbc, POPTION pOption)
 {
 	PCBC pCbc = (PCBC)hCbc;
 
 	if (!pCbc->cbc) {
 		return 0;
 	}
-	if (CbcGetOptionChanged(COIN_INT_MIPMAXNODES))		pCbc->cbc->setMaximumNodes(CbcGetIntOption(COIN_INT_MIPMAXNODES));
-	if (CbcGetOptionChanged(COIN_INT_MIPMAXSOL))		pCbc->cbc->setMaximumSolutions(CbcGetIntOption(COIN_INT_MIPMAXSOL));
-	if (CbcGetOptionChanged(COIN_REAL_MIPMAXSEC))		pCbc->cbc->setDblParam(CbcModel::CbcMaximumSeconds,CbcGetRealOption(COIN_REAL_MIPMAXSEC));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPMAXNODES))		pCbc->cbc->setMaximumNodes(coinGetIntOption(pOption, COIN_INT_MIPMAXNODES));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPMAXSOL))		pCbc->cbc->setMaximumSolutions(coinGetIntOption(pOption, COIN_INT_MIPMAXSOL));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPMAXSEC))		pCbc->cbc->setDblParam(CbcModel::CbcMaximumSeconds,coinGetRealOption(pOption, COIN_REAL_MIPMAXSEC));
 
-	if (CbcGetOptionChanged(COIN_INT_MIPFATHOMDISC))	pCbc->cbc->setIntParam(CbcModel::CbcFathomDiscipline,CbcGetIntOption(COIN_INT_MIPFATHOMDISC));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPFATHOMDISC))	pCbc->cbc->setIntParam(CbcModel::CbcFathomDiscipline,coinGetIntOption(pOption, COIN_INT_MIPFATHOMDISC));
 
-	// JPF commented: pCbc->cbc->setHotstartStrategy(CbcGetIntOption(COIN_INT_MIPHOTSTART));
-	//		pCbc->cbc->setForcePriority(CbcGetIntOption(COIN_INT_MIPFORCEPRIOR));
+	// JPF commented: pCbc->cbc->setHotstartStrategy(coinGetIntOption(pOption, COIN_INT_MIPHOTSTART));
+	//		pCbc->cbc->setForcePriority(coinGetIntOption(pOption, COIN_INT_MIPFORCEPRIOR));
 
-	if (CbcGetOptionChanged(COIN_INT_MIPMINIMUMDROP))	pCbc->cbc->setMinimumDrop(CbcGetIntOption(COIN_INT_MIPMINIMUMDROP));
-	if (CbcGetOptionChanged(COIN_INT_MIPMAXPASSROOT))	pCbc->cbc->setMaximumCutPassesAtRoot(CbcGetIntOption(COIN_INT_MIPMAXPASSROOT));
-	if (CbcGetOptionChanged(COIN_INT_MIPMAXCUTPASS))	pCbc->cbc->setMaximumCutPasses(CbcGetIntOption(COIN_INT_MIPMAXCUTPASS));
-	if (CbcGetOptionChanged(COIN_INT_MIPSTRONGBRANCH))	pCbc->cbc->setNumberStrong(CbcGetIntOption(COIN_INT_MIPSTRONGBRANCH));
-	if (CbcGetOptionChanged(COIN_INT_MIPSCANGLOBCUTS))	pCbc->cbc->setHowOftenGlobalScan(CbcGetIntOption(COIN_INT_MIPSCANGLOBCUTS));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPMINIMUMDROP))	pCbc->cbc->setMinimumDrop(coinGetIntOption(pOption, COIN_INT_MIPMINIMUMDROP));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPMAXPASSROOT))	pCbc->cbc->setMaximumCutPassesAtRoot(coinGetIntOption(pOption, COIN_INT_MIPMAXPASSROOT));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPMAXCUTPASS))	pCbc->cbc->setMaximumCutPasses(coinGetIntOption(pOption, COIN_INT_MIPMAXCUTPASS));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPSTRONGBRANCH))	pCbc->cbc->setNumberStrong(coinGetIntOption(pOption, COIN_INT_MIPSTRONGBRANCH));
+	if (coinGetOptionChanged(pOption, COIN_INT_MIPSCANGLOBCUTS))	pCbc->cbc->setHowOftenGlobalScan(coinGetIntOption(pOption, COIN_INT_MIPSCANGLOBCUTS));
 
-	if (CbcGetOptionChanged(COIN_REAL_MIPINTTOL))		pCbc->cbc->setIntegerTolerance(CbcGetRealOption(COIN_REAL_MIPINTTOL));
-	if (CbcGetOptionChanged(COIN_REAL_MIPINFWEIGHT))	pCbc->cbc->setInfeasibilityWeight(CbcGetRealOption(COIN_REAL_MIPINFWEIGHT));
-	if (CbcGetOptionChanged(COIN_REAL_MIPCUTOFF))		pCbc->cbc->setDblParam(CbcModel::CbcCutoffIncrement,CbcGetRealOption(COIN_REAL_MIPCUTOFF));
-	if (CbcGetOptionChanged(COIN_REAL_MIPABSGAP))		pCbc->cbc->setAllowableGap(CbcGetRealOption(COIN_REAL_MIPABSGAP));
-	if (CbcGetOptionChanged(COIN_REAL_MIPFRACGAP))		pCbc->cbc->setAllowableFractionGap(CbcGetRealOption(COIN_REAL_MIPFRACGAP));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPINTTOL))		pCbc->cbc->setIntegerTolerance(coinGetRealOption(pOption, COIN_REAL_MIPINTTOL));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPINFWEIGHT))	pCbc->cbc->setInfeasibilityWeight(coinGetRealOption(pOption, COIN_REAL_MIPINFWEIGHT));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPCUTOFF))		pCbc->cbc->setDblParam(CbcModel::CbcCutoffIncrement,coinGetRealOption(pOption, COIN_REAL_MIPCUTOFF));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPABSGAP))		pCbc->cbc->setAllowableGap(coinGetRealOption(pOption, COIN_REAL_MIPABSGAP));
+	if (coinGetOptionChanged(pOption, COIN_REAL_MIPFRACGAP))		pCbc->cbc->setAllowableFractionGap(coinGetRealOption(pOption, COIN_REAL_MIPFRACGAP));
 	return 1;
 }
 
 
-int CbcSetCglOptions(HCBC hCbc)
+int CbcSetCglOptions(HCBC hCbc, POPTION pOption)
 {
 	PCBC pCbc = (PCBC)hCbc;
 
 	/* see CbcModel.hpp has commments on calling cuts */
-	if (CbcGetIntOption(COIN_INT_MIPCUT_PROBING)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_PROBING)) {
 		pCbc->probing = new CglProbing();
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_MODE))	pCbc->probing->setMode(CbcGetIntOption(COIN_INT_MIPPROBE_MODE));
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_USEOBJ))	pCbc->probing->setUsingObjective(CbcGetIntOption(COIN_INT_MIPPROBE_USEOBJ) ? true : false);
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_MAXPASS))	pCbc->probing->setMaxPass(CbcGetIntOption(COIN_INT_MIPPROBE_MAXPASS));
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_MAXPROBE))	pCbc->probing->setMaxProbe(CbcGetIntOption(COIN_INT_MIPPROBE_MAXPROBE));
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_MAXLOOK))	pCbc->probing->setMaxLook(CbcGetIntOption(COIN_INT_MIPPROBE_MAXLOOK));
-		if (CbcGetOptionChanged(COIN_INT_MIPPROBE_ROWCUTS))	pCbc->probing->setRowCuts(CbcGetIntOption(COIN_INT_MIPPROBE_ROWCUTS));
-		pCbc->cbc->addCutGenerator(pCbc->probing,CbcGetIntOption(COIN_INT_MIPPROBE_FREQ),"Probing");
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_MODE))	pCbc->probing->setMode(coinGetIntOption(pOption, COIN_INT_MIPPROBE_MODE));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_USEOBJ))	pCbc->probing->setUsingObjective(coinGetIntOption(pOption, COIN_INT_MIPPROBE_USEOBJ) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_MAXPASS))	pCbc->probing->setMaxPass(coinGetIntOption(pOption, COIN_INT_MIPPROBE_MAXPASS));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_MAXPROBE))	pCbc->probing->setMaxProbe(coinGetIntOption(pOption, COIN_INT_MIPPROBE_MAXPROBE));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_MAXLOOK))	pCbc->probing->setMaxLook(coinGetIntOption(pOption, COIN_INT_MIPPROBE_MAXLOOK));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPPROBE_ROWCUTS))	pCbc->probing->setRowCuts(coinGetIntOption(pOption, COIN_INT_MIPPROBE_ROWCUTS));
+		pCbc->cbc->addCutGenerator(pCbc->probing,coinGetIntOption(pOption, COIN_INT_MIPPROBE_FREQ),"Probing");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_GOMORY)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_GOMORY)) {
 		pCbc->gomory = new CglGomory();
-		if (CbcGetOptionChanged(COIN_INT_MIPGOMORY_LIMIT))	pCbc->gomory->setLimit(CbcGetIntOption(COIN_INT_MIPGOMORY_LIMIT));
-		if (CbcGetOptionChanged(COIN_REAL_MIPGOMORY_AWAY))	pCbc->gomory->setAway(CbcGetRealOption(COIN_REAL_MIPGOMORY_AWAY));
-		pCbc->cbc->addCutGenerator(pCbc->gomory,CbcGetIntOption(COIN_INT_MIPGOMORY_FREQ),"Gomory");
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPGOMORY_LIMIT))	pCbc->gomory->setLimit(coinGetIntOption(pOption, COIN_INT_MIPGOMORY_LIMIT));
+		if (coinGetOptionChanged(pOption, COIN_REAL_MIPGOMORY_AWAY))	pCbc->gomory->setAway(coinGetRealOption(pOption, COIN_REAL_MIPGOMORY_AWAY));
+		pCbc->cbc->addCutGenerator(pCbc->gomory,coinGetIntOption(pOption, COIN_INT_MIPGOMORY_FREQ),"Gomory");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_KNAPSACK)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_KNAPSACK)) {
 		pCbc->knapsack = new CglKnapsackCover();
-		if (CbcGetOptionChanged(COIN_INT_MIPKNAPSACK_MAXIN))	pCbc->knapsack->setMaxInKnapsack(CbcGetIntOption(COIN_INT_MIPKNAPSACK_MAXIN));
-		pCbc->cbc->addCutGenerator(pCbc->knapsack,CbcGetIntOption(COIN_INT_MIPKNAPSACK_FREQ),"Knapsack");
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPKNAPSACK_MAXIN))	pCbc->knapsack->setMaxInKnapsack(coinGetIntOption(pOption, COIN_INT_MIPKNAPSACK_MAXIN));
+		pCbc->cbc->addCutGenerator(pCbc->knapsack,coinGetIntOption(pOption, COIN_INT_MIPKNAPSACK_FREQ),"Knapsack");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_ODDHOLE)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_ODDHOLE)) {
 		pCbc->oddhole= new CglOddHole();
-		if (CbcGetOptionChanged(COIN_REAL_MIPODDHOLE_MINVIOL))	pCbc->oddhole->setMinimumViolation(CbcGetRealOption(COIN_REAL_MIPODDHOLE_MINVIOL));
-		if (CbcGetOptionChanged(COIN_REAL_MIPODDHOLE_MINVIOLPER))	pCbc->oddhole->setMinimumViolationPer(CbcGetRealOption(COIN_REAL_MIPODDHOLE_MINVIOLPER));
-		if (CbcGetOptionChanged(COIN_INT_MIPODDHOLE_MAXENTRIES))	pCbc->oddhole->setMaximumEntries(CbcGetIntOption(COIN_INT_MIPODDHOLE_MAXENTRIES));
-		pCbc->cbc->addCutGenerator(pCbc->oddhole,CbcGetIntOption(COIN_INT_MIPODDHOLE_FREQ),"OddHole");
+		if (coinGetOptionChanged(pOption, COIN_REAL_MIPODDHOLE_MINVIOL))	pCbc->oddhole->setMinimumViolation(coinGetRealOption(pOption, COIN_REAL_MIPODDHOLE_MINVIOL));
+		if (coinGetOptionChanged(pOption, COIN_REAL_MIPODDHOLE_MINVIOLPER))	pCbc->oddhole->setMinimumViolationPer(coinGetRealOption(pOption, COIN_REAL_MIPODDHOLE_MINVIOLPER));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPODDHOLE_MAXENTRIES))	pCbc->oddhole->setMaximumEntries(coinGetIntOption(pOption, COIN_INT_MIPODDHOLE_MAXENTRIES));
+		pCbc->cbc->addCutGenerator(pCbc->oddhole,coinGetIntOption(pOption, COIN_INT_MIPODDHOLE_FREQ),"OddHole");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_CLIQUE)) {
-		pCbc->clique= new CglClique(CbcGetIntOption(COIN_INT_MIPCLIQUE_PACKING) ? true : false);
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_STAR))		pCbc->clique->setDoStarClique(CbcGetIntOption(COIN_INT_MIPCLIQUE_STAR) ? true : false);
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_STARMETHOD))	pCbc->clique->setStarCliqueNextNodeMethod((CglClique::scl_next_node_method)CbcGetIntOption(COIN_INT_MIPCLIQUE_STARMETHOD));
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_STARMAXLEN))	pCbc->clique->setStarCliqueCandidateLengthThreshold(CbcGetIntOption(COIN_INT_MIPCLIQUE_STARMAXLEN));
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_STARREPORT))	pCbc->clique->setStarCliqueReport(CbcGetIntOption(COIN_INT_MIPCLIQUE_STARREPORT) ? true : false);
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_ROW))		pCbc->clique->setDoRowClique(CbcGetIntOption(COIN_INT_MIPCLIQUE_ROW) ? true : false);
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_ROWMAXLEN))	pCbc->clique->setRowCliqueCandidateLengthThreshold(CbcGetIntOption(COIN_INT_MIPCLIQUE_ROWMAXLEN));
-		if (CbcGetOptionChanged(COIN_INT_MIPCLIQUE_ROWREPORT))	pCbc->clique->setRowCliqueReport(CbcGetIntOption(COIN_INT_MIPCLIQUE_ROWREPORT) ? true : false);
-		if (CbcGetOptionChanged(COIN_REAL_MIPCLIQUE_MINVIOL))	pCbc->clique->setMinViolation(CbcGetRealOption(COIN_REAL_MIPCLIQUE_MINVIOL));
-		pCbc->cbc->addCutGenerator(pCbc->clique,CbcGetIntOption(COIN_INT_MIPCLIQUE_FREQ),"Clique");
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_CLIQUE)) {
+		pCbc->clique= new CglClique(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_PACKING) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_STAR))		pCbc->clique->setDoStarClique(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_STAR) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_STARMETHOD))	pCbc->clique->setStarCliqueNextNodeMethod((CglClique::scl_next_node_method)coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_STARMETHOD));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_STARMAXLEN))	pCbc->clique->setStarCliqueCandidateLengthThreshold(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_STARMAXLEN));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_STARREPORT))	pCbc->clique->setStarCliqueReport(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_STARREPORT) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_ROW))		pCbc->clique->setDoRowClique(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_ROW) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_ROWMAXLEN))	pCbc->clique->setRowCliqueCandidateLengthThreshold(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_ROWMAXLEN));
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPCLIQUE_ROWREPORT))	pCbc->clique->setRowCliqueReport(coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_ROWREPORT) ? true : false);
+		if (coinGetOptionChanged(pOption, COIN_REAL_MIPCLIQUE_MINVIOL))	pCbc->clique->setMinViolation(coinGetRealOption(pOption, COIN_REAL_MIPCLIQUE_MINVIOL));
+		pCbc->cbc->addCutGenerator(pCbc->clique,coinGetIntOption(pOption, COIN_INT_MIPCLIQUE_FREQ),"Clique");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_LIFTPROJECT)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_LIFTPROJECT)) {
 		pCbc->liftpro = new CglLiftAndProject();
-		if (CbcGetOptionChanged(COIN_INT_MIPLIFTPRO_BETAONE))	pCbc->liftpro->setBeta(CbcGetIntOption(COIN_INT_MIPLIFTPRO_BETAONE) ? 1 : -1);
-		pCbc->cbc->addCutGenerator(pCbc->liftpro,CbcGetIntOption(COIN_INT_MIPLIFTPRO_FREQ),"LiftProject");
+		if (coinGetOptionChanged(pOption, COIN_INT_MIPLIFTPRO_BETAONE))	pCbc->liftpro->setBeta(coinGetIntOption(pOption, COIN_INT_MIPLIFTPRO_BETAONE) ? 1 : -1);
+		pCbc->cbc->addCutGenerator(pCbc->liftpro,coinGetIntOption(pOption, COIN_INT_MIPLIFTPRO_FREQ),"LiftProject");
 	}
 
-	if (CbcGetIntOption(COIN_INT_MIPCUT_SIMPROUND)) {
+	if (coinGetIntOption(pOption, COIN_INT_MIPCUT_SIMPROUND)) {
 		pCbc->rounding = new CglSimpleRounding();
-		pCbc->cbc->addCutGenerator(pCbc->rounding,CbcGetIntOption(COIN_INT_MIPSIMPROUND_FREQ),"Rounding");
+		pCbc->cbc->addCutGenerator(pCbc->rounding,coinGetIntOption(pOption, COIN_INT_MIPSIMPROUND_FREQ),"Rounding");
 	}
 	return 1;
 }
@@ -746,13 +748,13 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 
 extern int CbcOrClpRead_mode;
 
-int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, int Method)
+int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 {
 	PCBC pCbc = (PCBC)hCbc;
 
 	if (!pProblem->SolveAsMIP) {
-		CbcSetClpOptions(hCbc);
-		if (CbcGetOptionChanged(COIN_INT_PRESOLVETYPE))			
+		CbcSetClpOptions(hCbc, pOption);
+		if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE))			
 			pCbc->clp->initialSolve(*pCbc->clp_presolve);
 		else {
 			pCbc->clp->initialSolve();
@@ -760,10 +762,10 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, int Method)
 		}
 	else {
 #ifdef NEW_STYLE_CBCMAIN
-		if (CbcGetIntOption(COIN_INT_MIPUSECBCMAIN)) {
+		if (coinGetIntOption(pOption, COIN_INT_MIPUSECBCMAIN)) {
 			CbcMain0(*pCbc->cbc);
-			CbcSetClpOptions(hCbc);
-			CbcSetCbcOptions(hCbc);
+			CbcSetClpOptions(hCbc, pOption);
+			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			const int argc = 3;
@@ -773,9 +775,9 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, int Method)
 		else 
 #endif
 		{
-			CbcSetClpOptions(hCbc);
-			CbcSetCbcOptions(hCbc);
-			CbcSetCglOptions(hCbc);
+			CbcSetClpOptions(hCbc, pOption);
+			CbcSetCbcOptions(hCbc, pOption);
+			CbcSetCglOptions(hCbc, pOption);
 
 			pCbc->cbc->initialSolve();
 			pCbc->cbc->branchAndBound();
@@ -853,15 +855,15 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 
 
 
-int CbcOptimizeProblem(PPROBLEM pProblem, PRESULT pResult, PSOLVER pSolver, int Method)
+int CbcOptimizeProblem(PPROBLEM pProblem, PRESULT pResult, PSOLVER pSolver, POPTION pOption, int Method)
 {		
 	HCBC hCbc;
 	int result;
 
 	hCbc = CbcCreateSolverObject();
 	result = CbcLoadAllSolverObjects(hCbc, pProblem);
-	result = CbcSetAllCallbacks(hCbc, pSolver);
-	result = CbcSolveProblem(hCbc, pProblem, Method);
+	result = CbcSetAllCallbacks(hCbc, pSolver, pOption);
+	result = CbcSolveProblem(hCbc, pProblem, pOption, Method);
 	result = CbcRetrieveSolutionResults(hCbc, pProblem, pResult);
 	CbcClearSolverObject(hCbc);
 	return CBC_CALL_SUCCESS;

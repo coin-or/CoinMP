@@ -212,6 +212,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\CoinOption.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\CoinProblem.c"
 				>
 			</File>
@@ -243,6 +247,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\CoinMP.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\CoinOption.h"
 				>
 			</File>
 			<File
