@@ -80,6 +80,8 @@ void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName);
 
 int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax);
 
+int coinComputeIntVariables(PPROBLEM pProblem);
+
 int coinGetLenNameBuf(const char* NameBuf, int Count);
 int coinGetLenNameListBuf(char** NameList, int Count);
 

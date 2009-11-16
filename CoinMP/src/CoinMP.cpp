@@ -296,7 +296,6 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 {   
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;
-	int i;
 
 	if (pProblem->ColCount == 0) {
 		return SOLV_CALL_FAILED;
@@ -310,31 +309,10 @@ SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
 	}
 	memcpy(pProblem->ColType, ColType, pProblem->ColCount * sizeof(char));
 
-	pProblem->IsInt = (char* )malloc(pProblem->ColCount * sizeof(char));
-	if (!pProblem->IsInt) {
+	if (!coinComputeIntVariables(pProblem)) {
 		return SOLV_CALL_FAILED;
 	}
-	for (i = 0; i < pProblem->ColCount; i++ ) {
-		switch (ColType[i]) {
-			case 'B': 
-				pProblem->BinCount++;
-				pProblem->IsInt[i] = 1;
-				break;
-
-			case 'I': 
-				pProblem->IntCount++;
-				pProblem->IsInt[i] = 1;
-				break;
-
-			default:
-				pProblem->IsInt[i] = 0;
-				break;
-		}
-	}
-	pProblem->numInts = pProblem->IntCount + pProblem->BinCount;
-	if (pProblem->numInts > 0) {
-		pProblem->SolveAsMIP = 1;
-	}
+	pProblem->SolveAsMIP = 1;
 	return SOLV_CALL_SUCCESS;
 }
 

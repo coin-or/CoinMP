@@ -188,6 +188,35 @@ int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax)
 }
 
 
+int coinComputeIntVariables(PPROBLEM pProblem)
+{
+	int i;
+
+	pProblem->IsInt = (char* )malloc(pProblem->ColCount * sizeof(char));
+	if (!pProblem->IsInt) {
+		return 0;
+	}
+	for (i = 0; i < pProblem->ColCount; i++ ) {
+		switch (pProblem->ColType[i]) {
+			case 'B': 
+				pProblem->BinCount++;
+				pProblem->IsInt[i] = 1;
+				break;
+
+			case 'I': 
+				pProblem->IntCount++;
+				pProblem->IsInt[i] = 1;
+				break;
+
+			default:
+				pProblem->IsInt[i] = 0;
+				break;
+		}
+	}
+	pProblem->numInts = pProblem->IntCount + pProblem->BinCount;
+	return pProblem->numInts;
+}
+
 
 int coinGetLenNameBuf(const char* NameBuf, int Count)
 {
