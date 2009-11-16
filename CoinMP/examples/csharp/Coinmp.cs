@@ -151,14 +151,14 @@ namespace Coin.CoinMP
 
 
         [DllImport("coinmp.dll")] public static extern int CoinLoadPriority(IntPtr hProb, int priorCount,
-                        int[] priorIndex, int[] priorValues, int[] branchDir);
-
-        [DllImport("coinmp.dll")] public static extern int CoinLoadSemiCont(IntPtr hProb, int semiCount,
-                        int[] semiIndex);
+                        int[] priorIndex, int[] priorValues, int[] PriorBranch);
 
         [DllImport("coinmp.dll")] public static extern int CoinLoadSos(IntPtr hProb, int sosCount,
                         int sosNZCount, int[] sosType, int[] sosPrior,
                         int[] sosBegin, int[] sosIndex, double[] sosRef);
+
+        [DllImport("coinmp.dll")] public static extern int CoinLoadSemiCont(IntPtr hProb, int semiCount,
+                        int[] semiIndex);
 
         [DllImport("coinmp.dll")] public static extern int CoinLoadQuadratic(IntPtr hProb, int[] quadBegin,
                         int[] quadCount, int[] quadIndex, double[] quadValues);
