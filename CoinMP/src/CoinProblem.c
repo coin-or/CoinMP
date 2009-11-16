@@ -124,7 +124,6 @@ void coinClearProblemObject(PPROBLEM pProblem)
 	if (pProblem->PriorBranch)  free(pProblem->PriorBranch);
 
 	if (pProblem->SemiIndex)	free(pProblem->SemiIndex);
-	if (pProblem->SemiLower)	free(pProblem->SemiLower);
 
 	if (pProblem->SosType)		free(pProblem->SosType);
 	if (pProblem->SosPrior)		free(pProblem->SosPrior);

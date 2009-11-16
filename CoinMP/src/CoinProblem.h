@@ -64,7 +64,6 @@ typedef struct {
 
 				int SemiCount;
 				int* SemiIndex;
-				double* SemiLower;
 
 				} PROBLEMINFO, *PPROBLEM;
 

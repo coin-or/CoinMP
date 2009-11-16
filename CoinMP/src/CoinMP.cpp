@@ -405,8 +405,7 @@ SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex
 	}
 	pProblem->SemiCount = SemiCount;
 	pProblem->SemiIndex = (int* )malloc(pProblem->SemiCount * sizeof(int));
-	pProblem->SemiLower = (double *)malloc(pProblem->ColCount * sizeof(double));
-	if (!pProblem->SemiIndex || !pProblem->SemiLower) {
+	if (!pProblem->SemiIndex) {
 		return SOLV_CALL_FAILED;
 	}
 	memcpy(pProblem->SemiIndex, SemiIndex, pProblem->SemiCount * sizeof(int));

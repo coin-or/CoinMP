@@ -704,12 +704,17 @@ int CbcAddSemiContObjects(HCBC hCbc, PPROBLEM pProblem)
 
 int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 {
+	PCBC pCbc = (PCBC)hCbc;
 	int i, col;
 	int result;
-	PCBC pCbc = (PCBC)hCbc;
+	double* storeLowerBound;
 
 	if (pProblem->SemiCount > 0) { 
-		memcpy(pProblem->SemiLower, pProblem->LowerBounds, pProblem->ColCount * sizeof(double));
+		storeLowerBound = (double *)malloc(pProblem->ColCount * sizeof(double));
+		if (!storeLowerBound) {
+			return CBC_CALL_FAILED;
+		}
+		memcpy(storeLowerBound, pProblem->LowerBounds, pProblem->ColCount * sizeof(double));
 		for (i = 0; i < pProblem->SemiCount; i++) {
 			col = pProblem->SemiIndex[i];
 			pProblem->LowerBounds[col] = 0.0;
@@ -721,7 +726,8 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 							pProblem->LowerBounds, pProblem->UpperBounds, pProblem->ObjectCoeffs, 
 							pProblem->RowLower, pProblem->RowUpper);
 	if (pProblem->SemiCount > 0) { 
-		memcpy(pProblem->LowerBounds, pProblem->SemiLower, pProblem->ColCount * sizeof(double));
+		memcpy(pProblem->LowerBounds, storeLowerBound, pProblem->ColCount * sizeof(double));
+		free(storeLowerBound);
 	}
 	CbcCopyNamesList(hCbc, pProblem);
 	if (pProblem->SolveAsMIP) {
