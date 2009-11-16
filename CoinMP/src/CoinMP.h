@@ -198,7 +198,7 @@ SOLVAPI int    SOLVCALL CoinUnloadProblem(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinCheckProblem(HPROB hProb);
 
-// Depreciated, use CoinLoadProblemBuf instead
+// Depreciated, use CoinLoadNamesBuf instead
 //SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
 
 SOLVAPI const char*  SOLVCALL CoinGetProblemName(HPROB hProb);
@@ -235,23 +235,43 @@ SOLVAPI int    SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, d
 									 double* RhsLoRange, double* RhsUpRange);
 SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus);
 
+
+
 SOLVAPI int    SOLVCALL CoinReadFile(HPROB hProb, int FileType, const char* ReadFilename);
 SOLVAPI int    SOLVCALL CoinWriteFile(HPROB hProb, int FileType, const char* WriteFilename);
 
 SOLVAPI int    SOLVCALL CoinOpenLogFile(HPROB hProb, const char* LogFilename);
 SOLVAPI int    SOLVCALL CoinCloseLogFile(HPROB hProb);
 
+
+
 SOLVAPI int    SOLVCALL CoinGetOptionCount(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinLocateOptionID(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinLocateOptionName(HPROB hProb, const char* OptionName);
+
+SOLVAPI int	   SOLVCALL CoinGetOptionID(HPROB hProb, int OptionNr);
 SOLVAPI int    SOLVCALL CoinGetOptionInfo(HPROB hProb, int OptionNr, int* OptionID, int* GroupType, int* OptionType);
-
-SOLVAPI const char*  SOLVCALL CoinGetOptionName(HPROB hProb, int OptionNr);
-SOLVAPI int    SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionNr, char* OptionName, int buflen);
-
-SOLVAPI const char*  SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionNr);
-SOLVAPI int    SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionNr, char* ShortName, int buflen);
-
 SOLVAPI int    SOLVCALL CoinGetIntOptionMinMax(HPROB hProb, int OptionNr, int* MinValue, int* MaxValue);
 SOLVAPI int    SOLVCALL CoinGetRealOptionMinMax(HPROB hProb, int OptionNr, double* MinValue, double* MaxValue);
+SOLVAPI int    SOLVCALL CoinGetOptionNamesBuf(HPROB hProb, int OptionNr, char* OptionName, char* ShortName, int buflen);
+
+
+SOLVAPI int	   SOLVCALL CoinGetOptionGroup(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetOptionType(HPROB hProb, int OptionID);
+
+SOLVAPI int    SOLVCALL CoinGetIntOptionDefaultValue(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetIntOptionMinValue(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetIntOptionMaxValue(HPROB hProb, int OptionID);
+
+SOLVAPI double SOLVCALL CoinGetRealOptionDefaultValue(HPROB hProb, int OptionID);
+SOLVAPI double SOLVCALL CoinGetRealOptionMinValue(HPROB hProb, int OptionID);
+SOLVAPI double SOLVCALL CoinGetRealOptionMaxValue(HPROB hProb, int OptionID);
+
+SOLVAPI const char*  SOLVCALL CoinGetOptionName(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetOptionNameBuf(HPROB hProb, int OptionID, char* OptionName, int buflen);
+SOLVAPI const char*  SOLVCALL CoinGetOptionShortName(HPROB hProb, int OptionID);
+SOLVAPI int    SOLVCALL CoinGetOptionShortNameBuf(HPROB hProb, int OptionID, char* ShortName, int buflen);
+
 
 SOLVAPI int    SOLVCALL CoinGetOptionChanged(HPROB hProb, int OptionID);
 
@@ -285,13 +305,26 @@ double (SOLVCALL *CoinGetInfinity)(void);
 
 HPROB  (SOLVCALL *CoinCreateProblem)(const char* ProblemName);
 
+int    (SOLVCALL *CoinLoadMatrix)(HPROB hProb, 
+				int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* RHSValues, double* RangeValues, int* MatrixBegin, 
+				int* MatrixCount, int* MatrixIndex, double* MatrixValues);
+
+int    (SOLVCALL *CoinLoadNames)(HPROB hProb, char** ColNamesList, 
+				char** RowNamesList, char* ObjectName);
+
+int    (SOLVCALL *CoinLoadNamesBuf)(HPROB hProb, char* ColNamesBuf, 
+				char* RowNamesBuf, char* ObjectName);
+
 int    (SOLVCALL *CoinLoadProblem)(HPROB hProb, 
 								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
 								   int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
 								   double* LowerBounds, double* UpperBounds, char* RowType, 
 								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
 								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-								   char** ColNames, char** RowNames, char* objName);
+								   char** ColNamesList, char** RowNamesList, char* objName);
 
 int    (SOLVCALL *CoinLoadProblemBuf)(HPROB hProb, 
 								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
@@ -308,11 +341,11 @@ int    (SOLVCALL *CoinLoadInteger)(HPROB hProb, char* ColumnType);
 int    (SOLVCALL *CoinLoadPriority)(HPROB hProb, int PriorCount, int* PriorIndex, 
 												int* PriorValues, int* PriorBranch);
 
-int    (SOLVCALL *CoinLoadSemiCont)(HPROB hProb, int SemiCount, int* SemiIndex);
-
 int    (SOLVCALL *CoinLoadSos)(HPROB hProb, int SosCount, int SosNZCount, 
 										 int* SosType, int* SosPrior, int* SosBegin,   
 										 int* SosIndex, double* SosRef);
+
+int    (SOLVCALL *CoinLoadSemiCont)(HPROB hProb, int SemiCount, int* SemiIndex);
 
 int    (SOLVCALL *CoinLoadQuadratic)(HPROB hProb, int* QuadBegin, int* QuadCount, 
 												 int* QuadIndex, double* QuadValues);
@@ -328,12 +361,6 @@ int    (SOLVCALL *CoinCheckProblem)(HPROB hProb);
 
 //int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType);
 
-void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
-void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
-void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
-
-int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
-
 const char*  (SOLVCALL *CoinGetProblemName)(HPROB hProb);
 int    (SOLVCALL *CoinGetProblemNameBuf)(HPROB hProb, char* ProblemName, int buflen);
 
@@ -344,6 +371,12 @@ const char*  (SOLVCALL *CoinGetColName)(HPROB hProb, int col);
 int    (SOLVCALL *CoinGetColNameBuf)(HPROB hProb, int col, char* ColName, int buflen);
 const char*  (SOLVCALL *CoinGetRowName)(HPROB hProb, int row);
 int    (SOLVCALL *CoinGetRowNameBuf)(HPROB hProb, int row, char* RowName, int buflen);
+
+void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
+void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
+void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
+
+int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
 int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
 const char* (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus);
@@ -361,22 +394,41 @@ int    (SOLVCALL *CoinGetSolutionRanges)(HPROB hProb, double* ObjLoRange, double
 										           double* RhsLoRange, double* RhsUpRange);
 int    (SOLVCALL *CoinGetSolutionBasis)(HPROB hProb, int* ColStatus, double* RowStatus);
 
+
 void   (SOLVCALL *CoinReadFile)(HPROB hProb, int FileType, const char* ReadFilename);
 void   (SOLVCALL *CoinWriteFile)(HPROB hProb, int FileType, const char* WriteFilename);
 
 void   (SOLVCALL *CoinOpenLogFile)(HPROB hProb, const char* LogFilename);
 void   (SOLVCALL *CoinCloseLogFile)(HPROB hProb);
 
+
 int    (SOLVCALL *CoinGetOptionCount)(HPROB hProb);
+int    (SOLVCALL *CoinLocateOptionID)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinLocateOptionName)(HPROB hProb, const char* OptionName);
+
+int	   (SOLVCALL *CoinGetOptionID)(HPROB hProb, int OptionNr);
 int    (SOLVCALL *CoinGetOptionInfo)(HPROB hProb, int OptionNr, int* OptionID, int* GroupType, int* OptionType);
-
-const char*  (SOLVCALL *CoinGetOptionName)(HPROB hProb, int OptionNr);
-int    (SOLVCALL *CoinGetOptionNameBuf)(HPROB hProb, int OptionNr, char* OptionName, int buflen);
-const char*  (SOLVCALL *CoinGetOptionShortName)(HPROB hProb, int OptionNr);
-int    (SOLVCALL *CoinGetOptionShortNameBuf)(HPROB hProb, int OptionNr, char* ShortName, int buflen);
-
 int    (SOLVCALL *CoinGetIntOptionMinMax)(HPROB hProb, int OptionNr, int* MinValue, int* MaxValue);
 int    (SOLVCALL *CoinGetRealOptionMinMax)(HPROB hProb, int OptionNr, double* MinValue, double* MaxValue);
+int    (SOLVCALL *CoinGetOptionNames)(HPROB hProb, int OptionNr, char* OptionName, char* ShortName, int buflen);
+
+
+int    (SOLVCALL *CoinGetOptionGroup)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetOptionType)(HPROB hProb, int OptionID);
+
+int    (SOLVCALL *CoinGetIntOptionDefaultValue)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetIntOptionMinValue)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetIntOptionMaxValue)(HPROB hProb, int OptionID);
+
+double (SOLVCALL *CoinGetRealOptionDefaultValue)(HPROB hProb, int OptionID);
+double (SOLVCALL *CoinGetRealOptionMinValue)(HPROB hProb, int OptionID);
+double (SOLVCALL *CoinGetRealOptionMaxValue)(HPROB hProb, int OptionID);
+
+const char*  (SOLVCALL *CoinGetOptionName)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetOptionNameBuf)(HPROB hProb, int OptionID, char* OptionName, int buflen);
+const char*  (SOLVCALL *CoinGetOptionShortName)(HPROB hProb, int OptionID);
+int    (SOLVCALL *CoinGetOptionShortNameBuf)(HPROB hProb, int OptionID, char* ShortName, int buflen);
+
 
 int    (SOLVCALL *CoinGetOptionChanged)(HPROB hProb, int OptionID);
 

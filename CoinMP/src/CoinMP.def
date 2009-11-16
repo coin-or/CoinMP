@@ -54,13 +54,25 @@ EXPORTS
 	CoinOpenLogFile
 	CoinCloseLogFile
 	CoinGetOptionCount
+	CoinLocateOptionID
+	CoinLocateOptionName
+	CoinGetOptionID
 	CoinGetOptionInfo
+	CoinGetIntOptionMinMax
+	CoinGetRealOptionMinMax
+	CoinGetOptionNamesBuf
+	CoinGetOptionGroup
+	CoinGetOptionType
+	CoinGetIntOptionDefaultValue
+	CoinGetIntOptionMinValue
+	CoinGetIntOptionMaxValue
+	CoinGetRealOptionDefaultValue
+	CoinGetRealOptionMinValue
+	CoinGetRealOptionMaxValue
 	CoinGetOptionName
 	CoinGetOptionNameBuf
 	CoinGetOptionShortName
 	CoinGetOptionShortNameBuf
-	CoinGetIntOptionMinMax
-	CoinGetRealOptionMinMax
 	CoinGetOptionChanged
 	CoinGetIntOption
 	CoinSetIntOption
