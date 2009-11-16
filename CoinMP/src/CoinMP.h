@@ -149,7 +149,7 @@ SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb,
 					double* LowerBounds, double* UpperBounds, char* RowType, 
 					double* RHSValues, double* RangeValues, int* MatrixBegin,  
 					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-					char** ColNames, char** RowNames, char* objName);
+					char** ColNamesList, char** RowNamesList, char* objName);
 
 SOLVAPI int    SOLVCALL CoinLoadProblemBuf(HPROB hProb, 
 					int ColCount, int RowCount, int NZCount, int RangeCount, 

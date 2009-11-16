@@ -78,6 +78,24 @@ void coinClearProblemObject(PPROBLEM pProblem);
 
 void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName);
 
+int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds, 
+				double* UpperBounds, char* RowType, double* RHSValues, double* RangeValues, 
+				int* MatrixBegin, int* MatrixCount, int* MatrixIndex, double* MatrixValues);
+
+int coinStoreNamesList(PPROBLEM pProblem, char** ColNamesList, char** RowNamesList, char* OjbectName);
+int coinStoreNamesBuf(PPROBLEM pProblem, char* ColNamesBuf, char* RowNamesBuf, char* ObjectName);
+
+int coinStoreInitValues(PPROBLEM pProblem, double* InitValues);
+int coinStoreInteger(PPROBLEM pProblem, char* ColType);
+
+int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex, 
+				int* PriorValues, int* PriorBranch);
+int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount, 
+				int* SosType, int* SosPrior, int* SosBegin, 
+				int* SosIndex, double* SosRef);
+int coinStoreSemiCont(PPROBLEM pProblem, int SemiCount, int* SemiIndex);
+
 int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax);
 
 int coinComputeIntVariables(PPROBLEM pProblem);

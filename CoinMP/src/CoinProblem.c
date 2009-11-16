@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>   // DBL_MAX
 
 #include "CoinProblem.h"
 
@@ -77,19 +78,6 @@ PPROBLEM coinCreateProblemObject()
 
 
 
-void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName)
-{
-	size_t len;
-
-	len = strlen(ProblemName);
-	if (len >= sizeof(pProblem->ProblemName)) {
-		len = sizeof(pProblem->ProblemName) - 1;
-	}
-	strncpy(pProblem->ProblemName, ProblemName, len);
-	pProblem->ProblemName[len] = '\0';
-}
-
-
 void coinClearProblemObject(PPROBLEM pProblem)
 {
 	if (!pProblem) {
@@ -135,11 +123,250 @@ void coinClearProblemObject(PPROBLEM pProblem)
 }
 
 
+
+void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName)
+{
+	size_t len;
+
+	len = strlen(ProblemName);
+	if (len >= sizeof(pProblem->ProblemName)) {
+		len = sizeof(pProblem->ProblemName) - 1;
+	}
+	strncpy(pProblem->ProblemName, ProblemName, len);
+	pProblem->ProblemName[len] = '\0';
+}
+
+
+int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds, 
+				double* UpperBounds, char* RowType, double* RHSValues, double* RangeValues, 
+				int* MatrixBegin, int* MatrixCount, int* MatrixIndex, double* MatrixValues)
+{
+	if (ColCount == 0) {
+		return 0;
+	}
+	pProblem->ColCount = ColCount;
+	pProblem->RowCount = RowCount;
+	pProblem->NZCount = NZCount;
+	pProblem->RangeCount = RangeCount;
+	pProblem->ObjectSense = ObjectSense;
+	pProblem->ObjectConst = ObjectConst;
+
+	if (ObjectCoeffs) pProblem->ObjectCoeffs = (double*) malloc(pProblem->ColCount     * sizeof(double));
+	if (LowerBounds)  pProblem->LowerBounds  = (double*) malloc(pProblem->ColCount     * sizeof(double));
+	if (UpperBounds)  pProblem->UpperBounds  = (double*) malloc(pProblem->ColCount     * sizeof(double));
+	if (RowType)      pProblem->RowType      = (char*)   malloc(pProblem->RowCount     * sizeof(char));
+	if (RHSValues)    pProblem->RHSValues    = (double*) malloc(pProblem->RowCount     * sizeof(double));
+	if (RangeValues)  pProblem->RangeValues  = (double*) malloc(pProblem->RowCount     * sizeof(double));
+	if (MatrixBegin)  pProblem->MatrixBegin  = (int*)    malloc((pProblem->ColCount+1) * sizeof(int));
+	if (MatrixCount)  pProblem->MatrixCount  = (int*)    malloc(pProblem->ColCount     * sizeof(int));
+	if (MatrixIndex)  pProblem->MatrixIndex  = (int*)    malloc(pProblem->NZCount      * sizeof(int)); 
+	if (MatrixValues) pProblem->MatrixValues = (double*) malloc(pProblem->NZCount      * sizeof(double));
+
+	if ((ObjectCoeffs && !pProblem->ObjectCoeffs) || 
+		(LowerBounds  && !pProblem->LowerBounds) ||  
+		(UpperBounds  && !pProblem->UpperBounds) || 
+		(RowType      && !pProblem->RowType)     || 
+		(RHSValues    && !pProblem->RHSValues)   ||  
+		(RangeValues  && !pProblem->RangeValues) || 
+		(MatrixBegin  && !pProblem->MatrixBegin) || 
+		(MatrixCount  && !pProblem->MatrixCount) ||  
+		(MatrixIndex  && !pProblem->MatrixIndex) || 
+		(MatrixValues && !pProblem->MatrixValues)) {
+		return 0;
+	}
+	if (ObjectCoeffs) memcpy(pProblem->ObjectCoeffs, ObjectCoeffs, pProblem->ColCount     * sizeof(double));
+	if (LowerBounds)  memcpy(pProblem->LowerBounds,  LowerBounds,  pProblem->ColCount     * sizeof(double));
+	if (UpperBounds)  memcpy(pProblem->UpperBounds,  UpperBounds,  pProblem->ColCount     * sizeof(double));
+	if (RowType)      memcpy(pProblem->RowType,      RowType,      pProblem->RowCount     * sizeof(char));
+	if (RHSValues)    memcpy(pProblem->RHSValues,    RHSValues,    pProblem->RowCount     * sizeof(double));
+	if (RangeValues)  memcpy(pProblem->RangeValues,  RangeValues,  pProblem->RowCount     * sizeof(double));
+	if (MatrixBegin)  memcpy(pProblem->MatrixBegin,  MatrixBegin,  (pProblem->ColCount+1) * sizeof(int));
+	if (MatrixCount)  memcpy(pProblem->MatrixCount,  MatrixCount,  pProblem->ColCount     * sizeof(int));
+	if (MatrixIndex)  memcpy(pProblem->MatrixIndex,  MatrixIndex,  pProblem->NZCount      * sizeof(int));
+	if (MatrixValues) memcpy(pProblem->MatrixValues, MatrixValues, pProblem->NZCount      * sizeof(double));
+
+	if (!coinComputeRowLowerUpper(pProblem, DBL_MAX)) {
+		return 0;
+	}
+	return 1;
+}
+
+
+int coinStoreNamesList(PPROBLEM pProblem, char** ColNamesList, char** RowNamesList, char* ObjectName)
+{
+	if (ObjectName) {
+		pProblem->lenObjNameBuf  = (int)strlen(ObjectName) + 1;
+	    pProblem->ObjectName   = (char*)   malloc(pProblem->lenObjNameBuf  * sizeof(char));
+		if (!pProblem->ObjectName) {
+			return 0;
+		}
+		memcpy(pProblem->ObjectName,   ObjectName,   pProblem->lenObjNameBuf  * sizeof(char));
+	}
+	if (ColNamesList) {
+		pProblem->lenColNamesBuf = coinGetLenNameListBuf(ColNamesList, pProblem->ColCount);
+		pProblem->ColNamesList = (char**)  malloc(pProblem->ColCount     * sizeof(char* ));
+		pProblem->ColNamesBuf  = (char*)   malloc(pProblem->lenColNamesBuf * sizeof(char));
+		if (!pProblem->ColNamesList && !pProblem->ColNamesBuf) {
+			return 0;
+		}
+		coinCopyNamesList(pProblem->ColNamesList, pProblem->ColNamesBuf, ColNamesList, pProblem->ColCount);
+	}
+	if (RowNamesList) {
+		pProblem->lenRowNamesBuf = coinGetLenNameListBuf(RowNamesList, pProblem->RowCount);
+		pProblem->RowNamesList = (char**)  malloc(pProblem->RowCount     * sizeof(char* ));
+		pProblem->RowNamesBuf  = (char*)   malloc(pProblem->lenRowNamesBuf * sizeof(char));
+		if (!pProblem->RowNamesList && !pProblem->RowNamesBuf) {
+			return 0;
+		}
+		coinCopyNamesList(pProblem->RowNamesList, pProblem->RowNamesBuf, RowNamesList, pProblem->RowCount);
+	}
+	return 1;
+}
+
+
+int coinStoreNamesBuf(PPROBLEM pProblem, char* ColNamesBuf, char* RowNamesBuf, char* ObjectName)
+{
+	char** ColNamesList;
+	char** RowNamesList;
+	int result;
+
+	ColNamesList = (char**)malloc(pProblem->ColCount * sizeof(char*));
+	RowNamesList = (char**)malloc(pProblem->RowCount * sizeof(char*));
+	if (!ColNamesList && !RowNamesList) {
+		return 0;
+	}
+	coinSetupNamesList(ColNamesList, ColNamesBuf, pProblem->ColCount);
+	coinSetupNamesList(RowNamesList, RowNamesBuf, pProblem->RowCount);
+	result = coinStoreNamesList(pProblem, ColNamesList, RowNamesList, ObjectName);
+	if (ColNamesList) free(ColNamesList);
+	if (RowNamesList) free(RowNamesList);
+	return result;
+
+}
+
+int coinStoreInitValues(PPROBLEM pProblem, double* InitValues)
+{
+	if (!InitValues) {
+		return 0;
+	}	
+	pProblem->InitValues = (double* ) malloc(pProblem->ColCount * sizeof(double));
+	if (!pProblem->InitValues) {
+		return 0;
+	}
+	memcpy(pProblem->InitValues, InitValues, pProblem->ColCount * sizeof(double));
+	return 1;
+}
+
+
+int coinStoreInteger(PPROBLEM pProblem, char* ColType)
+{
+	if (pProblem->ColCount == 0) {
+		return 0;
+	}
+	if (!ColType) {
+		return 0;
+	}
+	pProblem->ColType = (char* )malloc(pProblem->ColCount * sizeof(char));
+	if (!pProblem->ColType) {
+		return 0;
+	}
+	memcpy(pProblem->ColType, ColType, pProblem->ColCount * sizeof(char));
+	pProblem->SolveAsMIP = 1;
+	if (!coinComputeIntVariables(pProblem)) {
+		return 0;
+	}
+	return 1;
+}
+
+
+int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex, 
+				int* PriorValues, int* PriorBranch)
+{
+	if (PriorCount == 0) {
+		return 0;
+	}
+	pProblem->PriorCount = PriorCount;
+	if (PriorIndex)  pProblem->PriorIndex  = (int* )malloc(PriorCount * sizeof(int));
+	if (PriorValues) pProblem->PriorValues = (int* )malloc(PriorCount * sizeof(int));
+	if (PriorBranch) pProblem->PriorBranch = (int* )malloc(PriorCount * sizeof(int));
+
+	if ((PriorIndex && !pProblem->PriorIndex) || 
+		(PriorValues  && !pProblem->PriorValues) ||  
+		(PriorBranch  && !pProblem->PriorBranch)) {
+		return 0;
+	}
+	if (PriorIndex)  memcpy(pProblem->PriorIndex,  PriorIndex,  PriorCount * sizeof(int));
+	if (PriorValues) memcpy(pProblem->PriorValues, PriorValues, PriorCount * sizeof(int));
+	if (PriorBranch) memcpy(pProblem->PriorBranch, PriorBranch, PriorCount * sizeof(int));
+	return 0;
+}
+
+
+int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount, 
+				int* SosType, int* SosPrior, int* SosBegin, 
+				int* SosIndex, double* SosRef)
+{
+	if ((SosCount == 0) || (SosNZCount == 0)) {
+		return 0;
+	}
+	pProblem->SosCount = SosCount;
+	pProblem->SosNZCount = SosNZCount;
+
+	if (SosType)  pProblem->SosType  = (int* )malloc(SosCount     * sizeof(int));
+	if (SosPrior) pProblem->SosPrior = (int* )malloc(SosCount     * sizeof(int));
+	if (SosBegin) pProblem->SosBegin = (int* )malloc((SosCount+1) * sizeof(int));
+	if (SosIndex) pProblem->SosIndex = (int* )malloc(SosNZCount   * sizeof(int));
+	if (SosRef)   pProblem->SosRef   = (double* )malloc(SosNZCount* sizeof(double));
+
+	if ((SosType && !pProblem->SosType) || 
+		(SosPrior  && !pProblem->SosPrior) ||  
+		(SosBegin  && !pProblem->SosBegin) ||  
+		(SosIndex  && !pProblem->SosIndex) ||  
+		(SosRef  && !pProblem->SosRef)) {
+		return 0;
+	}
+	if (SosType)  memcpy(pProblem->SosType,  SosType,  SosCount     * sizeof(int));
+	if (SosPrior) memcpy(pProblem->SosPrior, SosPrior, SosCount     * sizeof(int));
+	if (SosBegin) memcpy(pProblem->SosBegin, SosBegin, (SosCount+1) * sizeof(int));
+	if (SosIndex) memcpy(pProblem->SosIndex, SosIndex, SosNZCount   * sizeof(int));
+	if (SosRef)   memcpy(pProblem->SosRef,   SosRef,   SosNZCount   * sizeof(double));
+
+	pProblem->SolveAsMIP = 1;
+	return 1;
+}
+
+
+int coinStoreSemiCont(PPROBLEM pProblem, int SemiCount, int* SemiIndex)
+{
+	if (SemiCount == 0) {
+		return 0;
+	}
+	if (!SemiIndex) {
+		return 0;
+	}
+	pProblem->SemiCount = SemiCount;
+	pProblem->SemiIndex = (int* )malloc(pProblem->SemiCount * sizeof(int));
+	if (!pProblem->SemiIndex) {
+		return 0;
+	}
+	memcpy(pProblem->SemiIndex, SemiIndex, pProblem->SemiCount * sizeof(int));
+
+	pProblem->SolveAsMIP = 1;
+	return 1;
+}
+
+
 int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax)
 {
 	int i;
 	double RangeABS, RangeValue;
 
+	if (pProblem->RowCount == 0) {
+		return 0;
+	}
+	pProblem->RowLower = (double* )malloc(pProblem->RowCount*sizeof(double));
+	pProblem->RowUpper = (double* )malloc(pProblem->RowCount*sizeof(double));
 	if (!pProblem->RowLower || !pProblem->RowUpper) {
 		return 0;
 	}
@@ -192,6 +419,9 @@ int coinComputeIntVariables(PPROBLEM pProblem)
 {
 	int i;
 
+	if (pProblem->ColCount == 0) {
+		return 0;
+	}
 	pProblem->IsInt = (char* )malloc(pProblem->ColCount * sizeof(char));
 	if (!pProblem->IsInt) {
 		return 0;
