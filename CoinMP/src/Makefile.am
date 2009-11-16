@@ -22,6 +22,7 @@ libCoinMP_la_SOURCES = \
 	CoinProblem.c CoinProblem.h \
 	CoinResult.c CoinResult.h \
 	CoinSolver.c CoinSolver.h \
+	CoinOption.c CoinOption.h \
 	CoinCbc.cpp CoinCbc.h \
 	CoinMPConfig.h
 
