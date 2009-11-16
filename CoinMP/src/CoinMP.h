@@ -4,7 +4,7 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Version      :  1.4                                                 */
+/*  Version      :  1.5                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
@@ -71,10 +71,6 @@
 #define SOLV_FEATURE_SP            0x00010000L
 
 
-#define SOLV_LOADNAMES_DEFAULT      0
-#define SOLV_LOADNAMES_LIST         1
-#define SOLV_LOADNAMES_BUFFER       2
-
 #define SOLV_OBJSENS_MAX   -1
 #define SOLV_OBJSENS_MIN    1
 
@@ -136,9 +132,11 @@ SOLVAPI int    SOLVCALL CoinFreeSolver(void);
 
 SOLVAPI const char*  SOLVCALL CoinGetSolverName(void);
 SOLVAPI int    SOLVCALL CoinGetSolverNameBuf(char* SolverName, int buflen);
+
 SOLVAPI const char*  SOLVCALL CoinGetVersionStr(void);
 SOLVAPI int    SOLVCALL CoinGetVersionStrBuf(char* VersionStr, int buflen);
 SOLVAPI double SOLVCALL CoinGetVersion(void);
+
 SOLVAPI int    SOLVCALL CoinGetFeatures(void);
 SOLVAPI int    SOLVCALL CoinGetMethods(void);
 SOLVAPI double SOLVCALL CoinGetInfinity(void);
