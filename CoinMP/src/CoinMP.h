@@ -220,8 +220,8 @@ SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipN
 SOLVAPI int    SOLVCALL CoinOptimizeProblem(HPROB hProb, int Method);
 
 SOLVAPI int    SOLVCALL CoinGetSolutionStatus(HPROB hProb);
-SOLVAPI const char*  SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus);
-SOLVAPI int    SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen);
+SOLVAPI const char*  SOLVCALL CoinGetSolutionText(HPROB hProb);
+SOLVAPI int    SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, char* SolutionText, int buflen);
 
 SOLVAPI double SOLVCALL CoinGetObjectValue(HPROB hProb);
 SOLVAPI double SOLVCALL CoinGetMipBestBound(HPROB hProb);
@@ -379,8 +379,8 @@ void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCa
 int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
 int    (SOLVCALL *CoinGetSolutionStatus)(HPROB hProb);
-const char* (SOLVCALL *CoinGetSolutionText)(HPROB hProb, int SolutionStatus);
-int    (SOLVCALL *CoinGetSolutionTextBuf)(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen);
+const char* (SOLVCALL *CoinGetSolutionText)(HPROB hProb);
+int    (SOLVCALL *CoinGetSolutionTextBuf)(HPROB hProb, char* SolutionText, int buflen);
 
 double (SOLVCALL *CoinGetObjectValue)(HPROB hProb);
 double (SOLVCALL *CoinGetMipBestBound)(HPROB hProb);

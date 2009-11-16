@@ -53,7 +53,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 
 	problemName = CoinGetProblemName(hProb);
 	solutionStatus = CoinGetSolutionStatus(hProb);
-	solutionText = CoinGetSolutionText(hProb,solutionStatus);
+	solutionText = CoinGetSolutionText(hProb);
 	objectValue =  CoinGetObjectValue(hProb);
       
 	fprintf(stdout, "\n---------------------------------------\n");

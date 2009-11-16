@@ -577,7 +577,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionStatus(HPROB hProb)
 
   
 
-SOLVAPI const char* SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus)
+SOLVAPI const char* SOLVCALL CoinGetSolutionText(HPROB hProb)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -585,9 +585,9 @@ SOLVAPI const char* SOLVCALL CoinGetSolutionText(HPROB hProb, int SolutionStatus
 }
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, int SolutionStatus, char* SolutionText, int buflen)
+SOLVAPI int SOLVCALL CoinGetSolutionTextBuf(HPROB hProb, char* SolutionText, int buflen)
 {
-	strncpy(SolutionText, CoinGetSolutionText(hProb, SolutionStatus), buflen-1);
+	strncpy(SolutionText, CoinGetSolutionText(hProb), buflen-1);
 	SolutionText[buflen-1] = '\0';
 	return (int)strlen(SolutionText);
 }

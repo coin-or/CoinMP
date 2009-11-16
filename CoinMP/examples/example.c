@@ -53,7 +53,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 
 	problemName = CoinGetProblemName(hProb);
 	solutionStatus = CoinGetSolutionStatus(hProb);
-	solutionText = CoinGetSolutionText(hProb,solutionStatus);
+	solutionText = CoinGetSolutionText(hProb);
 	objectValue =  CoinGetObjectValue(hProb);
       
 	fprintf(stdout, "\n---------------------------------------\n");
@@ -94,10 +94,11 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
     
 	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
-	result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
 					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
-					matrixIndex, matrixValues, colNames, rowNames, objectName);
+					matrixIndex, matrixValues);
+	result = CoinLoadNames(hProb, colNames, rowNames, objectName);
 	if (columnType) {
 		result = CoinLoadInteger(hProb, columnType);
 	}
@@ -132,10 +133,11 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
     
 	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
-	result = CoinLoadProblemBuf(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
 					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
-					matrixIndex, matrixValues, colNamesBuf, rowNamesBuf, objectName);
+					matrixIndex, matrixValues);
+	result = CoinLoadNamesBuf(hProb, colNamesBuf, rowNamesBuf, objectName);
 	if (columnType) {
 		result = CoinLoadInteger(hProb, columnType);
 	}
@@ -172,10 +174,11 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
     
 	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
-	result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
 					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
-					matrixIndex, matrixValues, colNames, rowNames, objectName);
+					matrixIndex, matrixValues);
+	result = CoinLoadNames(hProb, colNames, rowNames, objectName);
 	if (columnType) {
 		result = CoinLoadInteger(hProb, columnType);
 	}
