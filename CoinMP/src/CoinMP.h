@@ -143,6 +143,19 @@ SOLVAPI double SOLVCALL CoinGetInfinity(void);
 
 SOLVAPI HPROB  SOLVCALL CoinCreateProblem(const char* ProblemName);
 
+SOLVAPI int SOLVCALL CoinLoadMatrix(HPROB hProb, 
+				int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* RHSValues, double* RangeValues, int* MatrixBegin, 
+				int* MatrixCount, int* MatrixIndex, double* MatrixValues);
+
+SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, 
+				char** RowNamesList, char* ObjectName);
+
+SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, char* ColNamesBuf, 
+				char* RowNamesBuf, char* ObjectName);
+
 SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb, 
 					int ColCount, int RowCount, int NZCount, int RangeCount, 
 					int ObjectSense, double ObjectConst, double* ObjectCoeffs, 

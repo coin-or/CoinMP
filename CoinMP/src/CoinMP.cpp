@@ -178,6 +178,49 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 
 
 
+SOLVAPI int SOLVCALL CoinLoadMatrix(HPROB hProb, 
+				int ColCount, int RowCount, int NZCount, int RangeCount, 
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
+				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* RHSValues, double* RangeValues, int* MatrixBegin, 
+				int* MatrixCount, int* MatrixIndex, double* MatrixValues)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+	PPROBLEM pProblem = pCoin->pProblem;
+
+	if (!coinStoreMatrix(pProblem, ColCount, RowCount, NZCount, RangeCount, ObjectSense,
+						 ObjectConst, ObjectCoeffs, LowerBounds, UpperBounds, RowType,
+						 RHSValues, RangeValues, MatrixBegin, MatrixCount, MatrixIndex,
+						 MatrixValues)) {
+		return SOLV_CALL_FAILED;
+	}
+}
+
+
+SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, char** RowNamesList, char* ObjectName)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	if (!coinStoreNamesList(pCoin->pProblem, ColNamesList, RowNamesList, ObjectName)) {
+		return SOLV_CALL_FAILED;
+	}
+	return SOLV_CALL_SUCCESS;
+}
+
+
+
+SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, char* ColNamesBuf, char* RowNamesBuf, char* ObjectName)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	if (!coinStoreNamesBuf(pCoin->pProblem, ColNamesBuf, RowNamesBuf, ObjectName)) {
+		return SOLV_CALL_FAILED;
+	}
+	return SOLV_CALL_SUCCESS;
+}
+
+
+
 SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 

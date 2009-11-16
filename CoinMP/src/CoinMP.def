@@ -13,13 +13,16 @@ EXPORTS
 	CoinGetMethods
 	CoinGetInfinity
 	CoinCreateProblem
+	CoinLoadMatrix
+	CoinLoadNames
+	CoinLoadNamesBuf
 	CoinLoadProblem
 	CoinLoadProblemBuf
 	CoinLoadInitValues
 	CoinLoadInteger
 	CoinLoadPriority
-	CoinLoadSemiCont
 	CoinLoadSos
+	CoinLoadSemiCont
 	CoinLoadQuadratic
 	CoinLoadNonlinear
 	CoinUnloadProblem
