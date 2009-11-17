@@ -36,15 +36,19 @@ Dim i As Integer
 Dim ch As String
 
     LogWriteLine ""
-    LogWriteLine "Solve Problem: " & problemName
+    LogWriteLine "Solve Problem: " & problemName & " (" & optimalValue & ")"
 
     hProb = CoinCreateProblem(problemName)
-    result = CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount, _
+    result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount, _
                     objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, _
                     rowType, rhsValues, rangeValues, matrixBegin, matrixCount, _
-                    matrixIndex, matrixValues, colNames, rowNames, objectName)
+                    matrixIndex, matrixValues)
     If (result <> 0) Then
-        LogWriteLine "CoinLoadProblem failed"
+        LogWriteLine "CoinLoadMatrix failed"
+    End If
+    result = CoinLoadNames(hProb, colNames, rowNames, objectName)
+    If (result <> 0) Then
+        LogWriteLine "CoinLoadNames failed"
     End If
     If colType Then
         result = CoinLoadInteger(hProb, colType)
@@ -59,19 +63,11 @@ Dim ch As String
 
     'result = CoinSetMsgLogCallback(hProb, AddressOf MsgLogCallback)
     result = CoinOptimizeProblem(hProb, 0)
-    result = CoinWriteFile(hProb, SOLV_FILE_MPS, problemName & ".mps")
+    result = CoinWriteFile(hProb, SOLV_FILE_MPS, problemName + ".mps")
    
-
-    'problemName = String(MAX_NAME_LEN, vbNullChar)
-    'length = CoinGetProblemName(hProb, problemName, MAX_NAME_LEN)
-    'problemName = Left(problemName, length)
-    
+    problemName = CoinGetProblemName(hProb)
     solutionStatus = CoinGetSolutionStatus(hProb)
-    
-    solutionText = String(MAX_NAME_LEN, vbNullChar)
-    length = CoinGetSolutionTextBuf(hProb, solutionStatus, solutionText, MAX_NAME_LEN)
-    solutionText = Left(solutionText, length)
-    
+    solutionText = CoinGetSolutionText(hProb)
     objectValue = CoinGetObjectValue(hProb)
       
     LogWriteLine "---------------------------------------------------------------"
@@ -90,9 +86,7 @@ Dim ch As String
     result = CoinGetSolutionValues(hProb, activity(0), reduced(0), slack(0), shadow(0))
     For i = 0 To colCount - 1
         If activity(i) <> 0# Then
-            colName = String(MAX_NAME_LEN, vbNullChar)
-            length = CoinGetColNameBuf(hProb, i, colName, MAX_NAME_LEN)
-            colName = Left(colName, length)
+            colName = CoinGetColName(hProb, i)
             LogWriteLine colName & " = " & activity(i)
         End If
     Next i
