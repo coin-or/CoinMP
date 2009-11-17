@@ -41,6 +41,9 @@ namespace CoinMPTest
             ProblemAfiro.Solve(solveProblem);
             ProblemP0033.Solve(solveProblem);
             ProblemExMip1.Solve(solveProblem);
+            ProblemGamsSos1a.Solve(solveProblem);
+            ProblemGamsSos2a.Solve(solveProblem);
+            ProblemSemiCont.Solve(solveProblem);
         }
 
         private void btnClear_Click(object sender, EventArgs e)

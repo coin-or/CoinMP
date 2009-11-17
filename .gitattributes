@@ -39,7 +39,10 @@ CoinMP/examples/csharp/ProblemAfiro.cs -text
 CoinMP/examples/csharp/ProblemBakery.cs -text
 CoinMP/examples/csharp/ProblemCoinTest.cs -text
 CoinMP/examples/csharp/ProblemExMip1.cs -text
+CoinMP/examples/csharp/ProblemGamsSos1a.cs -text
+CoinMP/examples/csharp/ProblemGamsSos2a.cs -text
 CoinMP/examples/csharp/ProblemP0033.cs -text
+CoinMP/examples/csharp/ProblemsSemiCont.cs -text
 CoinMP/examples/csharp/Program.cs -text
 CoinMP/examples/csharp/Properties/AssemblyInfo.cs -text
 CoinMP/examples/csharp/Properties/Resources.Designer.cs -text

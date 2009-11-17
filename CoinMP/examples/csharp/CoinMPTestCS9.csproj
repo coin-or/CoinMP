@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7B683424-97BB-43AC-87B4-E05F798B5313}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -52,6 +52,9 @@
     </Compile>
     <Compile Include="LogHandler.cs">
     </Compile>
+    <Compile Include="ProblemGamsSos1a.cs" />
+    <Compile Include="ProblemGamsSos2a.cs" />
+    <Compile Include="ProblemsSemiCont.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
