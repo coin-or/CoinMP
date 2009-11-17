@@ -2,6 +2,7 @@ rd /s /q CoinMP_zip
 mkdir CoinMP_zip
 cd CoinMP_zip
 
+mkdir src
 mkdir vb6
 mkdir csharp
 cd csharp
@@ -11,10 +12,6 @@ cd bin
 mkdir Release
 cd ..\..
 
-copy ..\src\coinmp.cpp 
-copy ..\src\coinmp.def
-copy ..\src\coinmp.h
-
 copy ..\MSVisualStudio\v9\release\coinmp.dll
 copy ..\MSVisualStudio\v9\release\coinmp.exp
 copy ..\MSVisualStudio\v9\release\coinmp.lib
@@ -22,9 +19,21 @@ copy ..\MSVisualStudio\v9\release\unittest.exe
 
 copy ..\MSVisualStudio\v9\x64\release\coinmp.dll coinmp_64.dll
 
+copy ..\examples\vb6\CoinMPTestVB6.exe
+
+copy ..\examples\csharp\bin\Release\CoinMPTestCS8.exe
+copy ..\examples\csharp\bin\Release\CoinMPTestCS9.exe
+
 copy ..\test\unittest.cpp
 
 copy ..\examples\example.c
+
+copy ..\src\CoinMP.h
+
+copy ..\src\*.cpp      src
+copy ..\src\*.c        src
+copy ..\src\*.h        src
+copy ..\src\coinmp.def src
 
 copy ..\examples\vb6\*.bas              vb6
 copy ..\examples\vb6\CoinMPTestVB6.vbp  vb6
