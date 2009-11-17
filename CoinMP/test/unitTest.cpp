@@ -12,9 +12,10 @@
 #include "CoinMP.h"
 
 
-int SOLVCALL MsgLogCallback(char* MessageStr)
+int SOLVCALL MsgLogCallback(const char* MessageStr)
 {
-	fprintf(stdout, "%s", MessageStr);
+	//fprintf(stdout, "*** %s", MessageStr);
+	fprintf(stdout, "*** ");
 	return 0;
 }
 
@@ -106,7 +107,7 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
 	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -145,7 +146,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
 	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -195,7 +196,7 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
 	if ((columnType == NULL) && (sosCount == 0) && (semiCount == 0))
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -603,21 +604,21 @@ void SolveProblemSemiCont(void)
 	char* objectname = "z";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
-	double dobj[7]={0.0, 1.0, 1.0, 0.0};
+	double dobj[4]={0.0, 1.0, 1.0, 0.0};
 
-	double dclo[7]={2.8, 0.0, 0.0, 0.0};
-	double dcup[7]={10.0, 1e+37, 1e+37, 1e+37};
+	double dclo[4]={2.8, 0.0, 0.0, 0.0};
+	double dcup[4]={10.0, 1e+37, 1e+37, 1e+37};
 
-	char rtyp[5]= {'L', 'G', 'E'};
-	double drhs[5]={8.9, 8.9, 10.0};
+	char rtyp[3]= {'L', 'G', 'E'};
+	double drhs[3]={8.9, 8.9, 10.0};
 
 	int mbeg[4+1]={0, 1, 2, 3, 6};
 	int mcnt[4]={1, 1, 1, 3};
 	int midx[6]={2, 0, 1, 0, 1, 2};
-	double mval[15]={1, -1, 1, 1, 1, 1};
+	double mval[6]={1, -1, 1, 1, 1, 1};
 
-	char* colnames[7] = {"s", "pup", "plo", "x"};
-	char* rownames[5] = {"bigx", "smallx", "f"};
+	char* colnames[4] = {"s", "pup", "plo", "x"};
+	char* rownames[3] = {"bigx", "smallx", "f"};
 
 	//char* colnamesBuf = "s\0" "pup\0" "plo\0" "x\0";
 	//char* rownamesBuf = "bigx\0" "smallx\0" "f\0";
