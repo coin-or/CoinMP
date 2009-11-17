@@ -888,11 +888,17 @@ int CbcWriteMpsFile(PPROBLEM pProblem, const char *WriteFilename)
 	int result;
 	PCBC pCbc;
 	HCBC hCbc;
+	char* extension;
 
 	hCbc = CbcCreateSolverObject();
 	pCbc = (PCBC)hCbc;
 	result = CbcLoadAllSolverObjects(hCbc, pProblem);
-	pCbc->osi->writeMps(WriteFilename); 
+	if (strstr(WriteFilename, ".mps") == NULL)
+		extension = "mps";
+	else {
+		extension = "";
+	}
+	pCbc->osi->writeMps(WriteFilename, extension, pProblem->ObjectSense); 
 	//result = CbcClearAllSolverObjects(hCbc);
 	CbcClearSolverObject(hCbc);
 	return CBC_CALL_SUCCESS;
