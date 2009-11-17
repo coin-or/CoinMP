@@ -46,6 +46,55 @@ namespace CoinMPTest
             return 0;
         }
 
+        public void GetAndCheckSolution(double optimalValue, IntPtr hProb)
+        {
+            int solutionStatus;
+            String solutionText;
+            double objectValue;
+            int i;
+            int colCount;
+            double[] xValues;
+            int result;
+            int length;
+            String colName;
+            String problemName;
+
+            logMsg.WriteLine("---------------------------------------------------------------");
+
+            problemName = CoinMP.CoinGetProblemName(hProb);
+            solutionStatus = CoinMP.CoinGetSolutionStatus(hProb);
+            solutionText = CoinMP.CoinGetSolutionText(hProb);
+            objectValue = CoinMP.CoinGetObjectValue(hProb);
+
+            logTxt.WriteLine("Problem Name:    " + problemName);
+            logTxt.WriteLine("Solution Result: " + solutionText);
+            logTxt.WriteLine("Solution Status: " + solutionStatus);
+            logTxt.WriteLine("Optimal Value:   " + objectValue + " (" + optimalValue + ")");
+            logTxt.WriteLine("---------------------------------------------------------------");
+
+            colCount = CoinMP.CoinGetColCount(hProb);
+
+            xValues = new double[colCount];
+
+            result = CoinMP.CoinGetSolutionValues(hProb, xValues, null, null, null);
+            for (i = 0; i < colCount; i++) {
+                if (xValues[i] != 0.0) {
+                    colName = CoinMP.CoinGetColName(hProb, i);
+                    logTxt.WriteLine(colName + " = " + xValues[i]);
+                }
+            }
+            logTxt.WriteLine("---------------------------------------------------------------");
+            logTxt.NewLine();
+            if (solutionStatus != 0) {
+                MessageBox.Show("status="+solutionStatus, problemName);
+            }
+            if (optimalValue != 0.0) {
+                if (Math.Abs(objectValue - optimalValue) >= 0.001) {
+                    MessageBox.Show("Obj=" + objectValue + " <> " + optimalValue, problemName);
+                }
+            }
+        }
+
         public void RunProblem(string problemName, double optimalValue,
             int colCount, int rowCount, int nonZeroCount, int rangeCount,
             int objectSense, double objectConst, double[] objectCoeffs,
@@ -56,23 +105,18 @@ namespace CoinMPTest
             double[] initValues, char[] colType)
         {
             IntPtr hProb;
-            int solutionStatus;
-            double objectValue;
             int result;
-            int length;
-            int i;
-            StringBuilder solutionText = new StringBuilder(200);
-            String colName;
 
             logTxt.NewLine();
-            logTxt.WriteLine("Solve Problem: " + problemName);
+            logTxt.WriteLine("Solve Problem: " + problemName + " (obj=" + optimalValue + ")");
             logTxt.WriteLine("---------------------------------------------------------------");
 
             hProb = CoinMP.CoinCreateProblem(problemName);
-            result = CoinMP.CoinLoadProblem(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+            result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
                             objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
                             rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
-                            matrixIndex, matrixValues, colNames, rowNames, objectName);
+                            matrixIndex, matrixValues);
+            result = CoinMP.CoinLoadNames(hProb, colNames, rowNames, objectName);
             if (result != 0) {
                 logTxt.WriteLine("CoinLoadProblem failed");
             }
@@ -91,39 +135,9 @@ namespace CoinMPTest
 
             result = CoinMP.CoinSetMsgLogCallback(hProb, MsgLogDelegate);
             result = CoinMP.CoinOptimizeProblem(hProb);
-            logMsg.WriteLine("---------------------------------------------------------------");
+            result = CoinMP.CoinWriteFile(hProb, CoinMP.SOLV_FILE_MPS, problemName);
 
-            result = CoinMP.CoinWriteFile(hProb, 1, problemName + ".mps");  // SOLV_FILE_MPS
-
-            solutionStatus = CoinMP.CoinGetSolutionStatus(hProb);
-            length = CoinMP.CoinGetSolutionTextBuf(hProb, solutionStatus,solutionText, solutionText.Capacity);
-            objectValue = CoinMP.CoinGetObjectValue(hProb);
-
-            logTxt.WriteLine("Problem Name:    " + problemName);
-            logTxt.WriteLine("Solution Result: " + solutionText);
-            logTxt.WriteLine("Solution Status: " + solutionStatus);
-            logTxt.WriteLine("Optimal Value:   " + objectValue + " (" + optimalValue + ")");
-            logTxt.WriteLine("---------------------------------------------------------------");
-
-            colCount = CoinMP.CoinGetColCount(hProb);
-            rowCount = CoinMP.CoinGetRowCount(hProb);
-
-            double[] activity = new double[colCount];
-            double[] reduced = new double[colCount];
-            double[] slack = new double[rowCount];
-            double[] shadow = new double[rowCount];
-
-            result = CoinMP.CoinGetSolutionValues(hProb, activity, reduced, slack, shadow);
-            for (i = 0; i < colCount; i++)
-            {
-                if (activity[i] != 0.0)
-                {
-                    colName = CoinMP.CoinGetColName(hProb, i);
-                    logTxt.WriteLine(colName + " = " + activity[i]);
-                }
-            }
-            logTxt.WriteLine("---------------------------------------------------------------");
-            logTxt.NewLine();
+            GetAndCheckSolution(optimalValue, hProb);
 
             result = CoinMP.CoinUnloadProblem(hProb);
         }
@@ -144,5 +158,68 @@ namespace CoinMPTest
                 matrixCount, matrixIndex, matrixValues, colNames, rowNames,
                 objectName, initValues, colType);
         }
+
+
+        public void RunProblemMip(string problemName, double optimalValue,
+            int colCount, int rowCount, int nonZeroCount, int rangeCount,
+            int objectSense, double objectConst, double[] objectCoeffs,
+            double[] lowerBounds, double[] upperBounds, char[] rowType,
+            double[] rhsValues, double[] rangeValues, int[] matrixBegin,
+            int[] matrixCount, int[] matrixIndex, double[] matrixValues,
+            string[] colNames, string[] rowNames, string objectName,
+            double[] initValues, char[] colType, int sosCount, int sosNZCount,
+            int[] sosType, int[] sosPrior, int[] sosBegin, int[] sosIndex,
+            double[] sosRef, int semiCount, int[] semiIndex, int priorCount,
+            int[] priorIndex, int[] priorValues, int[] priorBranch)
+        {
+            IntPtr hProb;
+            int result;
+
+            logTxt.NewLine();
+            logTxt.WriteLine("Solve Problem: " + problemName + " (obj=" + optimalValue + ")");
+            logTxt.WriteLine("---------------------------------------------------------------");
+
+            hProb = CoinMP.CoinCreateProblem(problemName);
+            result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+                            objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
+                            rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
+                            matrixIndex, matrixValues);
+            result = CoinMP.CoinLoadNames(hProb, colNames, rowNames, objectName);
+            if (result != 0) {
+                logTxt.WriteLine("CoinLoadProblem failed");
+            }
+            if (colType != null) {
+                result = CoinMP.CoinLoadInteger(hProb, colType);
+                if (result != 0) {
+                    logTxt.WriteLine("CoinLoadInteger failed");
+                }
+            }
+            if (priorCount > 0) {
+                result = CoinMP.CoinLoadPriority(hProb, priorCount, priorIndex, priorValues, priorBranch);
+            }
+            if (sosCount > 0) {
+		        result = CoinMP.CoinLoadSos(hProb, sosCount, sosNZCount, sosType, sosPrior, sosBegin, 
+                    sosIndex, sosRef);
+            }
+            if (semiCount > 0) {
+		        result = CoinMP.CoinLoadSemiCont(hProb, semiCount, semiIndex);
+            }
+            result = CoinMP.CoinCheckProblem(hProb);
+            if (result != 0) {
+                logTxt.WriteLine("Check Problem failed (result = " + result + ")");
+            }
+
+            CoinMP.MsgLogDelegate MsgLogDelegate = new CoinMP.MsgLogDelegate(MsgLogCallback);
+
+            result = CoinMP.CoinSetMsgLogCallback(hProb, MsgLogDelegate);
+            result = CoinMP.CoinOptimizeProblem(hProb);
+            result = CoinMP.CoinWriteFile(hProb, CoinMP.SOLV_FILE_MPS, problemName + ".mps");
+
+            GetAndCheckSolution(optimalValue, hProb);
+
+            result = CoinMP.CoinUnloadProblem(hProb);
+        }
+
     }
 }
+
