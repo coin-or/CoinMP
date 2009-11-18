@@ -55,6 +55,8 @@ AC_COIN_MAIN_SUBDIRS(Osi)
 AC_COIN_MAIN_SUBDIRS(Cgl)
 AC_COIN_MAIN_SUBDIRS(Cbc)
 AC_COIN_MAIN_SUBDIRS(CoinMP)
+AC_COIN_MAIN_SUBDIRS(DyLP)
+AC_COIN_MAIN_SUBDIRS(Vol)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
