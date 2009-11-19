@@ -685,7 +685,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, doub
 
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus)
+SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, int* RowStatus)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;
@@ -783,7 +783,7 @@ SOLVAPI int    SOLVCALL CoinLocateOptionID(HPROB hProb, int OptionID)
 }
 
 
-SOLVAPI int    SOLVCALL CoinLocateOptionName(HPROB hProb, char* OptionName)
+SOLVAPI int    SOLVCALL CoinLocateOptionName(HPROB hProb, const char* OptionName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 

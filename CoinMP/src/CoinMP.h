@@ -233,7 +233,7 @@ SOLVAPI int    SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, dou
 									 double* SlackValues, double* ShadowPrice);
 SOLVAPI int    SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, double* ObjUpRange,
 									 double* RhsLoRange, double* RhsUpRange);
-SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus);
+SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, int* RowStatus);
 
 
 

@@ -120,7 +120,7 @@ int coinGetOptionGroup(POPTION pOption, int OptionID)
 }
 
 
-int coinLocateOptionName(POPTION pOption, char* OptionName)
+int coinLocateOptionName(POPTION pOption, const char* OptionName)
 {
 	int i;
 

@@ -90,7 +90,7 @@ int     coinLocateOptionID(POPTION pOption, int OptionID);
 int     coinGetOptionType(POPTION pOption, int OptionID);
 int     coinGetOptionGroup(POPTION pOption, int OptionID);
 
-int     coinLocateOptionName(POPTION pOption, char* OptionName);
+int     coinLocateOptionName(POPTION pOption, const char* OptionName);
 const char*   coinGetOptionName(POPTION pOption, int OptionID);
 int     coinGetOptionNameBuf(POPTION pOption, int OptionID, char* OptionName, int buflen);
 const char*   coinGetOptionShortName(POPTION pOption, int OptionNr);
