@@ -80,9 +80,6 @@ CoinMP/src/CoinSolver.h -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
 /Externals -text
-/Externals.new -text
-/Externals.rel -text
-/Externals.sta -text
 /INSTALL -text
 /LICENSE -text
 /Makefile.in -text
