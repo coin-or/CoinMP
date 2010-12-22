@@ -42,7 +42,7 @@
 
 
 const double COINMP_VERSION    = 1.5;
-const char*  COINMP_VERSIONSTR = "1.5";
+const char*  COINMP_VERSIONSTR = "1.5.0";
 const char*  COINMP_NAME       = "CoinMP";
 
 
