@@ -222,7 +222,7 @@ SOLVAPI int    SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, dou
 									 double* SlackValues, double* ShadowPrice);
 SOLVAPI int    SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, double* ObjUpRange,
 									 double* RhsLoRange, double* RhsUpRange);
-SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus);
+SOLVAPI int    SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, int* RowStatus);
 
 SOLVAPI int    SOLVCALL CoinReadFile(HPROB hProb, int FileType, const char* ReadFilename);
 SOLVAPI int    SOLVCALL CoinWriteFile(HPROB hProb, int FileType, const char* WriteFilename);
@@ -348,7 +348,7 @@ int    (SOLVCALL *CoinGetSolutionValues)(HPROB hProb, double* Activity, double* 
 													  double* SlackValues, double* ShadowPrice);
 int    (SOLVCALL *CoinGetSolutionRanges)(HPROB hProb, double* ObjLoRange, double* ObjUpRange,
 										           double* RhsLoRange, double* RhsUpRange);
-int    (SOLVCALL *CoinGetSolutionBasis)(HPROB hProb, int* ColStatus, double* RowStatus);
+int    (SOLVCALL *CoinGetSolutionBasis)(HPROB hProb, int* ColStatus, int* RowStatus);
 
 void   (SOLVCALL *CoinReadFile)(HPROB hProb, int FileType, const char* ReadFilename);
 void   (SOLVCALL *CoinWriteFile)(HPROB hProb, int FileType, const char* WriteFilename);
