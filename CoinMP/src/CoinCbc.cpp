@@ -794,6 +794,7 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 	const double* columnDual;
 	const double* rowPrimal;
 	const double* rowDual;
+	int i;
 
 	if (!pProblem->SolveAsMIP) {
 		pResult->SolutionStatus = pCbc->clp->status();
@@ -829,18 +830,23 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 		rowDual = pCbc->clp->dualRowSolution();
 		pResult->ColActivity = (double*) malloc(pProblem->ColCount * sizeof(double));
 		pResult->ReducedCost = (double*) malloc(pProblem->ColCount * sizeof(double));
+		pResult->RowActivity = (double*) malloc(pProblem->RowCount * sizeof(double));
 		pResult->SlackValues = (double*) malloc(pProblem->RowCount * sizeof(double));
 		pResult->ShadowPrice = (double*) malloc(pProblem->RowCount * sizeof(double));
 		if (!pResult->ColActivity ||
 			!pResult->ReducedCost || 
+			!pResult->RowActivity || 
 			!pResult->SlackValues || 
 			!pResult->ShadowPrice) {
 			return CBC_CALL_FAILED;
 		}
 		memcpy(pResult->ColActivity, columnPrimal, pProblem->ColCount * sizeof(double));
 		memcpy(pResult->ReducedCost, columnDual, pProblem->ColCount * sizeof(double));
-		memcpy(pResult->SlackValues, rowPrimal, pProblem->RowCount * sizeof(double));
+		memcpy(pResult->RowActivity, rowPrimal, pProblem->RowCount * sizeof(double));
 		memcpy(pResult->ShadowPrice, rowDual, pProblem->RowCount * sizeof(double));
+		for (i = 0; i < pProblem->RowCount; i++) {
+			pResult->SlackValues[i] = pProblem->RHSValues[i] - pResult->RowActivity[i];
+		}
 		}
 	else {
 		columnPrimal = pCbc->cbc->solver()->getColSolution();
