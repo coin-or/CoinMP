@@ -98,7 +98,7 @@ SOLVAPI int  SOLVCALL CoinGetSolverNameBuf(char* SolverName, int buflen)
 
 SOLVAPI const char* SOLVCALL CoinGetVersionStr(void)
 {
-	return "1.4";
+	return "1.4.1";
 }
 
 
@@ -1725,7 +1725,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionValues(HPROB hProb, double* Activity, double
 	if (SlackValues) {
 		rowPrimal = pCoin->clp->primalRowSolution();
 		for (i = 0; i < pCoin->RowCount; i++) {
-			SlackValues[i] = rowPrimal[i];
+			SlackValues[i] = pCoin->RHSValues[i] - rowPrimal[i];
 		}
 	}
 	if (ShadowPrice) {
@@ -1747,7 +1747,7 @@ SOLVAPI int SOLVCALL CoinGetSolutionRanges(HPROB hProb, double* ObjLoRange, doub
 
 
 
-SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, double* RowStatus)
+SOLVAPI int SOLVCALL CoinGetSolutionBasis(HPROB hProb, int* ColStatus, int* RowStatus)
 {
 	return SOLV_CALL_FAILED;
 }
