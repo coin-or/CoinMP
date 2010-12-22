@@ -261,6 +261,8 @@ int coinStoreInitValues(PPROBLEM pProblem, double* InitValues)
 
 int coinStoreInteger(PPROBLEM pProblem, char* ColType)
 {
+	int numInts;
+
 	if (pProblem->ColCount == 0) {
 		return 0;
 	}
@@ -272,10 +274,8 @@ int coinStoreInteger(PPROBLEM pProblem, char* ColType)
 		return 0;
 	}
 	memcpy(pProblem->ColType, ColType, pProblem->ColCount * sizeof(char));
-	pProblem->SolveAsMIP = 1;
-	if (!coinComputeIntVariables(pProblem)) {
-		return 0;
-	}
+	numInts = coinComputeIntVariables(pProblem);
+	pProblem->SolveAsMIP = (numInts > 0);
 	return 1;
 }
 
