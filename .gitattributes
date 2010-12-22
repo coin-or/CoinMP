@@ -79,6 +79,7 @@ CoinMP/src/CoinSolver.c -text
 CoinMP/src/CoinSolver.h -text
 CoinMP/src/Makefile.in -text
 CoinMP/test/Makefile.in -text
+/Dependencies -text
 /Externals -text
 /INSTALL -text
 /LICENSE -text
