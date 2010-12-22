@@ -73,7 +73,7 @@ BEGIN
             VALUE "FileDescription", "CoinMP Dynamic Link Library"
             VALUE "FileVersion", "1, 5, 0, 0"
             VALUE "InternalName", "CoinMP"
-            VALUE "LegalCopyright", "Copyright (C) 2002-2009"
+            VALUE "LegalCopyright", "Copyright (C) 2002-2010"
             VALUE "OriginalFilename", "CoinMP.dll"
             VALUE "ProductName", "CoinMP Dynamic Link Library"
             VALUE "ProductVersion", "1, 5, 0, 0"
