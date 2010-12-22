@@ -25,6 +25,7 @@ PRESULT coinCreateResultObject(void)
 
 	pResult->ColActivity = NULL;
 	pResult->ReducedCost = NULL;
+	pResult->RowActivity = NULL;
 	pResult->SlackValues = NULL;
 	pResult->ShadowPrice = NULL;
 
@@ -47,6 +48,7 @@ void coinClearResultObject(PRESULT pResult)
 	}
 	if (pResult->ColActivity)   free(pResult->ColActivity);
 	if (pResult->ReducedCost)   free(pResult->ReducedCost);
+	if (pResult->RowActivity)   free(pResult->RowActivity);
 	if (pResult->SlackValues)   free(pResult->SlackValues);
 	if (pResult->ShadowPrice)   free(pResult->ShadowPrice);
 

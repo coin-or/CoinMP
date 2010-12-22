@@ -17,6 +17,7 @@ typedef struct {
 
 				double* ColActivity;
 				double* ReducedCost;
+				double* RowActivity;
 				double* SlackValues;
 				double* ShadowPrice;
 
