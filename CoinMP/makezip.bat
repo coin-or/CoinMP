@@ -2,6 +2,7 @@ rd /s /q CoinMP_zip
 mkdir CoinMP_zip
 cd CoinMP_zip
 
+mkdir x64
 mkdir src
 mkdir vb6
 mkdir csharp
@@ -17,7 +18,10 @@ copy ..\MSVisualStudio\v9\release\coinmp.exp
 copy ..\MSVisualStudio\v9\release\coinmp.lib
 copy ..\MSVisualStudio\v9\release\unittest.exe
 
-copy ..\MSVisualStudio\v9\x64\release\coinmp.dll coinmp_64.dll
+copy ..\MSVisualStudio\v9\x64\release\coinmp.dll x64
+copy ..\MSVisualStudio\v9\x64\release\coinmp.exp x64
+copy ..\MSVisualStudio\v9\x64\release\coinmp.lib x64
+copy ..\MSVisualStudio\v9\x64\release\unittest.exe x64
 
 copy ..\examples\vb6\CoinMPTestVB6.exe
 
