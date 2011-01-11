@@ -90,11 +90,11 @@ if COIN_HAS_MSK
   unitTest_LDADD += $(OSIOBJDIR)/src/OsiMsk/libOsiMsk.la
 endif
 
-if COIN_HAS_OSL
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSLINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiOsl`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiOsl/libOsiOsl.la
-endif
+#if COIN_HAS_OSL
+#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSLINCDIR)` \
+#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiOsl`
+#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiOsl/libOsiOsl.la
+#endif
 
 if COIN_HAS_SPX
   AM_CPPFLAGS += -I`$(CYGPATH_W) $(SPXINCDIR)` \

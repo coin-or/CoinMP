@@ -43,20 +43,21 @@ AC_COIN_INIT_AUTOMAKE
 #             Check which ThirdParty sources are available                  #
 #############################################################################
 
-AC_COIN_THIRDPARTY_SUBDIRS([ASL],[ThirdParty/ASL],[solvers/asl.h])
+#AC_COIN_THIRDPARTY_SUBDIRS([ASL],[ThirdParty/ASL],[solvers/asl.h])
 
 #############################################################################
 #                  Check which subprojects are there                        #
 #############################################################################
 
-AC_COIN_MAIN_SUBDIRS(CoinUtils)
-AC_COIN_MAIN_SUBDIRS(Clp)
-AC_COIN_MAIN_SUBDIRS(Osi)
-AC_COIN_MAIN_SUBDIRS(Cgl)
-AC_COIN_MAIN_SUBDIRS(Cbc)
-AC_COIN_MAIN_SUBDIRS(CoinMP)
-#AC_COIN_MAIN_SUBDIRS(DyLP)
-AC_COIN_MAIN_SUBDIRS(Vol)
+AC_COIN_MAIN_PACKAGEDIR(Sample, Data, , coindatasample)
+AC_COIN_MAIN_PACKAGEDIR(CoinUtils)
+AC_COIN_MAIN_PACKAGEDIR(Osi)
+AC_COIN_MAIN_PACKAGEDIR(Clp)
+AC_COIN_MAIN_PACKAGEDIR(Cgl)
+AC_COIN_MAIN_PACKAGEDIR(Cbc)
+AC_COIN_MAIN_PACKAGEDIR(CoinMP)
+#AC_COIN_MAIN_PACKAGEDIR(DyLP)
+#AC_COIN_MAIN_PAKCAGEDIR(Vol)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #

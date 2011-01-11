@@ -1,54 +1,48 @@
 /* inc/config_coinmp.h.in.  Generated from configure.ac by autoheader.  */
 
-/* If defined, the Ampl Solver Library is available. */
+/* Define to 1 if the ASL package is available */
 #undef COIN_HAS_ASL
 
-/* Define to 1 if the Cbc package is used */
+/* Define to 1 if the Cbc package is available */
 #undef COIN_HAS_CBC
 
-/* Define to 1 if the Cgl package is used */
+/* Define to 1 if the Cgl package is available */
 #undef COIN_HAS_CGL
 
-/* Define to 1 if the Clp package is used */
+/* Define to 1 if the Clp package is available */
 #undef COIN_HAS_CLP
 
-/* Define to 1 if the CoinMP package is used */
-#undef COIN_HAS_COINMP
-
-/* Define to 1 if the CoinUtils package is used */
+/* Define to 1 if the CoinUtils package is available */
 #undef COIN_HAS_COINUTILS
 
-/* Define to 1 if the Cplex package is available */
+/* Define to 1 if the Cpx package is available */
 #undef COIN_HAS_CPX
 
-/* Define to 1 if the DyLP package is used */
+/* Define to 1 if the Dylp package is available */
 #undef COIN_HAS_DYLP
 
-/* Define to 1 if the FortMP package is available */
+/* Define to 1 if the Fmp package is available */
 #undef COIN_HAS_FMP
 
-/* Define to 1 if Glpk package is available */
+/* Define to 1 if the Glpk package is available */
 #undef COIN_HAS_GLPK
 
-/* Define to 1 if the Mosek package is available */
+/* Define to 1 if the Msk package is available */
 #undef COIN_HAS_MSK
 
-/* Define to 1 if the Osi package is used */
+/* Define to 1 if the Osi package is available */
 #undef COIN_HAS_OSI
 
-/* Define to 1 if the Osl package is available */
-#undef COIN_HAS_OSL
-
-/* Define to 1 if the Soplex package is available */
+/* Define to 1 if the Spx package is available */
 #undef COIN_HAS_SPX
 
-/* Define to 1 if the SYMPHONY package is used */
+/* Define to 1 if the SYMPHONY package is available */
 #undef COIN_HAS_SYMPHONY
 
-/* Define to 1 if the Vol package is used */
+/* Define to 1 if the Vol package is available */
 #undef COIN_HAS_VOL
 
-/* Define to 1 if the Xpress package is available */
+/* Define to 1 if the Xpr package is available */
 #undef COIN_HAS_XPR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */

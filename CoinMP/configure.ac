@@ -56,15 +56,41 @@ AC_COIN_INIT_AUTO_TOOLS
 #                              COIN components                              #
 #############################################################################
 
-AC_COIN_HAS_PROJECT(CoinMP)
-AC_COIN_HAS_PROJECT(Cbc)
-AC_COIN_HAS_PROJECT(Cgl)
-AC_COIN_HAS_PROJECT(Clp)
-AC_COIN_HAS_PROJECT(CoinUtils)
-AC_COIN_HAS_PROJECT(Osi)
-AC_COIN_HAS_PROJECT(DyLP)
-AC_COIN_HAS_PROJECT(Vol)
-AC_COIN_HAS_PROJECT(SYMPHONY)
+#AC_COIN_CHECK_PACKAGE(CoinDepend, [cgl osi coinutils], [CbcLib CbcGeneric])
+#if test $coin_has_coindepend != yes ; then
+#  AC_MSG_ERROR([One or more required packages CoinUtils, Osi and Cgl are not available.])
+#fi
+
+AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils], [CbcLib CbcGeneric])
+if test $coin_has_coinutils != yes ; then
+  AC_MSG_ERROR("required package CoinUtils Unavailable.")
+fi
+
+AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [CbcLib CbcGeneric])
+if test $coin_has_cgl != yes ; then
+  AC_MSG_ERROR("required package Cgl Unavailable.")
+fi
+
+AC_COIN_CHECK_PACKAGE(Osi, [osi], [CbcLib CbcGeneric])
+if test $coin_has_osi != yes ; then
+  AC_MSG_ERROR("required package Osi Unavailable.")
+fi
+
+AC_COIN_CHECK_PACKAGE(Clp, [osi-clp], [CbcLib CbcGeneric])
+if test $coin_has_clp != yes ; then
+  AC_MSG_ERROR("required package Clp Unavailable.")
+fi
+
+AC_COIN_CHECK_PACKAGE(Cbc, [cbc], [CoinMP])
+if test $coin_has_cbc != yes; then
+  AC_MSG_ERROR("Required package Cbc unavailable.")
+fi 
+
+AC_COIN_CHECK_PACKAGE(Dylp, [osi-dylp], [CoinMP])
+AC_COIN_CHECK_PACKAGE(SYMPHONY, [osi-sym], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Vol, [osi-vol], [CoinMP])
+
+#AC_COIN_HAS_PROJECT(CoinMP)
 
 # Decide which one is the default solver
 #AC_MSG_CHECKING(for CBC default solver)
@@ -95,22 +121,19 @@ AC_COIN_HAS_PROJECT(SYMPHONY)
 #############################################################################
 
 # Check which third party solvers are available ToDo!
-AC_COIN_HAS_USER_LIBRARY([Cplex],[CPX],[cplex.h],[CPXgetstat])
-#AC_COIN_HAS_USER_LIBRARY([Glpk],[GLPK],[glpk.h],[glp_lpx_simplex])
-AC_COIN_HAS_USER_LIBRARY([FortMP],[FMP])  #ToDo! is Fortran?
-AC_COIN_HAS_USER_LIBRARY([Mosek],[MSK],[mosekdl.h],[MSK_openmosek])
-AC_COIN_HAS_USER_LIBRARY([Osl],[OSL],[ekk_c_api.h],[ekk_simplex])
-AC_COIN_HAS_USER_LIBRARY([Soplex],[SPX],[spxsolver.h]) # ToDo
-AC_COIN_HAS_USER_LIBRARY([Xpress],[XPR],[xprs.h],[XPRSsetintcontrol])
-
-AC_COIN_HAS_GLPK(Glpk)
+AC_COIN_CHECK_PACKAGE(Cpx, [osi-cpx], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Fmp, [osi-fmp], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Glpk, [osi-glpk], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Msk, [osi-msk], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Spx, [osi-spx], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Xpr, [osi-xpr], [CoinMP])
 
 #############################################################################
 #                       Other third party software                          #
 #############################################################################
 
 # Ampl Solver library
-AC_COIN_HAS_ASL
+AC_COIN_CHECK_PACKAGE(ASL, [coinasl], [CoinMP])
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
