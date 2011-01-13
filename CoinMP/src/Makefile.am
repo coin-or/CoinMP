@@ -38,31 +38,7 @@ libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
 # "top_srcdir" refers to the basic directory for the main package that is
 # being compiled.
 AM_CPPFLAGS = 
-AM_CPPFLAGS += \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglClique` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglDuplicateRow` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglFlowCover` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglGomory` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglKnapsackCover` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglMixedIntegerRounding` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglMixedIntegerRounding2` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglOddHole` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglPreProcess` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglProbing` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglRedSplit` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglTwomir` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglLiftAndProject` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglSimpleRounding` \
-	-I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(COINUTILSOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CLPSRCDIR)/src/OsiClp` \
-	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CBCOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/Osi` \
-	-I`$(CYGPATH_W) $(OSIOBJDIR)/inc`
+AM_CPPFLAGS += $(COINMP_CFLAGS)
 
 # List additional defines
 AM_CPPFLAGS += -DCOIN_NO_CLP_MESSAGE -DUSE_COINMPCONFIG

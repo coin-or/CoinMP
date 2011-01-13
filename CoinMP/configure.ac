@@ -56,71 +56,70 @@ AC_COIN_INIT_AUTO_TOOLS
 #                              COIN components                              #
 #############################################################################
 
-#AC_COIN_CHECK_PACKAGE(CoinDepend, [cgl osi coinutils], [CbcLib CbcGeneric])
-#if test $coin_has_coindepend != yes ; then
-#  AC_MSG_ERROR([One or more required packages CoinUtils, Osi and Cgl are not available.])
-#fi
+# Required packages. Since we need the OSI interfaces for clp and cbc, just
+# ask for them and trust that configuration will pull in the information for
+# the clp and cbc base code.
 
 AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils], [CbcLib CbcGeneric])
 if test $coin_has_coinutils != yes ; then
   AC_MSG_ERROR("required package CoinUtils Unavailable.")
 fi
-
-AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [CbcLib CbcGeneric])
-if test $coin_has_cgl != yes ; then
-  AC_MSG_ERROR("required package Cgl Unavailable.")
-fi
-
 AC_COIN_CHECK_PACKAGE(Osi, [osi], [CbcLib CbcGeneric])
 if test $coin_has_osi != yes ; then
   AC_MSG_ERROR("required package Osi Unavailable.")
 fi
-
 AC_COIN_CHECK_PACKAGE(Clp, [osi-clp], [CbcLib CbcGeneric])
 if test $coin_has_clp != yes ; then
   AC_MSG_ERROR("required package Clp Unavailable.")
 fi
-
-AC_COIN_CHECK_PACKAGE(Cbc, [cbc], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [CbcLib CbcGeneric])
+if test $coin_has_cgl != yes ; then
+  AC_MSG_ERROR("required package Cgl Unavailable.")
+fi
+AC_COIN_CHECK_PACKAGE(Cbc, [osi-cbc], [CoinMP])
 if test $coin_has_cbc != yes; then
   AC_MSG_ERROR("Required package Cbc unavailable.")
 fi 
 
+# Attempt to use some other solver in cbc. No point in reenabling this until
+# cbc again works with a solver other than clp. Right now, it doesn't.
+# -- lh, 110112 --
+
+# AC_MSG_CHECKING(for cbc default solver)
+# AC_ARG_WITH([cbc-default-solver],
+#   AC_HELP_STRING([--with-cbc-default-solver],
+#       [specify default solver for Cbc in lower case letters (if not given, clp
+#        is assumed)]),
+#   [cbc_default_solver=$with_val],
+#   [cbc_default_solver=clp])
+# AC_MSG_RESULT($cbc_default_solver)
+
+# case $cbc_default_solver in
+#   clp)
+#     AC_DEFINE([CBC_DEFAULT_SOLVER],"clp",
+#               [Define to the name of the default solver to be used in CBC in small letters])
+#     ;;
+#   dylp)
+#     AC_DEFINE([CBC_DEFAULT_SOLVER],"dylp")
+#     ;;
+#   *)
+#     AC_MSG_ERROR([Unknown solver $cbc_default_solver chosen as CBC's default solver])
+#     ;;
+# esac
+
+#############################################################################
+#                            Alternative solvers                            #
+#############################################################################
+
+# But see comment above: cbc won't work with any solver other than clp.
+# -- lh, 110112 --
+
+# COIN solvers:
 AC_COIN_CHECK_PACKAGE(Dylp, [osi-dylp], [CoinMP])
 AC_COIN_CHECK_PACKAGE(SYMPHONY, [osi-sym], [CoinMP])
 AC_COIN_CHECK_PACKAGE(Vol, [osi-vol], [CoinMP])
 
-#AC_COIN_HAS_PROJECT(CoinMP)
-
-# Decide which one is the default solver
-#AC_MSG_CHECKING(for CBC default solver)
-#AC_ARG_WITH([cbc-default-solver],
-#            AC_HELP_STRING([--with-cbc-default-solver],
-#                           [specify default solver for Cbc in lower case letters (if not given, clp is assumed)]),
-#            [cbc_default_solver=$with_val],
-#            [cbc_default_solver=clp])
-#AC_MSG_RESULT($cbc_default_solver)
-
-#case $cbc_default_solver in
-#  clp)
-#    AC_DEFINE([CBC_DEFAULT_SOLVER],"clp",
-#              [Define to the name of the default solver to be used in CBC in small letters])
-#    ;;
-#  dylp)
-#    AC_DEFINE([CBC_DEFAULT_SOLVER],"dylp")
-#    ;;
-#  *)
-#    AC_MSG_ERROR([Unknown solver $cbc_default_solver chosen as CBC's default solver])
-#    ;;
-#esac
-
-
-
-#############################################################################
-#                            Third party solvers                            #
-#############################################################################
-
-# Check which third party solvers are available ToDo!
+# Third party solvers:
 AC_COIN_CHECK_PACKAGE(Cpx, [osi-cpx], [CoinMP])
 AC_COIN_CHECK_PACKAGE(Fmp, [osi-fmp], [CoinMP])
 AC_COIN_CHECK_PACKAGE(Glpk, [osi-glpk], [CoinMP])

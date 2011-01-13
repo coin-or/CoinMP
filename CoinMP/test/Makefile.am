@@ -17,127 +17,72 @@ noinst_PROGRAMS = unitTest
 unitTest_SOURCES = unitTest.cpp
 
 # List libraries of COIN projects
-unitTest_LDADD = ../src/libCoinMP.la
+unitTest_LDADD = ../src/libCoinMP.la $(COINMP_LIBS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Windows
 AM_CPPFLAGS = \
-	-I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(COINUTILSOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSIOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(srcdir)/../src` 
+	-I`$(CYGPATH_W) $(srcdir)/../src` \
+	$(COINMP_CFLAGS)
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 
-# Depending of what solvers are available, we add the corresponding files,
-# libraries and include dirs
-
-if COIN_HAS_CBC
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CBCSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCbc`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCbc/libOsiCbc.la \
-	$(CBCOBJDIR)/src/libCbcSolver.la $(CBCOBJDIR)/src/libCbc.la 
-  LIBS += `cat $(CBCOBJDIR)/cbc_addlibs.txt`
-endif
-
-if COIN_HAS_CGL
-  unitTest_LDADD += $(CGLOBJDIR)/src/libCgl.la
-  LIBS += `cat $(CGLOBJDIR)/cgl_addlibs.txt`
-endif
-
-if COIN_HAS_CLP
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
-	$(CLPOBJDIR)/src/libClp.la
-  LIBS  += `cat $(CLPOBJDIR)/clp_addlibs.txt`
-endif
+# Depending on what optional solvers are available, we add the corresponding
+# files, libraries and include dirs. Really, we're working with the OSI
+# interface, but since configure.ac uses just the solver name, that's what we
+# use here.
 
 if COIN_HAS_CPX
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(CPXINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiCpx`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiCpx/libOsiCpx.la
+  AM_CPPFLAGS += $(CPX_CFLAGS)
+  unitTest_LDADD += $(CPX_LIBS)
 endif
 
 if COIN_HAS_DYLP
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(DYLPSRCDIR)/src/Dylp` \
-	-I`$(CYGPATH_W) $(DYLPSRCDIR)/src/DylpStdLib` \
-	-I`$(CYGPATH_W) $(DYLPOBJDIR)/inc` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiDylp`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiDylp/libOsiDylp.la \
-	$(DYLPOBJDIR)/src/Dylp/libDylp.la
-  LIBS += `cat $(DYLPOBJDIR)/dylp_addlibs.txt`
+  AM_CPPFLAGS += $(DYLP_CFLAGS)
+  unitTest_LDADD += $(DYLP_LIBS)
 endif
 
 if COIN_HAS_FMP
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiFmp`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiFmp/libOsiFmp.la
+  AM_CPPFLAGS += $(FMP_CFLAGS)
+  unitTest_LDADD += $(FMP_LIBS)
 endif
 
 if COIN_HAS_GLPK
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(GLPKINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiGlpk`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiGlpk/libOsiGlpk.la
+  AM_CPPFLAGS += $(GLPK_CFLAGS)
+  unitTest_LDADD += $(GLPK_LIBS)
 endif
 
 if COIN_HAS_MSK
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(MSKINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiMsk`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiMsk/libOsiMsk.la
+  AM_CPPFLAGS += $(MSK_CFLAGS)
+  unitTest_LDADD += $(MSK_LIBS)
 endif
 
-#if COIN_HAS_OSL
-#  AM_CPPFLAGS += -I`$(CYGPATH_W) $(OSLINCDIR)` \
-#	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiOsl`
-#  unitTest_LDADD += $(OSIOBJDIR)/src/OsiOsl/libOsiOsl.la
-#endif
-
 if COIN_HAS_SPX
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SPXINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSpx`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSpx/libOsiSpx.la
+  AM_CPPFLAGS += $(SPX_CFLAGS)
+  unitTest_LDADD += $(SPX_LIBS)
 endif
 
 if COIN_HAS_SYMPHONY
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(SYMPHONYSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiSym`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiSym/libOsiSym.la \
-	$(SYMPHONYOBJDIR)/src/libSym.la
-  LIBS += `cat $(SYMPHONYOBJDIR)/sym_addlibs.txt`
+  AM_CPPFLAGS += $(SYMPHONY_CFLAGS)
+  unitTest_LDADD += $(SYMPHONY_LIBS)
 endif
 
 if COIN_HAS_VOL
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(VOLSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiVol`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiVol/libOsiVol.la \
-	$(VOLOBJDIR)/src/libVol.la
-  LIBS += `cat $(VOLOBJDIR)/vol_addlibs.txt`
+  AM_CPPFLAGS += $(VOL_CFLAGS)
+  unitTest_LDADD += $(VOL_LIBS)
 endif
 
 if COIN_HAS_XPR
-  AM_CPPFLAGS += -I`$(CYGPATH_W) $(XPRINCDIR)` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiXpr`
-  unitTest_LDADD += $(OSIOBJDIR)/src/OsiXpr/libOsiXpr.la
+  AM_CPPFLAGS += $(XPR_CFLAGS)
+  unitTest_LDADD += $(XPR_LIBS)
 endif
 
 if COIN_HAS_ASL
-  AM_CPPFLAGS += $(ASL_CPPFLAGS) -DCOIN_HAS_ASL
+  AM_CPPFLAGS += $(ASL_CFLAGS) -DCOIN_HAS_ASL
   unitTest_LDADD += $(ASLLIB)
 endif
-
-# Finally the Coin library (many of the above need it)
-unitTest_LDADD += \
-	$(OSIOBJDIR)/src/libOsi.la \
-	$(COINUTILSOBJDIR)/src/libCoinUtils.la
-
-# List additional libraries
-LIBS += `cat $(OSIOBJDIR)/osi_addlibs.txt`\
-	`cat $(COINUTILSOBJDIR)/coinutils_addlibs.txt` \
-	$(ADDLIBS)
 
 test: unitTest$(EXEEXT)
 	./unitTest$(EXEEXT)
