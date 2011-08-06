@@ -27,6 +27,8 @@ CoinMP/MSVisualStudio/v9/x64/Release/CoinMP.lib -text
 CoinMP/MSVisualStudio/v9/x64/Release/unitTest.exe -text
 CoinMP/Makefile.in -text
 CoinMP/README -text
+CoinMP/coinmp-uninstalled.pc.in -text
+CoinMP/coinmp.pc.in -text
 CoinMP/coinmp_addlibs.txt.in -text
 CoinMP/configure -text
 CoinMP/examples/Makefile -text
@@ -68,7 +70,6 @@ CoinMP/examples/vb6/SolveBakery.bas -text
 CoinMP/examples/vb6/SolveCoinTest.bas -text
 CoinMP/examples/vb6/SolveExMip1.bas -text
 CoinMP/examples/vb6/SolveP0033.bas -text
-CoinMP/inc/config_coinmp.h.in -text
 CoinMP/makezip.bat -text
 CoinMP/src/CoinCbc.cpp -text
 CoinMP/src/CoinCbc.h -text
@@ -82,6 +83,10 @@ CoinMP/src/CoinResult.h -text
 CoinMP/src/CoinSolver.c -text
 CoinMP/src/CoinSolver.h -text
 CoinMP/src/Makefile.in -text
+CoinMP/src/config.h.in -text
+CoinMP/src/config_coinmp.h.in -text
+CoinMP/src/config_coinmp_default.h -text
+CoinMP/src/config_default.h -text
 CoinMP/test/Makefile.in -text
 /Dependencies -text
 /Externals -text

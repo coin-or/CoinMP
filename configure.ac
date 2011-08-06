@@ -12,7 +12,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[1.6stable],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[trunk],[coin-discuss@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.

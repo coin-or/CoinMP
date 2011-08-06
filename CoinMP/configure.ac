@@ -12,7 +12,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[1.6stable],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[trunk],[coin-discuss@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
@@ -41,10 +41,10 @@ AC_CANONICAL_BUILD
 # the source root directory contains definition of where to find those
 # externals.  The following macro ensures that those externals are
 # retrieved by svn if they are not there yet.
-AC_COIN_PROJECTDIR_INIT
+AC_COIN_PROJECTDIR_INIT(CoinMP)
 
 # Check if user wants to produce debugging code
-AC_COIN_DEBUG_COMPILE
+AC_COIN_DEBUG_COMPILE(CoinMP)
 
 # Get the name of the C++ compiler and appropriate compiler options
 AC_COIN_PROG_CXX
@@ -60,21 +60,9 @@ AC_COIN_INIT_AUTO_TOOLS
 # ask for them and trust that configuration will pull in the information for
 # the clp and cbc base code.
 
-AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils], [CbcLib CbcGeneric])
-if test $coin_has_coinutils != yes ; then
-  AC_MSG_ERROR("required package CoinUtils Unavailable.")
-fi
-AC_COIN_CHECK_PACKAGE(Osi, [osi], [CbcLib CbcGeneric])
-if test $coin_has_osi != yes ; then
-  AC_MSG_ERROR("required package Osi Unavailable.")
-fi
-AC_COIN_CHECK_PACKAGE(Clp, [osi-clp], [CbcLib CbcGeneric])
+AC_COIN_CHECK_PACKAGE(Clp, [osi-clp], [CoinMP])
 if test $coin_has_clp != yes ; then
   AC_MSG_ERROR("required package Clp Unavailable.")
-fi
-AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [CbcLib CbcGeneric])
-if test $coin_has_cgl != yes ; then
-  AC_MSG_ERROR("required package Cgl Unavailable.")
 fi
 AC_COIN_CHECK_PACKAGE(Cbc, [osi-cbc], [CoinMP])
 if test $coin_has_cbc != yes; then
@@ -143,10 +131,11 @@ AC_COIN_CHECK_PACKAGE(ASL, [coinasl], [CoinMP])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  test/Makefile
-		 coinmp_addlibs.txt])
+		 coinmp.pc
+		 coinmp-uninstalled.pc])
 
 # Here put the location and name of the configuration header file
-AC_CONFIG_HEADER([inc/config_coinmp.h])
+AC_CONFIG_HEADER([src/config.h src/config_coinmp.h])
 
 # Finally, we let configure write all the output...
 AC_COIN_FINALIZE

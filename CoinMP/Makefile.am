@@ -54,21 +54,37 @@ distclean-local:
 #                  Installation of the examples dir                    #
 ########################################################################
 
-addlibsfile = coinmp_addlibs.txt
-addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)
+pkgconfiglibdir = $(libdir)/pkgconfig
+pkgconfiglib_DATA = coinmp.pc
+
+addlibsdir = $(DESTDIR)$(datadir)/coin/doc/CoinMP
 
 examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.c
 examplesdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/examples
 
 install-exec-local: install-doc
-	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
 	mkdir -p $(DESTDIR)$(examplesdir)
 	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
+
+install-data-hook:
+	@$(mkdir_p) "$(addlibsdir)"
+if COIN_HAS_PKGCONFIG
+	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
+	$(PKG_CONFIG) --libs coinmp > $(addlibsdir)/coinmp_addlibs.txt
+else
+if COIN_CXX_IS_CL
+	echo "/libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs_cpp.txt
+else
+	echo -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@ > $(addlibsdir)/coinmp_addlibs.txt
+endif
+endif
 
 uninstall-local: uninstall-doc
 	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
 	rm -rf $(DESTDIR)$(examplesdir)
 
+uninstall-hook:
+	rm -f $(addlibsdir)/coinmp_addlibs.txt
 
 ########################################################################
 #                         Maintainer Stuff                             #
