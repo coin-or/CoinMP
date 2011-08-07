@@ -23,64 +23,8 @@ unitTest_LDADD = ../src/libCoinMP.la $(COINMP_LIBS)
 # "cygpath" stuff is necessary to compile with native compilers on Windows
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` $(COINMP_CFLAGS)
 
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
+# This line is necessary to allow VPATH compilation
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
-
-# Depending on what optional solvers are available, we add the corresponding
-# files, libraries and include dirs. Really, we're working with the OSI
-# interface, but since configure.ac uses just the solver name, that's what we
-# use here.
-
-if COIN_HAS_CPX
-  AM_CPPFLAGS += $(CPX_CFLAGS)
-  unitTest_LDADD += $(CPX_LIBS)
-endif
-
-if COIN_HAS_DYLP
-  AM_CPPFLAGS += $(DYLP_CFLAGS)
-  unitTest_LDADD += $(DYLP_LIBS)
-endif
-
-if COIN_HAS_FMP
-  AM_CPPFLAGS += $(FMP_CFLAGS)
-  unitTest_LDADD += $(FMP_LIBS)
-endif
-
-if COIN_HAS_GLPK
-  AM_CPPFLAGS += $(GLPK_CFLAGS)
-  unitTest_LDADD += $(GLPK_LIBS)
-endif
-
-if COIN_HAS_MSK
-  AM_CPPFLAGS += $(MSK_CFLAGS)
-  unitTest_LDADD += $(MSK_LIBS)
-endif
-
-if COIN_HAS_SPX
-  AM_CPPFLAGS += $(SPX_CFLAGS)
-  unitTest_LDADD += $(SPX_LIBS)
-endif
-
-if COIN_HAS_SYMPHONY
-  AM_CPPFLAGS += $(SYMPHONY_CFLAGS)
-  unitTest_LDADD += $(SYMPHONY_LIBS)
-endif
-
-if COIN_HAS_VOL
-  AM_CPPFLAGS += $(VOL_CFLAGS)
-  unitTest_LDADD += $(VOL_LIBS)
-endif
-
-if COIN_HAS_XPR
-  AM_CPPFLAGS += $(XPR_CFLAGS)
-  unitTest_LDADD += $(XPR_LIBS)
-endif
-
-if COIN_HAS_ASL
-  AM_CPPFLAGS += $(ASL_CFLAGS) -DCOIN_HAS_ASL
-  unitTest_LDADD += $(ASLLIB)
-endif
 
 test: unitTest$(EXEEXT)
 	./unitTest$(EXEEXT)

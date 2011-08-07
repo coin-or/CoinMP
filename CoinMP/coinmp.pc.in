@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@/coin
 
 Name: CoinMP
-Description: Simple API for COIN Solvers
+Description: Simple C API for COIN-OR Solvers Clp and Cbc
 URL: https://projects.coin-or.org/CoinMP
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lCoinMP @COINMP_PCLIBS@

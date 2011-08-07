@@ -12,7 +12,7 @@
 /*                                                                      */
 /************************************************************************/
 
-// $Id$
+/* $Id$ */
 
 #ifndef _COINMP_H_
 #define _COINMP_H_
@@ -198,8 +198,9 @@ SOLVAPI int    SOLVCALL CoinUnloadProblem(HPROB hProb);
 
 SOLVAPI int    SOLVCALL CoinCheckProblem(HPROB hProb);
 
-// Depreciated, use CoinLoadNamesBuf instead
+/* Depreciated, use CoinLoadNamesBuf instead
 //SOLVAPI int    SOLVCALL CoinSetLoadNamesType(HPROB hProb, int LoadNamesType);
+ */
 
 SOLVAPI const char*  SOLVCALL CoinGetProblemName(HPROB hProb);
 SOLVAPI int    SOLVCALL CoinGetProblemNameBuf(HPROB hProb, char* ProblemName, int buflen);
@@ -359,7 +360,7 @@ int    (SOLVCALL *CoinUnloadProblem)(HPROB hProb);
 
 int    (SOLVCALL *CoinCheckProblem)(HPROB hProb);
 
-//int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType);
+/* int    (SOLVCALL *CoinSetLoadNamesType)(HPROB hProb, int LoadNamesType); */
 
 const char*  (SOLVCALL *CoinGetProblemName)(HPROB hProb);
 int    (SOLVCALL *CoinGetProblemNameBuf)(HPROB hProb, char* ProblemName, int buflen);
@@ -473,7 +474,7 @@ int    (SOLVCALL *CoinSetStringOption)(HPROB hProb, int OptionID, const char* St
 
 #define COIN_INT_MIPFATHOMDISC     20
 #define COIN_INT_MIPHOTSTART       21
-//#define COIN_INT_MIPFORCEPRIOR     21
+/* #define COIN_INT_MIPFORCEPRIOR     21 */
 #define COIN_INT_MIPMINIMUMDROP    22
 #define COIN_INT_MIPMAXCUTPASS     23
 #define COIN_INT_MIPMAXPASSROOT    24

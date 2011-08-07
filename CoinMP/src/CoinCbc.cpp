@@ -709,7 +709,7 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 	PCBC pCbc = (PCBC)hCbc;
 	int i, col;
 	int result;
-	double* storeLowerBound;
+	double* storeLowerBound = NULL;
 
 	if (pProblem->SemiCount > 0) { 
 		storeLowerBound = (double *)malloc(pProblem->ColCount * sizeof(double));
@@ -894,7 +894,7 @@ int CbcWriteMpsFile(PPROBLEM pProblem, const char *WriteFilename)
 	int result;
 	PCBC pCbc;
 	HCBC hCbc;
-	char* extension;
+	const char* extension;
 
 	hCbc = CbcCreateSolverObject();
 	pCbc = (PCBC)hCbc;

@@ -57,13 +57,13 @@ host_triplet = @host@
 # specified.  But we need to list it as subdirectory to make sure that it is
 # included in the tarball
 @ALWAYS_FALSE@am__append_1 = test
-DIST_COMMON = README $(am__configure_deps) \
-	$(srcdir)/../BuildTools/Makemain.inc $(srcdir)/../config.guess \
+DIST_COMMON = README $(am__configure_deps) $(srcdir)/../config.guess \
 	$(srcdir)/../config.sub $(srcdir)/../install-sh \
 	$(srcdir)/../ltmain.sh $(srcdir)/../missing \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/coinmp-uninstalled.pc.in $(srcdir)/coinmp.pc.in \
-	$(top_srcdir)/configure AUTHORS
+	$(srcdir)/BuildTools/Makemain.inc $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/coinmp-uninstalled.pc.in \
+	$(srcdir)/coinmp.pc.in $(top_srcdir)/configure \
+	$(top_srcdir)/examples/Makefile.in AUTHORS
 @HAVE_EXTERNALS_TRUE@am__append_2 = Dependencies
 @HAVE_EXTERNALS_TRUE@am__append_3 = .Dependencies-stamp
 subdir = .
@@ -77,7 +77,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h \
 	$(top_builddir)/src/config_coinmp.h
-CONFIG_CLEAN_FILES = coinmp.pc coinmp-uninstalled.pc
+CONFIG_CLEAN_FILES = examples/Makefile coinmp.pc coinmp-uninstalled.pc
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -92,9 +92,11 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(pkgconfiglibdir)"
+am__installdirs = "$(DESTDIR)$(addlibsdir)" \
+	"$(DESTDIR)$(pkgconfiglibdir)"
+addlibsDATA_INSTALL = $(INSTALL_DATA)
 pkgconfiglibDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(pkgconfiglib_DATA)
+DATA = $(addlibs_DATA) $(pkgconfiglib_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = src test
@@ -119,13 +121,6 @@ AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
 AR = @AR@
-ASL_CFLAGS = @ASL_CFLAGS@
-ASL_CFLAGS_INSTALLED = @ASL_CFLAGS_INSTALLED@
-ASL_DATA = @ASL_DATA@
-ASL_DATA_INSTALLED = @ASL_DATA_INSTALLED@
-ASL_DEPENDENCIES = @ASL_DEPENDENCIES@
-ASL_LIBS = @ASL_LIBS@
-ASL_LIBS_INSTALLED = @ASL_LIBS_INSTALLED@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -143,13 +138,6 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CDEFS = @CDEFS@
 CFLAGS = @CFLAGS@
-CLP_CFLAGS = @CLP_CFLAGS@
-CLP_CFLAGS_INSTALLED = @CLP_CFLAGS_INSTALLED@
-CLP_DATA = @CLP_DATA@
-CLP_DATA_INSTALLED = @CLP_DATA_INSTALLED@
-CLP_DEPENDENCIES = @CLP_DEPENDENCIES@
-CLP_LIBS = @CLP_LIBS@
-CLP_LIBS_INSTALLED = @CLP_LIBS_INSTALLED@
 COINMP_CFLAGS = @COINMP_CFLAGS@
 COINMP_CFLAGS_INSTALLED = @COINMP_CFLAGS_INSTALLED@
 COINMP_DEPENDENCIES = @COINMP_DEPENDENCIES@
@@ -162,43 +150,14 @@ COIN_CC_IS_CL_FALSE = @COIN_CC_IS_CL_FALSE@
 COIN_CC_IS_CL_TRUE = @COIN_CC_IS_CL_TRUE@
 COIN_CXX_IS_CL_FALSE = @COIN_CXX_IS_CL_FALSE@
 COIN_CXX_IS_CL_TRUE = @COIN_CXX_IS_CL_TRUE@
-COIN_HAS_ASL_FALSE = @COIN_HAS_ASL_FALSE@
-COIN_HAS_ASL_TRUE = @COIN_HAS_ASL_TRUE@
 COIN_HAS_CBC_FALSE = @COIN_HAS_CBC_FALSE@
 COIN_HAS_CBC_TRUE = @COIN_HAS_CBC_TRUE@
-COIN_HAS_CLP_FALSE = @COIN_HAS_CLP_FALSE@
-COIN_HAS_CLP_TRUE = @COIN_HAS_CLP_TRUE@
-COIN_HAS_CPX_FALSE = @COIN_HAS_CPX_FALSE@
-COIN_HAS_CPX_TRUE = @COIN_HAS_CPX_TRUE@
-COIN_HAS_DYLP_FALSE = @COIN_HAS_DYLP_FALSE@
-COIN_HAS_DYLP_TRUE = @COIN_HAS_DYLP_TRUE@
-COIN_HAS_FMP_FALSE = @COIN_HAS_FMP_FALSE@
-COIN_HAS_FMP_TRUE = @COIN_HAS_FMP_TRUE@
-COIN_HAS_GLPK_FALSE = @COIN_HAS_GLPK_FALSE@
-COIN_HAS_GLPK_TRUE = @COIN_HAS_GLPK_TRUE@
-COIN_HAS_MSK_FALSE = @COIN_HAS_MSK_FALSE@
-COIN_HAS_MSK_TRUE = @COIN_HAS_MSK_TRUE@
 COIN_HAS_PKGCONFIG_FALSE = @COIN_HAS_PKGCONFIG_FALSE@
 COIN_HAS_PKGCONFIG_TRUE = @COIN_HAS_PKGCONFIG_TRUE@
-COIN_HAS_SPX_FALSE = @COIN_HAS_SPX_FALSE@
-COIN_HAS_SPX_TRUE = @COIN_HAS_SPX_TRUE@
-COIN_HAS_SYMPHONY_FALSE = @COIN_HAS_SYMPHONY_FALSE@
-COIN_HAS_SYMPHONY_TRUE = @COIN_HAS_SYMPHONY_TRUE@
-COIN_HAS_VOL_FALSE = @COIN_HAS_VOL_FALSE@
-COIN_HAS_VOL_TRUE = @COIN_HAS_VOL_TRUE@
-COIN_HAS_XPR_FALSE = @COIN_HAS_XPR_FALSE@
-COIN_HAS_XPR_TRUE = @COIN_HAS_XPR_TRUE@
 COIN_PKG_CONFIG_PATH = @COIN_PKG_CONFIG_PATH@
 COIN_PKG_CONFIG_PATH_UNINSTALLED = @COIN_PKG_CONFIG_PATH_UNINSTALLED@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CPX_CFLAGS = @CPX_CFLAGS@
-CPX_CFLAGS_INSTALLED = @CPX_CFLAGS_INSTALLED@
-CPX_DATA = @CPX_DATA@
-CPX_DATA_INSTALLED = @CPX_DATA_INSTALLED@
-CPX_DEPENDENCIES = @CPX_DEPENDENCIES@
-CPX_LIBS = @CPX_LIBS@
-CPX_LIBS_INSTALLED = @CPX_LIBS_INSTALLED@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEFS = @CXXDEFS@
@@ -209,13 +168,6 @@ DBG_CFLAGS = @DBG_CFLAGS@
 DBG_CXXFLAGS = @DBG_CXXFLAGS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DYLP_CFLAGS = @DYLP_CFLAGS@
-DYLP_CFLAGS_INSTALLED = @DYLP_CFLAGS_INSTALLED@
-DYLP_DATA = @DYLP_DATA@
-DYLP_DATA_INSTALLED = @DYLP_DATA_INSTALLED@
-DYLP_DEPENDENCIES = @DYLP_DEPENDENCIES@
-DYLP_LIBS = @DYLP_LIBS@
-DYLP_LIBS_INSTALLED = @DYLP_LIBS_INSTALLED@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -224,20 +176,6 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
-FMP_CFLAGS = @FMP_CFLAGS@
-FMP_CFLAGS_INSTALLED = @FMP_CFLAGS_INSTALLED@
-FMP_DATA = @FMP_DATA@
-FMP_DATA_INSTALLED = @FMP_DATA_INSTALLED@
-FMP_DEPENDENCIES = @FMP_DEPENDENCIES@
-FMP_LIBS = @FMP_LIBS@
-FMP_LIBS_INSTALLED = @FMP_LIBS_INSTALLED@
-GLPK_CFLAGS = @GLPK_CFLAGS@
-GLPK_CFLAGS_INSTALLED = @GLPK_CFLAGS_INSTALLED@
-GLPK_DATA = @GLPK_DATA@
-GLPK_DATA_INSTALLED = @GLPK_DATA_INSTALLED@
-GLPK_DEPENDENCIES = @GLPK_DEPENDENCIES@
-GLPK_LIBS = @GLPK_LIBS@
-GLPK_LIBS_INSTALLED = @GLPK_LIBS_INSTALLED@
 HAVE_EXTERNALS_FALSE = @HAVE_EXTERNALS_FALSE@
 HAVE_EXTERNALS_TRUE = @HAVE_EXTERNALS_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
@@ -259,13 +197,6 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 MPICC = @MPICC@
 MPICXX = @MPICXX@
-MSK_CFLAGS = @MSK_CFLAGS@
-MSK_CFLAGS_INSTALLED = @MSK_CFLAGS_INSTALLED@
-MSK_DATA = @MSK_DATA@
-MSK_DATA_INSTALLED = @MSK_DATA_INSTALLED@
-MSK_DEPENDENCIES = @MSK_DEPENDENCIES@
-MSK_LIBS = @MSK_LIBS@
-MSK_LIBS_INSTALLED = @MSK_LIBS_INSTALLED@
 OBJEXT = @OBJEXT@
 OPT_CFLAGS = @OPT_CFLAGS@
 OPT_CXXFLAGS = @OPT_CXXFLAGS@
@@ -281,37 +212,9 @@ RANLIB = @RANLIB@
 RPATH_FLAGS = @RPATH_FLAGS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SPX_CFLAGS = @SPX_CFLAGS@
-SPX_CFLAGS_INSTALLED = @SPX_CFLAGS_INSTALLED@
-SPX_DATA = @SPX_DATA@
-SPX_DATA_INSTALLED = @SPX_DATA_INSTALLED@
-SPX_DEPENDENCIES = @SPX_DEPENDENCIES@
-SPX_LIBS = @SPX_LIBS@
-SPX_LIBS_INSTALLED = @SPX_LIBS_INSTALLED@
 STRIP = @STRIP@
-SYMPHONY_CFLAGS = @SYMPHONY_CFLAGS@
-SYMPHONY_CFLAGS_INSTALLED = @SYMPHONY_CFLAGS_INSTALLED@
-SYMPHONY_DATA = @SYMPHONY_DATA@
-SYMPHONY_DATA_INSTALLED = @SYMPHONY_DATA_INSTALLED@
-SYMPHONY_DEPENDENCIES = @SYMPHONY_DEPENDENCIES@
-SYMPHONY_LIBS = @SYMPHONY_LIBS@
-SYMPHONY_LIBS_INSTALLED = @SYMPHONY_LIBS_INSTALLED@
 VERSION = @VERSION@
-VOL_CFLAGS = @VOL_CFLAGS@
-VOL_CFLAGS_INSTALLED = @VOL_CFLAGS_INSTALLED@
-VOL_DATA = @VOL_DATA@
-VOL_DATA_INSTALLED = @VOL_DATA_INSTALLED@
-VOL_DEPENDENCIES = @VOL_DEPENDENCIES@
-VOL_LIBS = @VOL_LIBS@
-VOL_LIBS_INSTALLED = @VOL_LIBS_INSTALLED@
 VPATH_DISTCLEANFILES = @VPATH_DISTCLEANFILES@
-XPR_CFLAGS = @XPR_CFLAGS@
-XPR_CFLAGS_INSTALLED = @XPR_CFLAGS_INSTALLED@
-XPR_DATA = @XPR_DATA@
-XPR_DATA_INSTALLED = @XPR_DATA_INSTALLED@
-XPR_DEPENDENCIES = @XPR_DEPENDENCIES@
-XPR_LIBS = @XPR_LIBS@
-XPR_LIBS_INSTALLED = @XPR_LIBS_INSTALLED@
 abs_bin_dir = @abs_bin_dir@
 abs_include_dir = @abs_include_dir@
 abs_lib_dir = @abs_lib_dir@
@@ -388,8 +291,7 @@ EXTRA_DIST = examples/Makefile examples/example.c $(am__append_2)
 pkgconfiglibdir = $(libdir)/pkgconfig
 pkgconfiglib_DATA = coinmp.pc
 addlibsdir = $(DESTDIR)$(datadir)/coin/doc/CoinMP
-examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.c
-examplesdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/examples
+addlibs_DATA = examples/Makefile examples/example.c
 
 ########################################################################
 #                         Maintainer Stuff                             #
@@ -404,7 +306,7 @@ all: all-recursive
 .SUFFIXES:
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/../BuildTools/Makemain.inc $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/BuildTools/Makemain.inc $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -435,6 +337,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+examples/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 coinmp.pc: $(top_builddir)/config.status $(srcdir)/coinmp.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 coinmp-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/coinmp-uninstalled.pc.in
@@ -449,6 +353,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-addlibsDATA: $(addlibs_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(addlibsdir)" || $(mkdir_p) "$(DESTDIR)$(addlibsdir)"
+	@list='$(addlibs_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(addlibsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(addlibsdir)/$$f'"; \
+	  $(addlibsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(addlibsdir)/$$f"; \
+	done
+
+uninstall-addlibsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(addlibs_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(addlibsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(addlibsdir)/$$f"; \
+	done
 install-pkgconfiglibDATA: $(pkgconfiglib_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgconfiglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkgconfiglibdir)"
@@ -602,7 +523,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/.. $(distdir)/../BuildTools $(distdir)/examples
+	$(mkdir_p) $(distdir)/. $(distdir)/.. $(distdir)/BuildTools $(distdir)/examples
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -746,7 +667,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(pkgconfiglibdir)"; do \
+	for dir in "$(DESTDIR)$(addlibsdir)" "$(DESTDIR)$(pkgconfiglibdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -794,7 +715,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-pkgconfiglibDATA
+install-data-am: install-addlibsDATA install-pkgconfiglibDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 
@@ -824,7 +745,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-local \
+uninstall-am: uninstall-addlibsDATA uninstall-info-am uninstall-local \
 	uninstall-pkgconfiglibDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
@@ -838,16 +759,16 @@ uninstall-info: uninstall-info-recursive
 	distclean-generic distclean-libtool distclean-local \
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
-	install-data-hook install-exec install-exec-am \
+	install install-addlibsDATA install-am install-data \
+	install-data-am install-data-hook install-exec install-exec-am \
 	install-exec-local install-info install-info-am install-man \
 	install-pkgconfiglibDATA install-strip installcheck \
 	installcheck-am installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic maintainer-clean-recursive \
 	mostlyclean mostlyclean-generic mostlyclean-libtool \
 	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-hook uninstall-info-am \
-	uninstall-local uninstall-pkgconfiglibDATA
+	uninstall uninstall-addlibsDATA uninstall-am uninstall-hook \
+	uninstall-info-am uninstall-local uninstall-pkgconfiglibDATA
 
 
 ########################################################################
@@ -867,23 +788,19 @@ distclean-local:
 
 .PHONY: test unitTest
 
-install-exec-local: install-doc
-	mkdir -p $(DESTDIR)$(examplesdir)
-	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
-
 install-data-hook:
 	@$(mkdir_p) "$(addlibsdir)"
 @COIN_HAS_PKGCONFIG_TRUE@	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
 @COIN_HAS_PKGCONFIG_TRUE@	$(PKG_CONFIG) --libs coinmp > $(addlibsdir)/coinmp_addlibs.txt
-@COIN_CXX_IS_CL_TRUE@@COIN_HAS_PKGCONFIG_FALSE@	echo "/libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs_cpp.txt
+@COIN_CXX_IS_CL_TRUE@@COIN_HAS_PKGCONFIG_FALSE@	echo "-libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs_cpp.txt
 @COIN_CXX_IS_CL_FALSE@@COIN_HAS_PKGCONFIG_FALSE@	echo -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@ > $(addlibsdir)/coinmp_addlibs.txt
-
-uninstall-local: uninstall-doc
-	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
-	rm -rf $(DESTDIR)$(examplesdir)
 
 uninstall-hook:
 	rm -f $(addlibsdir)/coinmp_addlibs.txt
+
+install-exec-local: install-doc
+
+uninstall-local: uninstall-doc
 
 install-doc: $(DocFiles)
 	test -z "$(DocInstallDir)" || $(mkdir_p) "$(DESTDIR)$(DocInstallDir)"

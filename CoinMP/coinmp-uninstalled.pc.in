@@ -2,7 +2,7 @@ prefix=@prefix@
 libdir=@ABSBUILDDIR@/src
 
 Name: CoinMP
-Description: A Simple API for COIN Solvers
+Description: Simple C API for COIN-OR Solvers Clp and Cbc
 URL: https://projects.coin-or.org/CoinMP
 Version: @PACKAGE_VERSION@
 Libs: ${libdir}/libCoinMP.la @COINMP_PCLIBS@

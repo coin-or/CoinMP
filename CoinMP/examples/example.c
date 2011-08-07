@@ -1,7 +1,7 @@
 
-/* example.c */
-
-// $Id$
+/* example.c
+ * $Id$
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,7 +23,7 @@ int SOLVCALL IterCallback(int    IterCount,
 			int    IsFeasible, 
 			double InfeasValue)
 {
-	fprintf(stdout, "ITER: iter=%d, obj=%lg, feas=%d, infeas=%lg\n",
+	fprintf(stdout, "ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g\n",
 		IterCount, ObjectValue, IsFeasible, InfeasValue);
 	return 0;
 }
@@ -34,7 +34,7 @@ int SOLVCALL MipNodeCallback(int    IterCount,
 				double BestInteger,
 				int    IsMipImproved)
 {
-	fprintf(stdout, "NODE: iter=%d, node=%d, bound=%lg, best=%lg, %s\n",
+	fprintf(stdout, "NODE: iter=%d, node=%d, bound=%.20g, best=%.20g, %s\n",
 		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "");
 	return 0;
 }
@@ -60,7 +60,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	fprintf(stdout, "Problem Name:    %s\n", problemName);
 	fprintf(stdout, "Solution Result: %s\n", solutionText );
 	fprintf(stdout, "Solution Status: %d\n", solutionStatus);
-	fprintf(stdout, "Optimal Value:   %lg\n", objectValue);
+	fprintf(stdout, "Optimal Value:   %.20g\n", objectValue);
 	fprintf(stdout, "---------------------------------------\n");
 
 	colCount = CoinGetColCount(hProb);
@@ -69,7 +69,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	for (i = 0; i < colCount; i++) {
 		if (xValues[i] != 0.0) {
 			ColName = CoinGetColName(hProb, i);
-			fprintf(stdout, "%s = %lg\n", ColName, xValues[i]);
+			fprintf(stdout, "%s = %.20g\n", ColName, xValues[i]);
 		}
 	}
 	fprintf(stdout, "---------------------------------------\n\n");
@@ -92,7 +92,7 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -106,7 +106,7 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	/* result = CoinSetMsgLogCallback(hProb, &MsgLogCallback); */
 	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -131,7 +131,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -145,7 +145,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	/* result = CoinSetMsgLogCallback(hProb, &MsgLogCallback); */
 	if (columnType == NULL)
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -172,7 +172,7 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 	int result;
 	char filename[260];
     
-	fprintf(stdout, "Solve Problem: %s (obj=%lg)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -195,7 +195,7 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	//result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	/* result = CoinSetMsgLogCallback(hProb, &MsgLogCallback); */
 	if ((columnType == NULL) && (sosCount == 0) && (semiCount == 0))
 		result = CoinSetIterCallback(hProb, &IterCallback);
 	else {
@@ -248,9 +248,6 @@ void SolveProblemCoinTest(void)
     
 	char* colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
 	char* rowNames[5] = {"r1", "r2", "r3", "r4", "r5"};
-
-	//char* colNamesBuf = "c1\0" "c2\0" "c3\0" "c4\0" "c5\0" "c6\0" "c7\0" "c8";
-	//char* rowNamesBuf = "r1\0" "r2\0" "r3\0" "r4\0" "r5";
     
 	double initValues[8] = { 0., 0., 0., 0., 0., 0., 0., 0.  };
 
@@ -290,9 +287,6 @@ void SolveProblemBakery(void)
 
 	char* colNames[2] = {"Sun", "Moon"};
 	char* rowNames[3] = {"c1", "c2", "c3"};
-
-	//char* colNamesBuf = "Sun\0" "Moon";
-	//char* rowNamesBuf = "c1\0" "c2\0" "c3";
     
 	double optimalValue = 506.66666667;
 
@@ -515,7 +509,6 @@ void SolveProblemGamsSos1a(void)
 	double dclo[3]={0, 0, 0};
 	double dcup[3]={0.8, 0.6, 0.6};
 
-	char* rtyp = NULL;
 	double drlo[1]={-1e+37};
 	double drup[1]={1.0};
 
@@ -526,9 +519,6 @@ void SolveProblemGamsSos1a(void)
 
 	char* colnames[3] = {"x1", "x2", "x3"};
 	char* rownames[1] = {"xsum"};
-
-	//char* colnamesBuf = "x1\0" "x2\0" "x3";
-	//char* rownamesBuf = "xsum";
 
 	int sosCount = 1;
 	int sosNZCount = 3;
@@ -573,9 +563,6 @@ void SolveProblemGamsSos2a(void)
 	char* colnames[7] = {"w1", "w2", "w3", "x", "fx", "fplus", "fminus"};
 	char* rownames[5] = {"wsum", "xdef", "fxdef", "gapplus", "gapminus"};
 
-	//char* colnamesBuf = "w1\0" "w2\0" "w3\0" "x\0" "fx\0" "fplus\0" "fminus";
-	//char* rownamesBuf = "wsum\0" "xdef\0" "fxdef\0" "gapplus\0" "gapminus";
-
 	int sosCount = 1;
 	int sosNZCount = 3;
 	int sosType[1] = {2};
@@ -619,9 +606,6 @@ void SolveProblemSemiCont(void)
 	char* colnames[7] = {"s", "pup", "plo", "x"};
 	char* rownames[5] = {"bigx", "smallx", "f"};
 
-	//char* colnamesBuf = "s\0" "pup\0" "plo\0" "x\0";
-	//char* rownamesBuf = "bigx\0" "smallx\0" "f\0";
-
 	int semiCount = 1;
 	int semiIndex[1] = {0};
 
@@ -643,7 +627,7 @@ int main (int argc, char* argv[])
 	CoinInitSolver("");
 	SolverName = CoinGetSolverName();
 	CoinVersion = CoinGetVersion();
-	fprintf(stdout, "UnitTest: %s version %lg\n\n", SolverName, CoinVersion);
+	fprintf(stdout, "UnitTest: %s version %.20g\n\n", SolverName, CoinVersion);
 	SolveProblemCoinTest();
 	SolveProblemBakery();
 	SolveProblemAfiro();

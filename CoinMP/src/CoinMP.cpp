@@ -331,7 +331,6 @@ SOLVAPI int SOLVCALL CoinLoadSos(HPROB hProb, int SosCount, int SosNZCount,
 SOLVAPI int SOLVCALL CoinLoadSemiCont(HPROB hProb, int SemiCount, int* SemiIndex)
 {
 	PCOIN pCoin = (PCOIN)hProb;
-	PPROBLEM pProblem = pCoin->pProblem;
 
 	if (!coinStoreSemiCont(pCoin->pProblem, SemiCount, SemiIndex)) {
 		return SOLV_CALL_FAILED;

@@ -59,12 +59,7 @@ pkgconfiglib_DATA = coinmp.pc
 
 addlibsdir = $(DESTDIR)$(datadir)/coin/doc/CoinMP
 
-examplefiles = $(srcdir)/examples/Makefile $(srcdir)/examples/example.c
-examplesdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/examples
-
-install-exec-local: install-doc
-	mkdir -p $(DESTDIR)$(examplesdir)
-	$(install_sh_DATA) $(examplefiles) $(DESTDIR)$(examplesdir)
+addlibs_DATA = examples/Makefile examples/example.c
 
 install-data-hook:
 	@$(mkdir_p) "$(addlibsdir)"
@@ -73,18 +68,18 @@ if COIN_HAS_PKGCONFIG
 	$(PKG_CONFIG) --libs coinmp > $(addlibsdir)/coinmp_addlibs.txt
 else
 if COIN_CXX_IS_CL
-	echo "/libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs_cpp.txt
+	echo "-libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs_cpp.txt
 else
 	echo -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@ > $(addlibsdir)/coinmp_addlibs.txt
 endif
 endif
 
-uninstall-local: uninstall-doc
-	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
-	rm -rf $(DESTDIR)$(examplesdir)
-
 uninstall-hook:
 	rm -f $(addlibsdir)/coinmp_addlibs.txt
+
+install-exec-local: install-doc
+
+uninstall-local: uninstall-doc
 
 ########################################################################
 #                         Maintainer Stuff                             #
@@ -93,4 +88,4 @@ uninstall-hook:
 # Files that are generated and should be cleaned with make distclean
 DISTCLEANFILES =
 
-include ../BuildTools/Makemain.inc
+include BuildTools/Makemain.inc

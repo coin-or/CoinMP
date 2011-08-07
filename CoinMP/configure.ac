@@ -12,12 +12,12 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[trunk],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[trunk],[coinmp@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
 All Rights Reserved.
-This file is part of the open source package Coin which is distributed
+This file is part of the open source package CoinMP which is distributed
 under the Common Public License.])
 
 # List one file in the package so that the configure script can test
@@ -53,74 +53,16 @@ AC_COIN_PROG_CXX
 AC_COIN_INIT_AUTO_TOOLS
 
 #############################################################################
-#                              COIN components                              #
+#                            COIN-OR components                             #
 #############################################################################
 
-# Required packages. Since we need the OSI interfaces for clp and cbc, just
-# ask for them and trust that configuration will pull in the information for
-# the clp and cbc base code.
+# Required packages.
+# We need Clp, Cbc, and the OSI interface to CLP to build CoinCbc.cpp.
 
-AC_COIN_CHECK_PACKAGE(Clp, [osi-clp], [CoinMP])
-if test $coin_has_clp != yes ; then
-  AC_MSG_ERROR("required package Clp Unavailable.")
-fi
-AC_COIN_CHECK_PACKAGE(Cbc, [osi-cbc], [CoinMP])
+AC_COIN_CHECK_PACKAGE(Cbc, [cbc clp osi-clp], [CoinMP])
 if test $coin_has_cbc != yes; then
   AC_MSG_ERROR("Required package Cbc unavailable.")
 fi 
-
-# Attempt to use some other solver in cbc. No point in reenabling this until
-# cbc again works with a solver other than clp. Right now, it doesn't.
-# -- lh, 110112 --
-
-# AC_MSG_CHECKING(for cbc default solver)
-# AC_ARG_WITH([cbc-default-solver],
-#   AC_HELP_STRING([--with-cbc-default-solver],
-#       [specify default solver for Cbc in lower case letters (if not given, clp
-#        is assumed)]),
-#   [cbc_default_solver=$with_val],
-#   [cbc_default_solver=clp])
-# AC_MSG_RESULT($cbc_default_solver)
-
-# case $cbc_default_solver in
-#   clp)
-#     AC_DEFINE([CBC_DEFAULT_SOLVER],"clp",
-#               [Define to the name of the default solver to be used in CBC in small letters])
-#     ;;
-#   dylp)
-#     AC_DEFINE([CBC_DEFAULT_SOLVER],"dylp")
-#     ;;
-#   *)
-#     AC_MSG_ERROR([Unknown solver $cbc_default_solver chosen as CBC's default solver])
-#     ;;
-# esac
-
-#############################################################################
-#                            Alternative solvers                            #
-#############################################################################
-
-# But see comment above: cbc won't work with any solver other than clp.
-# -- lh, 110112 --
-
-# COIN solvers:
-AC_COIN_CHECK_PACKAGE(Dylp, [osi-dylp], [CoinMP])
-AC_COIN_CHECK_PACKAGE(SYMPHONY, [osi-sym], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Vol, [osi-vol], [CoinMP])
-
-# Third party solvers:
-AC_COIN_CHECK_PACKAGE(Cpx, [osi-cpx], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Fmp, [osi-fmp], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Glpk, [osi-glpk], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Msk, [osi-msk], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Spx, [osi-spx], [CoinMP])
-AC_COIN_CHECK_PACKAGE(Xpr, [osi-xpr], [CoinMP])
-
-#############################################################################
-#                       Other third party software                          #
-#############################################################################
-
-# Ampl Solver library
-AC_COIN_CHECK_PACKAGE(ASL, [coinasl], [CoinMP])
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
@@ -131,8 +73,9 @@ AC_COIN_CHECK_PACKAGE(ASL, [coinasl], [CoinMP])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  test/Makefile
-		 coinmp.pc
-		 coinmp-uninstalled.pc])
+                 examples/Makefile
+                 coinmp.pc
+                 coinmp-uninstalled.pc])
 
 # Here put the location and name of the configuration header file
 AC_CONFIG_HEADER([src/config.h src/config_coinmp.h])

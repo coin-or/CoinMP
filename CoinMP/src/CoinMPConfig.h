@@ -25,20 +25,9 @@
 #ifndef __COINMPCONFIG_H__
 
 #ifdef HAVE_CONFIG_H
-#ifdef COINMP_BUILD
-#include "config.h"
-#else
 #include "config_coinmp.h"
-#endif
-
-#else /* HAVE_CONFIG_H */
-
-#ifdef CBC_BUILD
-#include "config_default.h"
 #else
 #include "config_coinmp_default.h"
 #endif
-
-#endif /* HAVE_CONFIG_H */
 
 #endif /*__COINMPCONFIG_H__*/

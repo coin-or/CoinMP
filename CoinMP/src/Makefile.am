@@ -39,12 +39,8 @@ libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
 # being compiled.
 AM_CPPFLAGS = $(COINMP_CFLAGS)
 
-# List additional defines
-AM_CPPFLAGS += -DCOIN_NO_CLP_MESSAGE -DUSE_COINMPCONFIG
-
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
+# This line is necessary to allow VPATH compilation
+DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I.
 
 ########################################################################
 #                Headers that need to be installed                     #
