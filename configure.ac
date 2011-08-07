@@ -12,12 +12,12 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([CoinMP],[trunk],[coin-discuss@list.coin-or.org])
+AC_INIT([CoinMP],[trunk],[coinmp@list.coin-or.org])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
 All Rights Reserved.
-This file is part of the open source package Coin which is distributed
+This file is part of the open source package CoinMP which is distributed
 under the Common Public License.])
 
 AC_REVISION(0.9)
@@ -40,24 +40,16 @@ AC_PREFIX_DEFAULT([`pwd`])
 AC_COIN_INIT_AUTOMAKE
 
 #############################################################################
-#             Check which ThirdParty sources are available                  #
-#############################################################################
-
-#AC_COIN_THIRDPARTY_SUBDIRS([ASL],[ThirdParty/ASL],[solvers/asl.h])
-
-#############################################################################
 #                  Check which subprojects are there                        #
 #############################################################################
 
-AC_COIN_MAIN_PACKAGEDIR(Sample, Data, , coindatasample)
+AC_COIN_MAIN_PACKAGEDIR(Sample, Data)
 AC_COIN_MAIN_PACKAGEDIR(CoinUtils)
 AC_COIN_MAIN_PACKAGEDIR(Osi)
 AC_COIN_MAIN_PACKAGEDIR(Clp)
 AC_COIN_MAIN_PACKAGEDIR(Cgl)
 AC_COIN_MAIN_PACKAGEDIR(Cbc)
 AC_COIN_MAIN_PACKAGEDIR(CoinMP)
-#AC_COIN_MAIN_PACKAGEDIR(DyLP)
-#AC_COIN_MAIN_PAKCAGEDIR(Vol)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
