@@ -29,7 +29,10 @@ CoinMP/Makefile.in -text
 CoinMP/README -text
 CoinMP/coinmp-uninstalled.pc.in -text
 CoinMP/coinmp.pc.in -text
+CoinMP/config.guess -text
+CoinMP/config.sub -text
 CoinMP/configure -text
+CoinMP/depcomp -text
 CoinMP/examples/Makefile.in -text
 CoinMP/examples/csharp/CoinMPTestCS8.csproj -text
 CoinMP/examples/csharp/CoinMPTestCS8.sln -text
@@ -69,7 +72,10 @@ CoinMP/examples/vb6/SolveBakery.bas -text
 CoinMP/examples/vb6/SolveCoinTest.bas -text
 CoinMP/examples/vb6/SolveExMip1.bas -text
 CoinMP/examples/vb6/SolveP0033.bas -text
+CoinMP/install-sh -text
+CoinMP/ltmain.sh -text
 CoinMP/makezip.bat -text
+CoinMP/missing -text
 CoinMP/src/CoinCbc.cpp -text
 CoinMP/src/CoinCbc.h -text
 CoinMP/src/CoinMP.def -text

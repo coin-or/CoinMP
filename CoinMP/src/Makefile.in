@@ -68,7 +68,7 @@ libCoinMP_la_LIBADD =
 am_libCoinMP_la_OBJECTS = CoinMP.lo CoinProblem.lo CoinResult.lo \
 	CoinSolver.lo CoinOption.lo CoinCbc.lo
 libCoinMP_la_OBJECTS = $(am_libCoinMP_la_OBJECTS)
-depcomp = $(SHELL) $(top_srcdir)/../depcomp
+depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
