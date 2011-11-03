@@ -465,7 +465,7 @@ int coinGetLenNameBuf(const char* NameBuf, int Count)
 }
 
 
-int coinGetLenNameListBuf(const char** NameList, int Count)
+int coinGetLenNameListBuf(char** NameList, int Count)
 {
 	int i, len;
 	int lenBuf;
@@ -479,7 +479,7 @@ int coinGetLenNameListBuf(const char** NameList, int Count)
 }
 
 
-int coinCopyNamesList(char** NamesList, char* NamesBuf, const char** argNamesList, int Count)
+int coinCopyNamesList(char** NamesList, char* NamesBuf, char** argNamesList, int Count)
 {
 	int i,k,len;
 
@@ -506,7 +506,7 @@ int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count)
 	}
 	k = 0;
 	for (i = 0; i < Count; i++) {
-		NamesList[i] = &NamesBuf[k];
+		NamesList[i] = (char*)&NamesBuf[k];
 		len = (int)strlen(NamesList[i]) + 1;
 		k += len;
 	}

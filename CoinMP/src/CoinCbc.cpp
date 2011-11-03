@@ -47,7 +47,7 @@
 
 class CBMessageHandler : public CoinMessageHandler {
 public: 
-	void registerCallback(COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam);
+	void registerCallback(COIN_MSGLOG_CB MsgLogCB, const void *MsgLogParam);
 	void setCallback(MSGLOGCALLBACK msgCallback);
 	virtual int print();
 
@@ -64,13 +64,13 @@ public:
 
 private:
 	COIN_MSGLOG_CB MsgLogCB_;
-	void *MsgLogParam_;
+	const void *MsgLogParam_;
 	MSGLOGCALLBACK msgCallback_;
 };
 
 
 
-void CBMessageHandler::registerCallback(COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam)
+void CBMessageHandler::registerCallback(COIN_MSGLOG_CB MsgLogCB, const void *MsgLogParam)
 {
   MsgLogCB_ = MsgLogCB;
   MsgLogParam_ = MsgLogParam;
@@ -143,7 +143,7 @@ CoinMessageHandler * CBMessageHandler::clone() const
 class CBIterHandler : public ClpEventHandler {
 
 public: 
-   void registerLPIterCallback(COIN_LPITER_CB LPIterCB, void* LPIterParam);
+   void registerLPIterCallback(COIN_LPITER_CB LPIterCB, const void* LPIterParam);
    void setIterCallback(ITERCALLBACK iterCallback);
 
 	virtual int event(Event whichEvent);
@@ -164,12 +164,12 @@ public:
 
 private:
 	COIN_LPITER_CB LPIterCB_;
-	void* LPIterParam_;
+	const void* LPIterParam_;
 	ITERCALLBACK iterCallback_;
 };
 
 
-void CBIterHandler::registerLPIterCallback(COIN_LPITER_CB LPIterCB, void* LPIterParam)
+void CBIterHandler::registerLPIterCallback(COIN_LPITER_CB LPIterCB, const void* LPIterParam)
 {
   LPIterCB_ = LPIterCB;
   LPIterParam_ = LPIterParam;
@@ -264,7 +264,7 @@ ClpEventHandler * CBIterHandler::clone() const
 class CBNodeHandler : public CbcEventHandler {
 
 public: 
-	void registerCallback(COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam);
+	void registerCallback(COIN_MIPNODE_CB MipNodeCB, const void* MipNodeParam);
 	void setCallback(MIPNODECALLBACK mipNodeCallback);
 
 	virtual CbcAction event(CbcEvent whichEvent);
@@ -288,13 +288,13 @@ public:
 
 private:
 	COIN_MIPNODE_CB MipNodeCB_;
-	void* MipNodeParam_;
+	const void* MipNodeParam_;
 	MIPNODECALLBACK mipNodeCallback_;
 	int lastSolCount_;
 };
 
 
-void CBNodeHandler::registerCallback(COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam)
+void CBNodeHandler::registerCallback(COIN_MIPNODE_CB MipNodeCB, const void* MipNodeParam)
 {
 	MipNodeCB_ = MipNodeCB;
 	MipNodeParam_ = MipNodeParam;
@@ -455,7 +455,7 @@ void CbcClearSolverObject(HCBC hCbc)
 
 
 
-int CbcRegisterMsgLogCallback(HCBC hCbc, int LogLevel, COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam)
+int CbcRegisterMsgLogCallback(HCBC hCbc, int LogLevel, COIN_MSGLOG_CB MsgLogCB, const void *MsgLogParam)
 {
 	PCBC pCbc = (PCBC)hCbc;
 
@@ -474,7 +474,7 @@ int CbcRegisterMsgLogCallback(HCBC hCbc, int LogLevel, COIN_MSGLOG_CB MsgLogCB, 
 
 
 
-int CbcRegisterLPIterCallback(HCBC hCbc, COIN_LPITER_CB LPIterCB, void* LPIterParam)
+int CbcRegisterLPIterCallback(HCBC hCbc, COIN_LPITER_CB LPIterCB, const void* LPIterParam)
 {
 	PCBC pCbc = (PCBC)hCbc;
 
@@ -490,7 +490,7 @@ int CbcRegisterLPIterCallback(HCBC hCbc, COIN_LPITER_CB LPIterCB, void* LPIterPa
 
 
 
-int CbcRegisterMipNodeCallback(HCBC hCbc, COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam)
+int CbcRegisterMipNodeCallback(HCBC hCbc, COIN_MIPNODE_CB MipNodeCB, const void* MipNodeParam)
 {
 	PCBC pCbc = (PCBC)hCbc;
 

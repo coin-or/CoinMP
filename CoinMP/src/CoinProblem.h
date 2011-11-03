@@ -101,9 +101,9 @@ int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax);
 int coinComputeIntVariables(PPROBLEM pProblem);
 
 int coinGetLenNameBuf(const char* NameBuf, int Count);
-int coinGetLenNameListBuf(const char** NameList, int Count);
+int coinGetLenNameListBuf(char** NameList, int Count);
 
-int coinCopyNamesList(char** NamesList, char* NamesBuf, const char** argNamesList, int Count);
+int coinCopyNamesList(char** NamesList, char* NamesBuf, char** argNamesList, int Count);
 int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count);
 
 #ifdef __cplusplus

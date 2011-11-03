@@ -13,20 +13,20 @@
 #endif
 
 typedef int (SOLVCALL * COIN_MSGLOG_CB)(const char* MessageStr, 
-										void*		UserParam);
+					const void* UserParam);
 
 typedef int (SOLVCALL *COIN_LPITER_CB)(int    IterCount, 
-							double ObjectValue,
-							int    IsFeasible, 
-							double InfeasValue,
-							void*  UserParam);
+					double ObjectValue,
+					int    IsFeasible, 
+					double InfeasValue,
+					const void*  UserParam);
 
 typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount, 
-							   int	  MipNodeCount,
-							   double BestBound,
-							   double BestInteger,
-							   int    IsMipImproved, 
-							   void*  UserParam);
+					int    MipNodeCount,
+					double BestBound,
+					double BestInteger,
+					int    IsMipImproved, 
+					const void*  UserParam);
 
 
 /* Depreciated, use COIN_XXX_CB instead */
@@ -51,9 +51,9 @@ typedef struct {
 				COIN_LPITER_CB	LPIterCB;
 				COIN_MIPNODE_CB	MipNodeCB;
 
-				void*			MsgLogParam;
-				void*			LPIterParam;
-				void*			MipNodeParam;
+				const void*	MsgLogParam;
+				const void*	LPIterParam;
+				const void*	MipNodeParam;
 
 				MSGLOGCALLBACK  MsgLogCallback;
 				ITERCALLBACK    IterCallback;
