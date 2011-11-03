@@ -29,7 +29,7 @@ typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount,
 							   void*  UserParam);
 
 
-// Depreciated, use COIN_XXX_CB instead
+/* Depreciated, use COIN_XXX_CB instead */
 typedef int (SOLVCALL  *MSGLOGCALLBACK)(const char* MessageStr);
 
 typedef int (SOLVCALL  *ITERCALLBACK)(int    IterCount, 

@@ -127,7 +127,7 @@ typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount,
 							   void*  UserParam);
 
 
-// Depreciated, use COIN_XXX_CB instead
+/* Depreciated, use COIN_XXX_CB instead */
 typedef int (SOLVCALL * MSGLOGCALLBACK)(const char* MessageStr);
 
 typedef int (SOLVCALL *ITERCALLBACK)(int    IterCount, 
@@ -236,7 +236,7 @@ SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgL
 SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, void* UserParam);
 SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void* UserParam);
 
-// Depreciated, use CoinRegisterXxxCallback instead
+/* Depreciated, use CoinRegisterXxxCallback instead */
 SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 SOLVAPI int    SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback);
 SOLVAPI int    SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
@@ -400,7 +400,7 @@ void   (SOLVCALL *CoinRegisterMsgLogCallback)(HPROB hProb, COIN_MSGLOG_CB MsgLog
 void   (SOLVCALL *CoinRegisterLPIterCallback)(HPROB hProb, COIN_LPITER_CB LPIterCB, void* UserParam);
 void   (SOLVCALL *CoinRegisterMipNodeCallback)(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void* UserParam);
 
-// Depreciated, use CoinRegisterXxxCallback instead
+/* Depreciated, use CoinRegisterXxxCallback instead */
 void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
 void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
 void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
