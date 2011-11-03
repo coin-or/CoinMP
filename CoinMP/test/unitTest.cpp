@@ -122,7 +122,7 @@ void RunTestProblem(const char* problemName, double optimalValue, int colCount, 
 	HPROB hProb;
 	int result;
 	char filename[260];
-	char *userParam = "TEST";
+	const char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -138,11 +138,11 @@ void RunTestProblem(const char* problemName, double optimalValue, int colCount, 
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, (void*)userParam);
 	if (columnType == NULL)
-		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, (void*)userParam);
 	else {
-		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, (void*)userParam);
 	}
 	result = CoinOptimizeProblem(hProb, 0);
 	strcpy(filename, problemName);
@@ -162,7 +162,7 @@ void RunTestProblemBuf(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-	char *userParam = "TEST";
+	const char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -178,11 +178,11 @@ void RunTestProblemBuf(const char* problemName, double optimalValue, int colCoun
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, (void*)userParam);
 	if (columnType == NULL)
-		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, (void*)userParam);
 	else {
-		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, (void*)userParam);
 	}
 	result = CoinOptimizeProblem(hProb, 0);
 	strcpy(filename, problemName);
@@ -204,7 +204,7 @@ void RunTestProblemMip(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-   	char *userParam = "TEST";
+   	const char *userParam = "TEST";
  
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
@@ -229,11 +229,11 @@ void RunTestProblemMip(const char* problemName, double optimalValue, int colCoun
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, (void*)userParam);
 	if ((columnType == NULL) && (sosCount == 0) && (semiCount == 0))
-		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, (void*)userParam);
 	else {
-		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, (void*)userParam);
 	}
 	strcpy(filename, problemName);
 	strcat(filename, ".mps");
