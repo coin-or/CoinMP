@@ -12,14 +12,44 @@
 #include "CoinMP.h"
 
 
-int SOLVCALL MsgLogCallback(const char* MessageStr)
+int SOLVCALL MsgLogCallback(const char* MessageStr, void *UserParam)
+{
+	//fprintf(stdout, "*** %s", MessageStr);
+	fprintf(stdout, "*** MSG: %s, user=%s\n", MessageStr, UserParam);
+	return 0;
+}
+
+int SOLVCALL IterCallback(int    IterCount, 
+			double ObjectValue,
+			int    IsFeasible, 
+			double InfeasValue,
+			void   *UserParam)
+{
+	fprintf(stdout, "*** ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g, user=%s\n",
+		IterCount, ObjectValue, IsFeasible, InfeasValue, UserParam);
+	return 0;
+}
+
+int SOLVCALL MipNodeCallback(int    IterCount, 
+				int	  MipNodeCount,
+				double BestBound,
+				double BestInteger,
+				int    IsMipImproved,
+				void   *UserParam)
+{
+	fprintf(stdout, "*** NODE: iter=%d, node=%d, bound=%.20g, best=%.20g, %s, user=%s\n",
+		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "*", UserParam);
+	return 0;
+}
+
+int SOLVCALL OldMsgLogCallback(const char* MessageStr)
 {
 	//fprintf(stdout, "*** %s", MessageStr);
 	fprintf(stdout, "*** ");
 	return 0;
 }
 
-int SOLVCALL IterCallback(int    IterCount, 
+int SOLVCALL OldIterCallback(int    IterCount, 
 			double ObjectValue,
 			int    IsFeasible, 
 			double InfeasValue)
@@ -29,7 +59,7 @@ int SOLVCALL IterCallback(int    IterCount,
 	return 0;
 }
 
-int SOLVCALL MipNodeCallback(int    IterCount, 
+int SOLVCALL OldMipNodeCallback(int    IterCount, 
 				int	  MipNodeCount,
 				double BestBound,
 				double BestInteger,
@@ -92,6 +122,7 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	HPROB hProb;
 	int result;
 	char filename[260];
+	char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -107,11 +138,11 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
 	if (columnType == NULL)
-		result = CoinSetIterCallback(hProb, &IterCallback);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
 	else {
-		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
 	}
 	result = CoinOptimizeProblem(hProb, 0);
 	strcpy(filename, problemName);
@@ -131,6 +162,7 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	HPROB hProb;
 	int result;
 	char filename[260];
+	char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -146,11 +178,11 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
 	if (columnType == NULL)
-		result = CoinSetIterCallback(hProb, &IterCallback);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
 	else {
-		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
 	}
 	result = CoinOptimizeProblem(hProb, 0);
 	strcpy(filename, problemName);
@@ -172,7 +204,8 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 	HPROB hProb;
 	int result;
 	char filename[260];
-    
+   	char *userParam = "TEST";
+ 
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
@@ -196,11 +229,11 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 	if (result != SOLV_CALL_SUCCESS) {
 		fprintf(stdout, "Check Problem failed (result = %d)\n", result);
 	}
-	result = CoinSetMsgLogCallback(hProb, &MsgLogCallback);
+	result = CoinRegisterMsgLogCallback(hProb, &MsgLogCallback, userParam);
 	if ((columnType == NULL) && (sosCount == 0) && (semiCount == 0))
-		result = CoinSetIterCallback(hProb, &IterCallback);
+		result = CoinRegisterLPIterCallback(hProb, &IterCallback, userParam);
 	else {
-		result = CoinSetMipNodeCallback(hProb, &MipNodeCallback);
+		result = CoinRegisterMipNodeCallback(hProb, &MipNodeCallback, userParam);
 	}
 	strcpy(filename, problemName);
 	strcat(filename, ".mps");
