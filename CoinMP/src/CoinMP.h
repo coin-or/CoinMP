@@ -4,11 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Version      :  1.5                                                 */
+/*  Version      :  1.6                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2009                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2011                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
