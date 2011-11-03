@@ -138,10 +138,6 @@ typedef struct {
  
 
 
-//PCOIN global_pCoin;
-
-
-
 /************************************************************************/
 /*  Create/Load Problem                                                 */
 /************************************************************************/
@@ -185,7 +181,7 @@ SOLVAPI int SOLVCALL CoinUnloadProblem(HPROB hProb)
 SOLVAPI int SOLVCALL CoinLoadMatrix(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* LowerBounds, double* UpperBounds, const char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues)
 {
@@ -202,7 +198,7 @@ SOLVAPI int SOLVCALL CoinLoadMatrix(HPROB hProb,
 }
 
 
-SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, char** RowNamesList, char* ObjectName)
+SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, char** RowNamesList, const char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -214,7 +210,7 @@ SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, char** RowN
 
 
 
-SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, char* ColNamesBuf, char* RowNamesBuf, char* ObjectName)
+SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -229,10 +225,10 @@ SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, char* ColNamesBuf, char* RowN
 SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* LowerBounds, double* UpperBounds, const char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues, 
-				char** ColNamesList, char** RowNamesList, char* ObjectName)
+				char** ColNamesList, char** RowNamesList, const char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;
@@ -254,10 +250,10 @@ SOLVAPI int SOLVCALL CoinLoadProblem(HPROB hProb,
 SOLVAPI int SOLVCALL CoinLoadProblemBuf(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* LowerBounds, double* UpperBounds, const char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues, 
-				char* ColNamesBuf, char* RowNamesBuf, char* ObjectName)
+				const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;
@@ -288,7 +284,7 @@ SOLVAPI int SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues)
 }
 
 
-SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, char* ColType)
+SOLVAPI int SOLVCALL CoinLoadInteger(HPROB hProb, const char* ColType)
 {   
 	PCOIN pCoin = (PCOIN)hProb;
 	PPROBLEM pProblem = pCoin->pProblem;

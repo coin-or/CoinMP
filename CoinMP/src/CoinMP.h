@@ -164,23 +164,23 @@ SOLVAPI HPROB  SOLVCALL CoinCreateProblem(const char* ProblemName);
 SOLVAPI int SOLVCALL CoinLoadMatrix(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* LowerBounds, double* UpperBounds, const char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues);
 
 SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, 
-				char** RowNamesList, char* ObjectName);
+				char** RowNamesList, const char* ObjectName);
 
-SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, char* ColNamesBuf, 
-				char* RowNamesBuf, char* ObjectName);
+SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, const char* ColNamesBuf, 
+				const char* RowNamesBuf, const char* ObjectName);
 
 SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb, 
 					int ColCount, int RowCount, int NZCount, int RangeCount, 
 					int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-					double* LowerBounds, double* UpperBounds, char* RowType, 
+					double* LowerBounds, double* UpperBounds, const char* RowType, 
 					double* RHSValues, double* RangeValues, int* MatrixBegin,  
 					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-					char** ColNamesList, char** RowNamesList, char* objName);
+					char** ColNamesList, char** RowNamesList, const char* ObjectName);
 
 SOLVAPI int    SOLVCALL CoinLoadProblemBuf(HPROB hProb, 
 					int ColCount, int RowCount, int NZCount, int RangeCount, 
@@ -188,11 +188,11 @@ SOLVAPI int    SOLVCALL CoinLoadProblemBuf(HPROB hProb,
 					double* LowerBounds, double* UpperBounds, char* RowType, 
 					double* RHSValues, double* RangeValues, int* MatrixBegin,  
 					int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-					char* ColNamesBuf, char* RowNamesBuf, char* objName);
+					const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName);
 
 SOLVAPI int    SOLVCALL CoinLoadInitValues(HPROB hProb, double* InitValues);
 
-SOLVAPI int    SOLVCALL CoinLoadInteger(HPROB hProb, char* ColumnType);
+SOLVAPI int    SOLVCALL CoinLoadInteger(HPROB hProb, const char* ColumnType);
 
 
 SOLVAPI int    SOLVCALL CoinLoadPriority(HPROB hProb, int PriorCount, int* PriorIndex, 
@@ -332,23 +332,23 @@ HPROB  (SOLVCALL *CoinCreateProblem)(const char* ProblemName);
 int    (SOLVCALL *CoinLoadMatrix)(HPROB hProb, 
 				int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-				double* LowerBounds, double* UpperBounds, char* RowType, 
+				double* LowerBounds, double* UpperBounds, const char* RowType, 
 				double* RHSValues, double* RangeValues, int* MatrixBegin, 
 				int* MatrixCount, int* MatrixIndex, double* MatrixValues);
 
 int    (SOLVCALL *CoinLoadNames)(HPROB hProb, char** ColNamesList, 
-				char** RowNamesList, char* ObjectName);
+				char** RowNamesList, const char* ObjectName);
 
-int    (SOLVCALL *CoinLoadNamesBuf)(HPROB hProb, char* ColNamesBuf, 
-				char* RowNamesBuf, char* ObjectName);
+int    (SOLVCALL *CoinLoadNamesBuf)(HPROB hProb, const char* ColNamesBuf, 
+				const char* RowNamesBuf, const char* ObjectName);
 
 int    (SOLVCALL *CoinLoadProblem)(HPROB hProb, 
 								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
 								   int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
-								   double* LowerBounds, double* UpperBounds, char* RowType, 
+								   double* LowerBounds, double* UpperBounds, const char* RowType, 
 								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
 								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-								   char** ColNamesList, char** RowNamesList, char* objName);
+								   char** ColNamesList, char** RowNamesList, const char* objName);
 
 int    (SOLVCALL *CoinLoadProblemBuf)(HPROB hProb, 
 								   int ColCount, int RowCount, int NonZeroCount, int RangeCount, 
@@ -356,11 +356,11 @@ int    (SOLVCALL *CoinLoadProblemBuf)(HPROB hProb,
 								   double* LowerBounds, double* UpperBounds, char* RowType, 
 								   double* RHSValues, double* RangeValues, int* MatrixBegin, 
 								   int* MatrixCount, int* MatrixIndex, double* MatrixValues,   
-								   char* ColNamesBuf, char* RowNamesBuf, char* objName);
+								   const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName);
 
 int    (SOLVCALL *CoinLoadInitValues)(HPROB hProb, double* InitValues);
 
-int    (SOLVCALL *CoinLoadInteger)(HPROB hProb, char* ColumnType);
+int    (SOLVCALL *CoinLoadInteger)(HPROB hProb, const char* ColumnType);
 
 int    (SOLVCALL *CoinLoadPriority)(HPROB hProb, int PriorCount, int* PriorIndex, 
 												int* PriorValues, int* PriorBranch);

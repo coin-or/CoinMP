@@ -80,14 +80,14 @@ void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName);
 
 int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount, 
 				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds, 
-				double* UpperBounds, char* RowType, double* RHSValues, double* RangeValues, 
+				double* UpperBounds, const char* RowType, double* RHSValues, double* RangeValues, 
 				int* MatrixBegin, int* MatrixCount, int* MatrixIndex, double* MatrixValues);
 
-int coinStoreNamesList(PPROBLEM pProblem, char** ColNamesList, char** RowNamesList, char* OjbectName);
-int coinStoreNamesBuf(PPROBLEM pProblem, char* ColNamesBuf, char* RowNamesBuf, char* ObjectName);
+int coinStoreNamesList(PPROBLEM pProblem, char** ColNamesList, char** RowNamesList, const char* OjbectName);
+int coinStoreNamesBuf(PPROBLEM pProblem, const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName);
 
 int coinStoreInitValues(PPROBLEM pProblem, double* InitValues);
-int coinStoreInteger(PPROBLEM pProblem, char* ColType);
+int coinStoreInteger(PPROBLEM pProblem, const char* ColType);
 
 int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex, 
 				int* PriorValues, int* PriorBranch);
@@ -101,10 +101,10 @@ int coinComputeRowLowerUpper(PPROBLEM pProblem, double CoinDblMax);
 int coinComputeIntVariables(PPROBLEM pProblem);
 
 int coinGetLenNameBuf(const char* NameBuf, int Count);
-int coinGetLenNameListBuf(char** NameList, int Count);
+int coinGetLenNameListBuf(const char** NameList, int Count);
 
-int coinCopyNamesList(char** NamesList, char* NamesBuf, char** argNamesList, int Count);
-int coinSetupNamesList(char** NamesList, char* NamesBuf, int Count);
+int coinCopyNamesList(char** NamesList, char* NamesBuf, const char** argNamesList, int Count);
+int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count);
 
 #ifdef __cplusplus
 }
