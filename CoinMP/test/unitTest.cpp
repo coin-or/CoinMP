@@ -12,7 +12,7 @@
 #include "CoinMP.h"
 
 
-int SOLVCALL MsgLogCallback(const char* MessageStr, const void *UserParam)
+int SOLVCALL MsgLogCallback(const char* MessageStr, void *UserParam)
 {
 	//fprintf(stdout, "*** %s", MessageStr);
 	fprintf(stdout, "*** MSG: %s, user=%s\n", MessageStr, (char*)UserParam);
@@ -23,7 +23,7 @@ int SOLVCALL IterCallback(int    IterCount,
 			double ObjectValue,
 			int    IsFeasible, 
 			double InfeasValue,
-			const void   *UserParam)
+			void   *UserParam)
 {
 	fprintf(stdout, "*** ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g, user=%s\n",
 		IterCount, ObjectValue, IsFeasible, InfeasValue, (char*)UserParam);
@@ -35,7 +35,7 @@ int SOLVCALL MipNodeCallback(int    IterCount,
 				double BestBound,
 				double BestInteger,
 				int    IsMipImproved,
-				const void   *UserParam)
+				void   *UserParam)
 {
 	fprintf(stdout, "*** NODE: iter=%d, node=%d, bound=%.20g, best=%.20g, %s, user=%s\n",
 		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "*", (char*)UserParam);
@@ -122,7 +122,7 @@ void RunTestProblem(const char* problemName, double optimalValue, int colCount, 
 	HPROB hProb;
 	int result;
 	char filename[260];
-	const char *userParam = "TEST";
+	char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -162,7 +162,7 @@ void RunTestProblemBuf(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-	const char *userParam = "TEST";
+	char *userParam = "TEST";
     
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
@@ -204,7 +204,7 @@ void RunTestProblemMip(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-   	const char *userParam = "TEST";
+   	char *userParam = "TEST";
  
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
