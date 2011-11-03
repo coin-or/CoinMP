@@ -506,7 +506,7 @@ int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count)
 	}
 	k = 0;
 	for (i = 0; i < Count; i++) {
-		NamesList[i] = (char*)&NamesBuf[k];
+		NamesList[i] = (char*)&NamesBuf[k];  // (char*) cast removes warning, NamesList will not be changed
 		len = (int)strlen(NamesList[i]) + 1;
 		k += len;
 	}
