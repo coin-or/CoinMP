@@ -521,7 +521,7 @@ SOLVAPI int SOLVCALL CoinGetRowNameBuf(HPROB hProb, int row, char* RowName, int 
 
 
 
-SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, const void *UserParam)
+SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, void *UserParam)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -530,7 +530,7 @@ SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgL
 	return SOLV_CALL_SUCCESS;
 }
 
-SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, const void *UserParam)
+SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, void *UserParam)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 
@@ -539,7 +539,7 @@ SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIt
 	return SOLV_CALL_SUCCESS;
 }
 
-SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, const void *UserParam)
+SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void *UserParam)
 {
 	PCOIN pCoin = (PCOIN)hProb;
 

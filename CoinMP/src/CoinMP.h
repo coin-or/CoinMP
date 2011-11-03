@@ -111,20 +111,20 @@ extern "C" {
 #endif
 
 typedef int (SOLVCALL * COIN_MSGLOG_CB)(const char* MessageStr, 
-					const void* UserParam);
+					void* UserParam);
 
 typedef int (SOLVCALL *COIN_LPITER_CB)(int    IterCount, 
 					double ObjectValue,
 					int    IsFeasible, 
 					double InfeasValue,
-					const void*  UserParam);
+					void*  UserParam);
 
 typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount, 
 					int	  MipNodeCount,
 					double BestBound,
 					double BestInteger,
 					int    IsMipImproved, 
-					const void*  UserParam);
+					void*  UserParam);
 
 
 /* Depreciated, use COIN_XXX_CB instead */
@@ -232,9 +232,9 @@ SOLVAPI int    SOLVCALL CoinGetColNameBuf(HPROB hProb, int col, char* ColName, i
 SOLVAPI const char*  SOLVCALL CoinGetRowName(HPROB hProb, int row);
 SOLVAPI int    SOLVCALL CoinGetRowNameBuf(HPROB hProb, int row, char* RowName, int buflen);
 
-SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, const void* UserParam);
-SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, const void* UserParam);
-SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, const void* UserParam);
+SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, void* UserParam);
+SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, void* UserParam);
+SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void* UserParam);
 
 /* Depreciated, use CoinRegisterXxxCallback instead */
 SOLVAPI int    SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
