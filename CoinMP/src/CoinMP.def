@@ -35,6 +35,9 @@ EXPORTS
 	CoinGetColNameBuf
 	CoinGetRowName
 	CoinGetRowNameBuf
+	CoinRegisterMsgLogCallback
+	CoinRegisterLPIterCallback
+	CoinRegisterMipNodeCallback
 	CoinSetMsgLogCallback
 	CoinSetIterCallback
 	CoinSetMipNodeCallback

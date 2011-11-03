@@ -8,7 +8,7 @@
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2010                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2011                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -525,6 +525,35 @@ SOLVAPI int SOLVCALL CoinGetRowNameBuf(HPROB hProb, int row, char* RowName, int 
 
 
 
+SOLVAPI int SOLVCALL CoinRegisterMsgLogCallback(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, void *UserParam)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	pCoin->pSolver->MsgLogCB = MsgLogCB;
+	pCoin->pSolver->MsgLogParam = UserParam;
+	return SOLV_CALL_SUCCESS;
+}
+
+SOLVAPI int SOLVCALL CoinRegisterLPIterCallback(HPROB hProb, COIN_LPITER_CB LPIterCB, void *UserParam)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	pCoin->pSolver->LPIterCB = LPIterCB;
+	pCoin->pSolver->LPIterParam = UserParam;
+	return SOLV_CALL_SUCCESS;
+}
+
+SOLVAPI int SOLVCALL CoinRegisterMipNodeCallback(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void *UserParam)
+{
+	PCOIN pCoin = (PCOIN)hProb;
+
+	pCoin->pSolver->MipNodeCB = MipNodeCB;
+	pCoin->pSolver->MipNodeParam = UserParam;
+	return SOLV_CALL_SUCCESS;
+}
+
+
+// Depreciated, use CoinRegisterMsgLogCallback instead
 SOLVAPI int SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCallback)
 {
 	PCOIN pCoin = (PCOIN)hProb;
@@ -533,6 +562,7 @@ SOLVAPI int SOLVCALL CoinSetMsgLogCallback(HPROB hProb, MSGLOGCALLBACK MsgLogCal
 	return SOLV_CALL_SUCCESS;
 }
 
+// Depreciated, use CoinRegisterLPIterCallback instead
 SOLVAPI int SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 {
 	PCOIN pCoin = (PCOIN)hProb;
@@ -541,6 +571,7 @@ SOLVAPI int SOLVCALL CoinSetIterCallback(HPROB hProb, ITERCALLBACK IterCallback)
 	return SOLV_CALL_SUCCESS;
 }
 
+// Depreciated, use CoinRegisterMipNodeCallback instead
 SOLVAPI int SOLVCALL CoinSetMipNodeCallback(HPROB hProb, MIPNODECALLBACK MipNodeCallback)
 {
 	PCOIN pCoin = (PCOIN)hProb;

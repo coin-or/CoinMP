@@ -47,23 +47,90 @@
 
 class CBMessageHandler : public CoinMessageHandler {
 public: 
+	void registerCallback(COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam);
 	void setCallback(MSGLOGCALLBACK msgCallback);
 	virtual int print();
+
+	/** Default constructor. */
+	CBMessageHandler();
+	/** Destructor */
+	virtual ~CBMessageHandler();
+	/** The copy constructor. */
+	CBMessageHandler(const CBMessageHandler & rhs);
+	/// Assignment
+	CBMessageHandler& operator=(const CBMessageHandler & rhs);
+	/// Clone
+	virtual CoinMessageHandler * clone() const ;
+
 private:
+	COIN_MSGLOG_CB MsgLogCB_;
+	void *MsgLogParam_;
 	MSGLOGCALLBACK msgCallback_;
 };
+
+
+
+void CBMessageHandler::registerCallback(COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam)
+{
+  MsgLogCB_ = MsgLogCB;
+  MsgLogParam_ = MsgLogParam;
+  msgCallback_ = NULL;
+}
 
 
 void CBMessageHandler::setCallback(MSGLOGCALLBACK msgCallback)
 {
   msgCallback_ = msgCallback;
+  MsgLogCB_ = NULL;
+  MsgLogParam_ = NULL;
 }
+
 
 
 int CBMessageHandler::print()
 {
-	msgCallback_(const_cast<char*>(messageBuffer()));
+	if (MsgLogCB_)
+		MsgLogCB_(const_cast<char*>(messageBuffer()), MsgLogParam_);
+	else {
+		msgCallback_(const_cast<char*>(messageBuffer()));
+	}
 	return CoinMessageHandler::print();
+}
+
+// Default Constructor 
+CBMessageHandler::CBMessageHandler () : CoinMessageHandler() 
+{
+  MsgLogCB_ = NULL;
+  MsgLogParam_ = NULL;
+  msgCallback_ = NULL;
+}
+
+
+// Copy constructor 
+CBMessageHandler::CBMessageHandler (const CBMessageHandler & rhs) : CoinMessageHandler(rhs) {}
+
+// Destructor 
+CBMessageHandler::~CBMessageHandler () {}
+
+// Assignment operator 
+CBMessageHandler & CBMessageHandler::operator=(const CBMessageHandler& rhs)
+{
+  if (this != &rhs) {
+    CoinMessageHandler::operator=(rhs);
+  }
+  return *this;
+}
+
+// Clone
+CoinMessageHandler * CBMessageHandler::clone() const
+{
+	CBMessageHandler * messagehandler;
+
+	messagehandler = new CBMessageHandler(*this);
+	messagehandler->MsgLogCB_ = this->MsgLogCB_;
+	messagehandler->MsgLogParam_ = this->MsgLogParam_;
+	messagehandler->msgCallback_ = this->msgCallback_;
+	return messagehandler;
 }
 
 
@@ -76,6 +143,7 @@ int CBMessageHandler::print()
 class CBIterHandler : public ClpEventHandler {
 
 public: 
+   void registerLPIterCallback(COIN_LPITER_CB LPIterCB, void* LPIterParam);
    void setIterCallback(ITERCALLBACK iterCallback);
 
 	virtual int event(Event whichEvent);
@@ -95,13 +163,25 @@ public:
 
 
 private:
+	COIN_LPITER_CB LPIterCB_;
+	void* LPIterParam_;
 	ITERCALLBACK iterCallback_;
 };
+
+
+void CBIterHandler::registerLPIterCallback(COIN_LPITER_CB LPIterCB, void* LPIterParam)
+{
+  LPIterCB_ = LPIterCB;
+  LPIterParam_ = LPIterParam;
+  iterCallback_ = NULL;
+}
 
 
 void CBIterHandler::setIterCallback(ITERCALLBACK iterCallback)
 {
   iterCallback_ = iterCallback;
+  LPIterCB_ = NULL;
+  LPIterParam_ = NULL;
 }
 
 
@@ -123,7 +203,11 @@ int CBIterHandler::event(Event whichEvent)
 		sumPrimalInfeas = model_->sumPrimalInfeasibilities();
 		isPrimalFeasible = model_->primalFeasible();
 		isDualFeasible = model_->dualFeasible();
-		cancelAsap = iterCallback_(numIter, objValue, isPrimalFeasible&&isDualFeasible, sumPrimalInfeas);
+		if (LPIterCB_)
+			cancelAsap = LPIterCB_(numIter, objValue, isPrimalFeasible&&isDualFeasible, sumPrimalInfeas, LPIterParam_);
+		else {
+			cancelAsap = iterCallback_(numIter, objValue, isPrimalFeasible&&isDualFeasible, sumPrimalInfeas);
+		}
 		if (cancelAsap) {
 			return 5;
 		}
@@ -133,7 +217,12 @@ int CBIterHandler::event(Event whichEvent)
 
 
 // Default Constructor 
-CBIterHandler::CBIterHandler () : ClpEventHandler() {}
+CBIterHandler::CBIterHandler () : ClpEventHandler() 
+{
+	LPIterCB_ = NULL;
+	LPIterParam_ = NULL;
+	iterCallback_ = NULL;
+}
 
 // Copy constructor 
 CBIterHandler::CBIterHandler (const CBIterHandler & rhs) : ClpEventHandler(rhs) {}
@@ -158,7 +247,9 @@ ClpEventHandler * CBIterHandler::clone() const
 {
 	CBIterHandler * iterhandler;
 
-   iterhandler = new CBIterHandler(*this);
+	iterhandler = new CBIterHandler(*this);
+	iterhandler->LPIterCB_ = this->LPIterCB_;
+	iterhandler->LPIterParam_ = this->LPIterParam_;
 	iterhandler->iterCallback_ = this->iterCallback_;
 	return iterhandler;
 }
@@ -173,7 +264,8 @@ ClpEventHandler * CBIterHandler::clone() const
 class CBNodeHandler : public CbcEventHandler {
 
 public: 
-   void setCallback(MIPNODECALLBACK mipNodeCallback);
+	void registerCallback(COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam);
+	void setCallback(MIPNODECALLBACK mipNodeCallback);
 
 	virtual CbcAction event(CbcEvent whichEvent);
    
@@ -195,14 +287,27 @@ public:
 
 
 private:
+	COIN_MIPNODE_CB MipNodeCB_;
+	void* MipNodeParam_;
 	MIPNODECALLBACK mipNodeCallback_;
 	int lastSolCount_;
 };
 
 
+void CBNodeHandler::registerCallback(COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam)
+{
+	MipNodeCB_ = MipNodeCB;
+	MipNodeParam_ = MipNodeParam;
+	mipNodeCallback_ = NULL;
+	lastSolCount_ = 0;
+}
+
+
 void CBNodeHandler::setCallback(MIPNODECALLBACK mipNodeCallback)
 {
 	mipNodeCallback_ = mipNodeCallback;
+	MipNodeCB_ = NULL;
+	MipNodeParam_ = NULL;
 	lastSolCount_ = 0;
 }
 
@@ -222,7 +327,11 @@ CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 		objValue = model_->getObjValue();
 		bestBound = model_->getBestPossibleObjValue();
 		solCount = model_->getSolutionCount();
-		cancelAsap = mipNodeCallback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
+		if (MipNodeCB_) 
+			cancelAsap = MipNodeCB_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_, MipNodeParam_);
+		else {
+			cancelAsap = mipNodeCallback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
+		}
 		lastSolCount_ = solCount;
 		if (cancelAsap) {
 			return stop;
@@ -233,7 +342,13 @@ CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 
 
 // Default Constructor 
-CBNodeHandler::CBNodeHandler () : CbcEventHandler() {}
+CBNodeHandler::CBNodeHandler () : CbcEventHandler() 
+{
+	MipNodeCB_ = NULL;
+	MipNodeParam_ = NULL;
+	mipNodeCallback_ = NULL;
+	lastSolCount_ = 0;
+}
 
 // Copy constructor 
 CBNodeHandler::CBNodeHandler (const CBNodeHandler & rhs) : CbcEventHandler(rhs) {}
@@ -260,8 +375,10 @@ CbcEventHandler * CBNodeHandler::clone() const
 	CBNodeHandler * nodehandler;
 
 	nodehandler = new CBNodeHandler(*this);
-	nodehandler->mipNodeCallback_ = this->mipNodeCallback_;
+	nodehandler->MipNodeCB_ = this->MipNodeCB_;
+	nodehandler->MipNodeParam_ = this->MipNodeParam_;
 	nodehandler->lastSolCount_ = this->lastSolCount_;
+	nodehandler->mipNodeCallback_ = this->mipNodeCallback_;
 	return nodehandler;
 }
 
@@ -338,6 +455,58 @@ void CbcClearSolverObject(HCBC hCbc)
 
 
 
+int CbcRegisterMsgLogCallback(HCBC hCbc, int LogLevel, COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam)
+{
+	PCBC pCbc = (PCBC)hCbc;
+
+	if (!MsgLogCB) {
+		return CBC_CALL_FAILED;
+	}
+	delete pCbc->msghandler;
+	pCbc->msghandler = new CBMessageHandler();
+	pCbc->msghandler->registerCallback(MsgLogCB, MsgLogParam);
+	pCbc->msghandler->setLogLevel(LogLevel);
+	if (pCbc->clp) pCbc->clp->passInMessageHandler(pCbc->msghandler);
+	if (pCbc->cbc) pCbc->cbc->passInMessageHandler(pCbc->msghandler);
+	if (pCbc->osi) pCbc->osi->passInMessageHandler(pCbc->msghandler);
+	return CBC_CALL_SUCCESS;
+}
+
+
+
+int CbcRegisterLPIterCallback(HCBC hCbc, COIN_LPITER_CB LPIterCB, void* LPIterParam)
+{
+	PCBC pCbc = (PCBC)hCbc;
+
+	if (!LPIterCB) {
+		return CBC_CALL_FAILED;
+	}
+	delete pCbc->iterhandler;
+	pCbc->iterhandler = new CBIterHandler(pCbc->clp);
+	pCbc->iterhandler->registerLPIterCallback(LPIterCB, LPIterParam);
+	if (pCbc->clp) pCbc->clp->passInEventHandler(pCbc->iterhandler);
+	return CBC_CALL_SUCCESS;
+}
+
+
+
+int CbcRegisterMipNodeCallback(HCBC hCbc, COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam)
+{
+	PCBC pCbc = (PCBC)hCbc;
+
+	if (!MipNodeCB) {
+		return CBC_CALL_FAILED;
+	}
+	//pCbc->MipNodeCallback = MipNodeCallback;
+	delete pCbc->nodehandler;
+	pCbc->nodehandler = new CBNodeHandler(pCbc->cbc);
+	pCbc->nodehandler->registerCallback(MipNodeCB, MipNodeParam);
+	if (pCbc->cbc) pCbc->cbc->passInEventHandler(pCbc->nodehandler);
+	return CBC_CALL_SUCCESS;
+}
+
+
+// Depreciated
 int CbcSetMsgLogCallback(HCBC hCbc, int LogLevel, MSGLOGCALLBACK MsgLogCallback)
 {
 	PCBC pCbc = (PCBC)hCbc;
@@ -345,7 +514,6 @@ int CbcSetMsgLogCallback(HCBC hCbc, int LogLevel, MSGLOGCALLBACK MsgLogCallback)
 	if (!MsgLogCallback) {
 		return CBC_CALL_FAILED;
 	}
-	//pCbc->MsgLogCallback = MsgLogCallback;
 	delete pCbc->msghandler;
 	pCbc->msghandler = new CBMessageHandler();
 	pCbc->msghandler->setCallback(MsgLogCallback);
@@ -357,7 +525,7 @@ int CbcSetMsgLogCallback(HCBC hCbc, int LogLevel, MSGLOGCALLBACK MsgLogCallback)
 }
 
 
-
+// Depreciated
 int CbcSetIterCallback(HCBC hCbc, ITERCALLBACK IterCallback)
 {
 	PCBC pCbc = (PCBC)hCbc;
@@ -374,6 +542,7 @@ int CbcSetIterCallback(HCBC hCbc, ITERCALLBACK IterCallback)
 }
 
 
+// Depreciated
 int CbcSetMipNodeCallback(HCBC hCbc, MIPNODECALLBACK MipNodeCallback)
 {
 	PCBC pCbc = (PCBC)hCbc;
@@ -395,9 +564,12 @@ int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver, POPTION pOption)
 	int LogLevel;
 
 	LogLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
-	CbcSetMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCallback);
-	CbcSetIterCallback(hCbc, pSolver->IterCallback);
-	CbcSetMipNodeCallback(hCbc, pSolver->MipNodeCallback);
+	CbcRegisterMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCB, pSolver->MsgLogParam);
+	CbcRegisterLPIterCallback(hCbc, pSolver->LPIterCB, pSolver->LPIterParam);
+	CbcRegisterMipNodeCallback(hCbc, pSolver->MipNodeCB, pSolver->MipNodeParam);
+	//CbcSetMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCallback);
+	//CbcSetIterCallback(hCbc, pSolver->IterCallback);
+	//CbcSetMipNodeCallback(hCbc, pSolver->MipNodeCallback);
 	return CBC_CALL_SUCCESS;
 }
 

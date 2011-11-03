@@ -16,6 +16,14 @@ PSOLVER coinCreateSolverObject()
 
 	strcpy(pSolver->LogFilename, "");
 
+	pSolver->MsgLogCB	= NULL;
+	pSolver->LPIterCB	= NULL;
+	pSolver->MipNodeCB	= NULL;
+
+	pSolver->MsgLogParam = NULL;
+	pSolver->LPIterParam = NULL;
+	pSolver->MipNodeParam = NULL;
+
 	pSolver->MsgLogCallback = NULL;
 	pSolver->IterCallback = NULL;
 	pSolver->MipNodeCallback = NULL;
