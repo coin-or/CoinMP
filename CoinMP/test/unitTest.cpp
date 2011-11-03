@@ -113,11 +113,11 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 
 
 
-void RunTestProblem(char* problemName, double optimalValue, int colCount, int rowCount,
+void RunTestProblem(const char* problemName, double optimalValue, int colCount, int rowCount,
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
+	  double* lowerBounds, double* upperBounds, const char* rowType, double* rhsValues, double* rangeValues, 
 	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames,
-	  char** rowNames, char* objectName, double* initValues, char* columnType)
+	  char** rowNames, const char* objectName, double* initValues, const char* columnType)
 {
 	HPROB hProb;
 	int result;
@@ -153,11 +153,11 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 }
 
 
-void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int rowCount, 
+void RunTestProblemBuf(const char* problemName, double optimalValue, int colCount, int rowCount, 
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
-	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char* colNamesBuf, 
-	  char* rowNamesBuf, char* objectName, double* initValues, char* columnType)
+	  double* lowerBounds, double* upperBounds, const char* rowType, double* rhsValues, double* rangeValues, 
+	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, const char* colNamesBuf, 
+	  const char* rowNamesBuf, const char* objectName, double* initValues, const char* columnType)
 {
 	HPROB hProb;
 	int result;
@@ -193,11 +193,11 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 }
 
 
-void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int rowCount, 
+void RunTestProblemMip(const char* problemName, double optimalValue, int colCount, int rowCount, 
 	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
+	  double* lowerBounds, double* upperBounds, const char* rowType, double* rhsValues, double* rangeValues, 
 	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
-	  char** rowNames, char* objectName, double* initValues, char* columnType, int sosCount, 
+	  char** rowNames, const char* objectName, double* initValues, const char* columnType, int sosCount, 
 	  int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef,
 	  int semiCount, int* semiIndex, int priorCount, int* priorIndex, int* priorValues, int* priorBranch)
 {
@@ -280,8 +280,8 @@ void SolveProblemCoinTest(void)
 	int matrixIndex[14]={0,4,0,1,1,2,0,3,0,4,2,3,0,4};
 	double matrixValues[14]={3., 5.6, 1., 2., 1.1, 1., -2., 2.8, -1., 1., 1., -1.2, -1., 1.9};
     
-	const char* colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
-	const char* rowNames[5] = {"r1", "r2", "r3", "r4", "r5"};
+	char* colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
+	char* rowNames[5] = {"r1", "r2", "r3", "r4", "r5"};
 
 	//char* colNamesBuf = "c1\0" "c2\0" "c3\0" "c4\0" "c5\0" "c6\0" "c7\0" "c8";
 	//char* rowNamesBuf = "r1\0" "r2\0" "r3\0" "r4\0" "r5";
@@ -290,11 +290,11 @@ void SolveProblemCoinTest(void)
 
 	double optimalValue = 1428729.2857143;
 
-	RunTestProblem(const_cast<char*>(problemName), optimalValue, colCount, rowCount,
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
 	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
 	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
 	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
-	  const_cast<char**>(colNames), const_cast<char**>(rowNames), const_cast<char*>(objectName), initValues, NULL);
+	  colNames, rowNames, objectName, initValues, NULL);
 }
 
 
@@ -322,19 +322,19 @@ void SolveProblemBakery(void)
 	int matrixIndex[4] = { 0, 1, 0, 2};
 	double matrixValues[4] = { 0.1, 1, 0.2, 1};
 
-	const char* colNames[2] = {"Sun", "Moon"};
-	const char* rowNames[3] = {"c1", "c2", "c3"};
+	char* colNames[2] = {"Sun", "Moon"};
+	char* rowNames[3] = {"c1", "c2", "c3"};
 
 	//char* colNamesBuf = "Sun\0" "Moon";
 	//char* rowNamesBuf = "c1\0" "c2\0" "c3";
     
 	double optimalValue = 506.66666667;
 
-	RunTestProblem(const_cast<char*>(problemName), optimalValue, colCount, rowCount,
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
 	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
 	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
 	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
-	  const_cast<char**>(colNames), const_cast<char**>(rowNames), const_cast<char*>(objectName), NULL, NULL);
+	  colNames, rowNames, objectName, NULL, NULL);
 }
 
 
@@ -406,9 +406,9 @@ void SolveProblemAfiro(void)
 
 	double optimalValue = -464.753142857;
 
-	RunTestProblem(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, NULL);
+	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), objectname, NULL, NULL);
 }
 
 
@@ -460,12 +460,12 @@ void SolveProblemP0033(void)
 		-400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400, 
 		-400, -200, -400};
 
-	const char* colnames[33] = {"c157", "c158", "c159", "c160", "c161", "c162", "c163",
+	char* colnames[33] = {"c157", "c158", "c159", "c160", "c161", "c162", "c163",
 		"c164", "c165", "c166", "c167", "c168", "c169", "c170", "c171", "c172", 
 		"c173", "c174", "c175", "c176", "c177", "c178", "c179", "c180", "c181", 
 		"c182", "c183", "c184", "c185", "c186", "c187", "c188", "c189"};
 
-	const char* rownames[15] = {"r114", "r115", "r116", "r117", "r118", "r119", "r120",
+	char* rownames[15] = {"r114", "r115", "r116", "r117", "r118", "r119", "r120",
 		"r121", "r122", "r123", "r124", "r125", "r126", "r127", "r128"};
 
 	/*char* colnamesBuf = "c157\0" "c158\0" "c159\0" "c160\0" "c161\0" "c162\0" "c163\0" 
@@ -483,9 +483,9 @@ void SolveProblemP0033(void)
 
 	double optimalValue = 3089.0;
 
-	RunTestProblem(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, ctyp);
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
 
@@ -526,9 +526,9 @@ void SolveProblemExmip1(void)
 
 	double optimalValue = 3.23684210526;
 
-	RunTestProblem(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, drng, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, ctyp);
+	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), objectname, NULL, ctyp);
 }
 
 
@@ -557,8 +557,8 @@ void SolveProblemGamsSos1a(void)
 	int midx[3]={0, 0, 0};
 	double mval[3]={1, 1, 1};
 
-	const char* colnames[3] = {"x1", "x2", "x3"};
-	const char* rownames[1] = {"xsum"};
+	char* colnames[3] = {"x1", "x2", "x3"};
+	char* rownames[1] = {"xsum"};
 
 	//char* colnamesBuf = "x1\0" "x2\0" "x3";
 	//char* rownamesBuf = "xsum";
@@ -571,9 +571,9 @@ void SolveProblemGamsSos1a(void)
 
 	double optimalValue = 0.72;
 
-	RunTestProblemMip(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, NULL, drlo, drup, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, NULL,
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
 	  0, NULL, 0, NULL, NULL, NULL);
 }
@@ -603,8 +603,8 @@ void SolveProblemGamsSos2a(void)
 	int midx[15]={0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 2, 3, 4, 3, 4};
 	double mval[15]={1, 1, 1, 1, 2, 2, 1, 3, 3, -1, -1, -1, 1, 1, 1};
 
-	const char* colnames[7] = {"w1", "w2", "w3", "x", "fx", "fplus", "fminus"};
-	const char* rownames[5] = {"wsum", "xdef", "fxdef", "gapplus", "gapminus"};
+	char* colnames[7] = {"w1", "w2", "w3", "x", "fx", "fplus", "fminus"};
+	char* rownames[5] = {"wsum", "xdef", "fxdef", "gapplus", "gapminus"};
 
 	//char* colnamesBuf = "w1\0" "w2\0" "w3\0" "x\0" "fx\0" "fplus\0" "fminus";
 	//char* rownamesBuf = "wsum\0" "xdef\0" "fxdef\0" "gapplus\0" "gapminus";
@@ -617,9 +617,9 @@ void SolveProblemGamsSos2a(void)
 
 	double optimalValue = 0.0;
 
-	RunTestProblemMip(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, NULL,
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
 	  0, NULL, 0, NULL, NULL, NULL);
 }
@@ -649,8 +649,8 @@ void SolveProblemSemiCont(void)
 	int midx[6]={2, 0, 1, 0, 1, 2};
 	double mval[6]={1, -1, 1, 1, 1, 1};
 
-	const char* colnames[4] = {"s", "pup", "plo", "x"};
-	const char* rownames[3] = {"bigx", "smallx", "f"};
+	char* colnames[4] = {"s", "pup", "plo", "x"};
+	char* rownames[3] = {"bigx", "smallx", "f"};
 
 	//char* colnamesBuf = "s\0" "pup\0" "plo\0" "x\0";
 	//char* rownamesBuf = "bigx\0" "smallx\0" "f\0";
@@ -660,9 +660,9 @@ void SolveProblemSemiCont(void)
 
 	double optimalValue = 1.1;
 
-	RunTestProblemMip(const_cast<char*>(probname), optimalValue, ncol, nrow, nels, nrng,
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
-	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), const_cast<char*>(objectname), NULL, NULL,
+	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  0, 0, NULL, NULL, NULL, NULL, NULL, semiCount, semiIndex,
 	  0, NULL, NULL, NULL);
 }
