@@ -5,13 +5,13 @@
 /***************************************************************************/
 
 /* Version number of project */
-#define COINMP_VERSION "1.7"
+#define COINMP_VERSION      "trunk"
 
 /* Major Version number of project */
-#define COINMP_VERSION_MAJOR 1
+#define COINMP_VERSION_MAJOR   9999
 
 /* Minor Version number of project */
-#define COINMP_VERSION_MINOR 7
+#define COINMP_VERSION_MINOR   9999
 
 /* Release Version number of project */
 #define COINMP_VERSION_RELEASE 9999
