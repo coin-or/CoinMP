@@ -25,7 +25,6 @@ copy ..\MSVisualStudio\v9\x64\release\unittest.exe x64
 
 copy ..\examples\vb6\CoinMPTestVB6.exe
 
-copy ..\examples\csharp\bin\Release\CoinMPTestCS8.exe
 copy ..\examples\csharp\bin\Release\CoinMPTestCS9.exe
 
 copy ..\test\unittest.cpp
@@ -54,7 +53,6 @@ copy ..\examples\csharp\Properties\*.cs                csharp\Properties
 copy ..\examples\csharp\Properties\Resources.resx      csharp\Properties
 copy ..\examples\csharp\Properties\Settings.settings   csharp\Properties
 
-copy ..\examples\csharp\bin\Release\CoinMPTestCS8.exe  csharp\bin\Release
 copy ..\examples\csharp\bin\Release\CoinMPTestCS9.exe  csharp\bin\Release
 
 cd ..
