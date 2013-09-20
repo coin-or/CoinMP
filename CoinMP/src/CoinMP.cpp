@@ -4,11 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.cpp'                                        */
 /*                                                                      */
-/*  Version      :  1.6                                                 */
+/*  Version      :  1.7                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2011                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2013                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -41,8 +41,8 @@
 #define NEW_STYLE_CBCMAIN
 
 
-const double COINMP_VERSION    = 1.6;
-const char*  COINMP_VERSIONSTR = "1.6.0";
+const double COINMP_VERSION    = 1.7;
+const char*  COINMP_VERSIONSTR = "1.7.0";
 const char*  COINMP_NAME       = "CoinMP";
 
 
