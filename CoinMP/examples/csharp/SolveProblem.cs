@@ -48,23 +48,12 @@ namespace CoinMPTest
 
         public void GetAndCheckSolution(double optimalValue, IntPtr hProb)
         {
-            int solutionStatus;
-            String solutionText;
-            double objectValue;
-            int i;
-            int colCount;
-            double[] xValues;
-            int result;
-            int length;
-            String colName;
-            String problemName;
-
             logMsg.WriteLine("---------------------------------------------------------------");
 
-            problemName = CoinMP.CoinGetProblemName(hProb);
-            solutionStatus = CoinMP.CoinGetSolutionStatus(hProb);
-            solutionText = CoinMP.CoinGetSolutionText(hProb);
-            objectValue = CoinMP.CoinGetObjectValue(hProb);
+            String problemName = CoinMP.CoinGetProblemName(hProb);
+            int solutionStatus = CoinMP.CoinGetSolutionStatus(hProb);
+            String solutionText = CoinMP.CoinGetSolutionText(hProb);
+            double objectValue = CoinMP.CoinGetObjectValue(hProb);
 
             logTxt.WriteLine("Problem Name:    " + problemName);
             logTxt.WriteLine("Solution Result: " + solutionText);
@@ -72,14 +61,14 @@ namespace CoinMPTest
             logTxt.WriteLine("Optimal Value:   " + objectValue + " (" + optimalValue + ")");
             logTxt.WriteLine("---------------------------------------------------------------");
 
-            colCount = CoinMP.CoinGetColCount(hProb);
+            int colCount = CoinMP.CoinGetColCount(hProb);
 
-            xValues = new double[colCount];
+            double[] xValues = new double[colCount];
 
-            result = CoinMP.CoinGetSolutionValues(hProb, xValues, null, null, null);
-            for (i = 0; i < colCount; i++) {
+            int result = CoinMP.CoinGetSolutionValues(hProb, xValues, null, null, null);
+            for (int i = 0; i < colCount; i++) {
                 if (xValues[i] != 0.0) {
-                    colName = CoinMP.CoinGetColName(hProb, i);
+                    String colName = CoinMP.CoinGetColName(hProb, i);
                     logTxt.WriteLine(colName + " = " + xValues[i]);
                 }
             }
@@ -104,15 +93,12 @@ namespace CoinMPTest
             string[] colNames, string[] rowNames, string objectName,
             double[] initValues, char[] colType)
         {
-            IntPtr hProb;
-            int result;
-
             logTxt.NewLine();
             logTxt.WriteLine("Solve Problem: " + problemName + " (obj=" + optimalValue + ")");
             logTxt.WriteLine("---------------------------------------------------------------");
 
-            hProb = CoinMP.CoinCreateProblem(problemName);
-            result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+            IntPtr hProb = CoinMP.CoinCreateProblem(problemName);
+            int result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
                             objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
                             rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
                             matrixIndex, matrixValues);
@@ -172,15 +158,12 @@ namespace CoinMPTest
             double[] sosRef, int semiCount, int[] semiIndex, int priorCount,
             int[] priorIndex, int[] priorValues, int[] priorBranch)
         {
-            IntPtr hProb;
-            int result;
-
             logTxt.NewLine();
             logTxt.WriteLine("Solve Problem: " + problemName + " (obj=" + optimalValue + ")");
             logTxt.WriteLine("---------------------------------------------------------------");
 
-            hProb = CoinMP.CoinCreateProblem(problemName);
-            result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
+            IntPtr hProb = CoinMP.CoinCreateProblem(problemName);
+            int result = CoinMP.CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
                             objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
                             rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
                             matrixIndex, matrixValues);
