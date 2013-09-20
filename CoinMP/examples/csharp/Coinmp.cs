@@ -102,7 +102,8 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern string CoinGetSolverName();
         [DllImport("coinmp.dll")] public static extern int CoinGetSolverNameBuf(StringBuilder solverName, int buflen);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetVersionStr();
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetVersionStr")] public static extern IntPtr CoinGetVersionStrIntPtr();
+        public static string CoinGetVersionStr() { return Marshal.PtrToStringAnsi(CoinGetVersionStrIntPtr()); }
         [DllImport("coinmp.dll")] public static extern int CoinGetVersionStrBuf(StringBuilder versionStr, int buflen);
         [DllImport("coinmp.dll")] public static extern double CoinGetVersion();
 
@@ -186,20 +187,20 @@ namespace Coin.CoinMP
 
         [DllImport("coinmp.dll")] public static extern int CoinCheckProblem(IntPtr hProb);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetProblemName(IntPtr hProb);
-        [DllImport("coinmp.dll")] public static extern int CoinGetProblemNameBuf(IntPtr hProb,
-                        StringBuilder problemName, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetProblemName")] public static extern IntPtr CoinGetProblemNameIntPtr(IntPtr hProb);
+        public static string CoinGetProblemName(IntPtr hProb) { return Marshal.PtrToStringAnsi(CoinGetProblemNameIntPtr(hProb)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetProblemNameBuf(IntPtr hProb, StringBuilder problemName, int buflen);
 
         [DllImport("coinmp.dll")] public static extern int CoinGetColCount(IntPtr hProb);
         [DllImport("coinmp.dll")] public static extern int CoinGetRowCount(IntPtr hProb);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetColName(IntPtr hProb, int col);
-        [DllImport("coinmp.dll")] public static extern int CoinGetColNameBuf(IntPtr hProb, int col,
-                        StringBuilder colName, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetColName")] public static extern IntPtr CoinGetColNameIntPtr(IntPtr hProb, int col);
+        public static string CoinGetColName(IntPtr hProb, int col) { return Marshal.PtrToStringAnsi(CoinGetColNameIntPtr(hProb, col)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetColNameBuf(IntPtr hProb, int col, StringBuilder colName, int buflen);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetRowName(IntPtr hProb, int row);
-        [DllImport("coinmp.dll")] public static extern int CoinGetRowNameBuf(IntPtr hProb, int row,
-                        StringBuilder rowName, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetRowName")] public static extern IntPtr CoinGetRowNameIntPtr(IntPtr hProb, int row);
+        public static string CoinGetRowName(IntPtr hProb, int row) { return Marshal.PtrToStringAnsi(CoinGetRowNameIntPtr(hProb, row)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetRowNameBuf(IntPtr hProb, int row, StringBuilder rowName, int buflen);
 
         [DllImport("coinmp.dll")] public static extern int CoinSetMsgLogCallback(IntPtr hProb, MsgLogDelegate msgLogDelegate);
         [DllImport("coinmp.dll")] public static extern int CoinSetIterCallback(IntPtr hProb, IterDelegate iterDelegate);
@@ -214,9 +215,9 @@ namespace Coin.CoinMP
 
         [DllImport("coinmp.dll")] public static extern int CoinGetSolutionStatus(IntPtr hProb);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetSolutionText(IntPtr hProbs);
-        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionTextBuf(IntPtr hProbs,
-                        StringBuilder solutionText, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetSolutionText")] public static extern IntPtr CoinGetSolutionTextIntPtr(IntPtr hProb);
+        public static string CoinGetSolutionText(IntPtr hProb) { return Marshal.PtrToStringAnsi(CoinGetSolutionTextIntPtr(hProb)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetSolutionTextBuf(IntPtr hProb, StringBuilder solutionText, int buflen);
 
         [DllImport("coinmp.dll")] public static extern double CoinGetObjectValue(IntPtr hProb);
         [DllImport("coinmp.dll")] public static extern double CoinGetMipBestBound(IntPtr hProb);
@@ -255,7 +256,7 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionNamesBuf(IntPtr hProb, int optionNr,
                         StringBuilder optionName, StringBuilder shortName, int buflen);
 
-
+						
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionGroup(IntPtr hProb, int optionID);
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionType(IntPtr hProb, int optionID);
 
@@ -268,13 +269,13 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern double CoinGetRealOptionMaxValue(IntPtr hProb, int optionID);
 
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetOptionName(IntPtr hProb, int optionID);
-        [DllImport("coinmp.dll")] public static extern int CoinGetOptionNameBuf(IntPtr hProb, int optionID,
-                        StringBuilder optionName, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetOptionName")] public static extern IntPtr CoinGetOptionNameIntPtr(IntPtr hProb, int optionID);
+        public static string CoinGetOptionName(IntPtr hProb, int optionID) { return Marshal.PtrToStringAnsi(CoinGetOptionNameIntPtr(hProb, optionID)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetOptionNameBuf(IntPtr hProb, int optionID, StringBuilder optionName, int buflen);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetOptionShortName(IntPtr hProb, int optionID);
-        [DllImport("coinmp.dll")] public static extern int CoinGetOptionShortNameBuf(IntPtr hProb, int optionID,
-                        StringBuilder shortName, int buflen);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetOptionShortName")] public static extern IntPtr CoinGetOptionShortNameIntPtr(IntPtr hProb, int optionID);
+        public static string CoinGetOptionShortName(IntPtr hProb, int optionID) { return Marshal.PtrToStringAnsi(CoinGetOptionShortNameIntPtr(hProb, optionID)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetOptionShortNameBuf(IntPtr hProb, int optionID, StringBuilder shortName, int buflen);
 
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionChanged(IntPtr hProb, int optionID);
 
@@ -284,10 +285,9 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinGetRealOption(IntPtr hProb, int optionID);
         [DllImport("coinmp.dll")] public static extern int CoinSetRealOption(IntPtr hProb, int optionID, double realValue);
 
-        [DllImport("coinmp.dll")] public static extern string CoinGetStringOption(IntPtr hProb, int optionID);
-        [DllImport("coinmp.dll")] public static extern int CoinGetStringOptionBuf(IntPtr hProb, int optionID,
-                        StringBuilder stringValue, int buflen);
-        [DllImport("coinmp.dll")] public static extern int CoinSetStringOption(IntPtr hProb, int optionID,
-                        string stringValue);
+        [DllImport("coinmp.dll", EntryPoint = "CoinGetStringOption")] public static extern IntPtr CoinGetStringOptionIntPtr(IntPtr hProb, int optionID);
+        public static string CoinGetStringOption(IntPtr hProb, int optionID) { return Marshal.PtrToStringAnsi(CoinGetStringOptionIntPtr(hProb, optionID)); }
+        [DllImport("coinmp.dll")] public static extern int CoinGetStringOptionBuf(IntPtr hProb, int optionID, StringBuilder stringValue, int buflen);
+        [DllImport("coinmp.dll")] public static extern int CoinSetStringOption(IntPtr hProb, int optionID, string stringValue);
     }
 }
