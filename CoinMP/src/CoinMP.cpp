@@ -28,9 +28,7 @@
 #include "CoinCbc.h"
 
 
-#ifndef COIN_DBL_MAX
-#define COIN_DBL_MAX DBL_MAX
-#endif
+#include "config_coinmp_default.h"
 
 
 #define SOLVER_EXPORT
@@ -38,11 +36,21 @@
 #include "CoinMP.h"
 
 
-#define NEW_STYLE_CBCMAIN
+#if COINMP_VERSION_MAJOR == 9999
+const char*  COINMP_VERSIONSTR = "1.7";
+const int    COINMP_VERSIONINT = 170;
+const double COINMP_VERSIONDBL = 1.70;
+#else
+const char*  COINMP_VERSIONSTR = COINMP_VERSION;
+# if COINMP_VERSION_RELEASE == 9999
+const int    COINMP_VERSIONINT = (COINMP_VERSION_MAJOR * 100 + COINMP_VERSION_MINOR * 10);
+const double COINMP_VERSIONDBL = (COINMP_VERSION_MAJOR + COINMP_VERSION_MINOR / 10.0);
+# else
+const int    COINMP_VERSIONINT = (COINMP_VERSION_MAJOR * 100 + COINMP_VERSION_MINOR * 10 + COINMP_VERSION_RELEASE);
+const double COINMP_VERSIONDBL = (COINMP_VERSION_MAJOR + COINMP_VERSION_MINOR / 10.0 + COINMP_VERSION_RELEASE / 100.0);
+# endif
+#endif
 
-
-const double COINMP_VERSION    = 1.7;
-const char*  COINMP_VERSIONSTR = "1.7.1";
 const char*  COINMP_NAME       = "CoinMP";
 
 
@@ -97,7 +105,7 @@ SOLVAPI int  SOLVCALL CoinGetVersionStrBuf(char* VersionStr, int buflen)
 
 SOLVAPI double SOLVCALL CoinGetVersion(void)
 {
-	return COINMP_VERSION;
+	return COINMP_VERSIONDBL;
 }
 
 
