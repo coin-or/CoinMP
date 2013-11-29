@@ -33,8 +33,6 @@
 #endif
 
 
-typedef void *HCBC;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
