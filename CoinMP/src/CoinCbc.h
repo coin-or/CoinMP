@@ -25,6 +25,10 @@
 #include "CglSimpleRounding.hpp"
 
 
+#ifndef COIN_DBL_MAX
+#define COIN_DBL_MAX DBL_MAX
+#endif
+
 
 #if defined(_MSC_VER) && !defined(HAVE_CONFIG_H)
 #define SOLVCALL   __stdcall
@@ -32,6 +36,8 @@
 #define SOLVCALL
 #endif
 
+
+typedef void *HCBC;
 
 #ifdef __cplusplus
 extern "C" {

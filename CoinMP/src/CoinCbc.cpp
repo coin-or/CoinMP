@@ -1,7 +1,6 @@
 
 /*  CoinCbc.cpp  */
 
-#include <stdio.h>
 
 #include "CoinProblem.h"
 #include "CoinResult.h"
@@ -40,8 +39,6 @@
 
 #define NEW_STYLE_CBCMAIN
 
-
-typedef void *HCBC;
 
 /************************************************************************/
 /*  Message Callback Handler                                            */
@@ -943,10 +940,8 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
-			char logstr[100];  // BK 2013/11/28: Allows setting the log level from CoinMP. Thanks to Miles Lubin for suggesting this
-			sprintf(logstr, "%d", coinGetIntOption(pOption, COIN_INT_LOGLEVEL));
-			const int argc = 5;
-			const char* argv[] = {"CoinMP", "-log", logstr, "-solve", "-quit"};
+			const int argc = 3;
+			const char* argv[] = {"CoinMP", "-solve", "-quit"};
 			CbcMain1(argc,argv,*pCbc->cbc);
 			}
 		else 
