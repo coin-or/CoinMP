@@ -4100,7 +4100,7 @@ else
   # On Cygwin and AIX, building DLLs doesn't work
   case $build in
     *-cygwin* | *-mingw*)
-      coin_disable_shared=no
+      coin_disable_shared=yes
       if test x"$enable_shared" = xyes; then
         case "$CXX" in
           clang* )
