@@ -12,61 +12,34 @@
 #include "CoinMP.h"
 
 
-int SOLVCALL MsgLogCallback(const char* MessageStr, void *UserParam)
+int SOLVCALL MsgLogCallback(const char* messageStr, void *userParam)
 {
-	//fprintf(stdout, "*** %s", MessageStr);
-	fprintf(stdout, "*** MSG: %s, user=%s\n", MessageStr, (char*)UserParam);
+	fprintf(stdout, "*** MsgCB: %s\n", messageStr);
 	return 0;
 }
 
-int SOLVCALL IterCallback(int    IterCount, 
-			double ObjectValue,
-			int    IsFeasible, 
-			double InfeasValue,
-			void   *UserParam)
+
+int SOLVCALL IterCallback(int     iterCount, 
+						  double  objectValue,
+						  int     isFeasible, 
+						  double  infeasValue,
+						  void   *userParam)
 {
-	fprintf(stdout, "*** ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g, user=%s\n",
-		IterCount, ObjectValue, IsFeasible, InfeasValue, (char*)UserParam);
+	fprintf(stdout, "*** IterCB: iter=%d, obj=%.12g, feas=%d, infeas=%.12g\n",
+					iterCount, objectValue, isFeasible, infeasValue);
 	return 0;
 }
 
-int SOLVCALL MipNodeCallback(int    IterCount, 
-				int	  MipNodeCount,
-				double BestBound,
-				double BestInteger,
-				int    IsMipImproved,
-				void   *UserParam)
-{
-	fprintf(stdout, "*** NODE: iter=%d, node=%d, bound=%.20g, best=%.20g, %s, user=%s\n",
-		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "*", (char*)UserParam);
-	return 0;
-}
 
-int SOLVCALL OldMsgLogCallback(const char* MessageStr)
+int SOLVCALL MipNodeCallback(int     iterCount, 
+							 int	 nodeCount,
+							 double	 bestBound,
+							 double  bestInteger,
+							 int     isImproved,
+							 void   *userParam)
 {
-	//fprintf(stdout, "*** %s", MessageStr);
-	fprintf(stdout, "*** ");
-	return 0;
-}
-
-int SOLVCALL OldIterCallback(int    IterCount, 
-			double ObjectValue,
-			int    IsFeasible, 
-			double InfeasValue)
-{
-	fprintf(stdout, "ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g\n",
-		IterCount, ObjectValue, IsFeasible, InfeasValue);
-	return 0;
-}
-
-int SOLVCALL OldMipNodeCallback(int    IterCount, 
-				int	  MipNodeCount,
-				double BestBound,
-				double BestInteger,
-				int    IsMipImproved)
-{
-	fprintf(stdout, "NODE: iter=%d, node=%d, bound=%.20g, best=%.20g, %s\n",
-		IterCount, MipNodeCount, BestBound, BestInteger, IsMipImproved ? "Improved" : "");
+	fprintf(stdout, "*** NodeCB: iter=%d, node=%d, bound=%.12g, best=%.12g %s\n",
+					iterCount, nodeCount, bestBound, bestInteger, isImproved ? "*" : "");
 	return 0;
 }
 
@@ -91,7 +64,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	fprintf(stdout, "Problem Name:    %s\n", problemName);
 	fprintf(stdout, "Solution Result: %s\n", solutionText );
 	fprintf(stdout, "Solution Status: %d\n", solutionStatus);
-	fprintf(stdout, "Optimal Value:   %.20g\n", objectValue);
+	fprintf(stdout, "Optimal Value:   %.12g\n", objectValue);
 	fprintf(stdout, "---------------------------------------\n");
 
 	colCount = CoinGetColCount(hProb);
@@ -100,7 +73,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	for (i = 0; i < colCount; i++) {
 		if (xValues[i] != 0.0) {
 			ColName = CoinGetColName(hProb, i);
-			fprintf(stdout, "%s = %.20g\n", ColName, xValues[i]);
+			fprintf(stdout, "%s = %.12g\n", ColName, xValues[i]);
 		}
 	}
 	fprintf(stdout, "---------------------------------------\n\n");
@@ -122,9 +95,9 @@ void RunTestProblem(const char* problemName, double optimalValue, int colCount, 
 	HPROB hProb;
 	int result;
 	char filename[260];
-	const char *userParam = "TEST";
+	const char *userParam = "ProblemData";
     
-	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.12g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -162,9 +135,9 @@ void RunTestProblemBuf(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-	const char *userParam = "TEST";
+	const char *userParam = "ProblemData";
     
-	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.12g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);  
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -204,9 +177,9 @@ void RunTestProblemMip(const char* problemName, double optimalValue, int colCoun
 	HPROB hProb;
 	int result;
 	char filename[260];
-   	const char *userParam = "TEST";
+   	const char *userParam = "ProblemData";
  
-	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
+	fprintf(stdout, "Solve Problem: %s (obj=%.12g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
 					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
@@ -283,9 +256,6 @@ void SolveProblemCoinTest(void)
 	const char* colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
 	const char* rowNames[5] = {"r1", "r2", "r3", "r4", "r5"};
 
-	//char* colNamesBuf = "c1\0" "c2\0" "c3\0" "c4\0" "c5\0" "c6\0" "c7\0" "c8";
-	//char* rowNamesBuf = "r1\0" "r2\0" "r3\0" "r4\0" "r5";
-    
 	double initValues[8] = { 0., 0., 0., 0., 0., 0., 0., 0.  };
 
 	double optimalValue = 1428729.2857143;
@@ -325,9 +295,6 @@ void SolveProblemBakery(void)
 	const char* colNames[2] = {"Sun", "Moon"};
 	const char* rowNames[3] = {"c1", "c2", "c3"};
 
-	//char* colNamesBuf = "Sun\0" "Moon";
-	//char* rowNamesBuf = "c1\0" "c2\0" "c3";
-    
 	double optimalValue = 506.66666667;
 
 	RunTestProblem(problemName, optimalValue, colCount, rowCount,
@@ -395,15 +362,6 @@ void SolveProblemAfiro(void)
 		"x19", "x20", "r19", "r20", "x27", "x44", "r22", "r23", "x40", "x41", "x42", 
 		"x43", "x45", "x46", "x47", "x48", "x49", "x50", "x51"};
 
-	/*char* colnamesBuf = "x01\0" "x02\0" "x03\0" "x04\0" "x06\0" "x07\0" "x08\0" "x09\0" 
-		"x10\0" "x11\0" "x12\0" "x13\0" "x14\0" "x15\0" "x16\0" "x22\0" "x23\0" "x24\0" "x25\0" 
-		"x26\0" "x28\0" "x29\0" "x30\0" "x31\0" "x32\0" "x33\0" "x34\0" "x35\0" "x36\0" "x37\0" 
-		"x38\0" "x39";*/
-
-	/*char* rownamesBuf = "r09\0" "r10\0" "x05\0" "x21\0" "r12\0" "r13\0" "x17\0" "x18\0" 
-		"x19\0" "x20\0" "r19\0" "r20\0" "x27\0" "x44\0" "r22\0" "r23\0" "x40\0" "x41\0" "x42\0" 
-		"x43\0" "x45\0" "x46\0" "x47\0" "x48\0" "x49\0" "x50\0" "x51";*/
-
 	double optimalValue = -464.753142857;
 
 	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
@@ -468,14 +426,6 @@ void SolveProblemP0033(void)
 	const char* rownames[15] = {"r114", "r115", "r116", "r117", "r118", "r119", "r120",
 		"r121", "r122", "r123", "r124", "r125", "r126", "r127", "r128"};
 
-	/*const char* colnamesBuf = "c157\0" "c158\0" "c159\0" "c160\0" "c161\0" "c162\0" "c163\0" 
-		"c164\0" "c165\0" "c166\0" "c167\0" "c168\0" "c169\0" "c170\0" "c171\0" "c172\0" 
-		"c173\0" "c174\0" "c175\0" "c176\0" "c177\0" "c178\0" "c179\0" "c180\0" "c181\0" 
-		"c182\0" "c183\0" "c184\0" "c185\0" "c186\0" "c187\0" "c188\0" "c189";*/
-
-	/*const char* rownamesBuf = "r114\0" "r115\0" "r116\0" "r117\0" "r118\0" "r119\0" "r120\0" 
-		"r121\0" "r122\0" "r123\0" "r124\0" "r125\0" "r126\0" "r127\0" "r128";*/
-
 	char ctyp[33] = { 'B', 'B', 'B', 'B', 'B', 'B', 'B',
 		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 
 		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 
@@ -518,10 +468,6 @@ void SolveProblemExmip1(void)
 		"col07", "col08"};
 	const char* rownames[5] = {"row01", "row02", "row03", "row04", "row05"};
 
-	/*const char* colnamesBuf = "col01\0" "col02\0" "col03\0" "col04\0" "col05\0" "col06\0" 
-		"col07\0" "col08";*/
-	/*const char* rownamesBuf = "row01\0" "row02\0" "row03\0" "row04\0" "row05";*/
-
 	char ctyp[8] = { 'C', 'C', 'B', 'B', 'C', 'C', 'C', 'C'};
 
 	double optimalValue = 3.23684210526;
@@ -559,9 +505,6 @@ void SolveProblemGamsSos1a(void)
 
 	const char* colnames[3] = {"x1", "x2", "x3"};
 	const char* rownames[1] = {"xsum"};
-
-	//const char* colnamesBuf = "x1\0" "x2\0" "x3";
-	//const char* rownamesBuf = "xsum";
 
 	int sosCount = 1;
 	int sosNZCount = 3;
@@ -606,9 +549,6 @@ void SolveProblemGamsSos2a(void)
 	const char* colnames[7] = {"w1", "w2", "w3", "x", "fx", "fplus", "fminus"};
 	const char* rownames[5] = {"wsum", "xdef", "fxdef", "gapplus", "gapminus"};
 
-	//const char* colnamesBuf = "w1\0" "w2\0" "w3\0" "x\0" "fx\0" "fplus\0" "fminus";
-	//const char* rownamesBuf = "wsum\0" "xdef\0" "fxdef\0" "gapplus\0" "gapminus";
-
 	int sosCount = 1;
 	int sosNZCount = 3;
 	int sosType[1] = {2};
@@ -651,9 +591,6 @@ void SolveProblemSemiCont(void)
 
 	const char* colnames[4] = {"s", "pup", "plo", "x"};
 	const char* rownames[3] = {"bigx", "smallx", "f"};
-
-	//const char* colnamesBuf = "s\0" "pup\0" "plo\0" "x\0";
-	//const char* rownamesBuf = "bigx\0" "smallx\0" "f\0";
 
 	int semiCount = 1;
 	int semiIndex[1] = {0};
