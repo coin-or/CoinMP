@@ -125,7 +125,7 @@ int coinLocateOptionName(POPTION pOption, const char* OptionName)
 	int i;
 
 	for (i = 0; i < pOption->OptionCount; i++) {
-		if (STRING_COMPARE_NOCASE(OptionName, pOption->OptionTable[i].OptionName) == 0) { // BK 2013/11/28: Was !=, thanks to Miles Lubin for pointing this out
+		if (STRING_COMPARE_NOCASE(OptionName, pOption->OptionTable[i].OptionName) == 0) { /* BK 2013/11/28: Was !=, thanks to Miles Lubin for pointing this out */
 			return pOption->OptionTable[i].OptionID;
 		}
 		if (STRING_COMPARE_NOCASE(OptionName, pOption->OptionTable[i].ShortName) == 0) {
