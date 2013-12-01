@@ -13,4 +13,3 @@ CoinMP/MSVisualStudio/v9/release/libCoinUtils.lib
 CoinMP/MSVisualStudio/v9/release/libOsi.lib
 CoinMP/MSVisualStudio/v9/release/libOsiClp.lib
 CoinMP/MSVisualStudio/v9/release/unitTest.pdb
-CoinMP/examples/csharp/bin/Release/CoinMPTestCS9.exe
