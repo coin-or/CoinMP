@@ -39,6 +39,7 @@ CoinMP/examples/csharp/Properties/Resources.resx -text
 CoinMP/examples/csharp/Properties/Settings.Designer.cs -text
 CoinMP/examples/csharp/Properties/Settings.settings -text
 CoinMP/examples/csharp/SolveProblem.cs -text
+CoinMP/examples/csharp/bin/x86/Release/CoinMPTestCS9.exe -text
 CoinMP/examples/example.c -text
 CoinMP/examples/vb6/CoinMPTestVB6.exe -text
 CoinMP/examples/vb6/CoinMPTestVB6.vbp -text
