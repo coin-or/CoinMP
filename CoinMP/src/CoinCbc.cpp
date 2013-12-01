@@ -425,7 +425,7 @@ HCBC CbcCreateSolverObject(void)
 	pCbc->clp = new ClpSimplex();
 	pCbc->clp_presolve = new ClpSolve();
 	pCbc->osi = new OsiClpSolverInterface(pCbc->clp);
-	pCbc->cbc = NULL;  /* ERRORFIX 2/22/05: Crashes if not NULL when trying to set message handler */
+	pCbc->cbc = NULL;  /* ERRORFIX 2005/2/22: Crashes if not NULL when trying to set message handler */
 
 	pCbc->msghandler = NULL;
 	pCbc->iterhandler = NULL;
@@ -500,7 +500,6 @@ int CbcRegisterMipNodeCallback(HCBC hCbc, COIN_MIPNODE_CB MipNodeCB, void* MipNo
 	if (!MipNodeCB) {
 		return CBC_CALL_FAILED;
 	}
-	//pCbc->MipNodeCallback = MipNodeCallback;
 	delete pCbc->nodehandler;
 	pCbc->nodehandler = new CBNodeHandler(pCbc->cbc);
 	pCbc->nodehandler->registerCallback(MipNodeCB, MipNodeParam);
@@ -536,7 +535,6 @@ int CbcSetIterCallback(HCBC hCbc, ITERCALLBACK IterCallback)
 	if (!IterCallback) {
 		return CBC_CALL_FAILED;
 	}
-	//pCbc->IterCallback = IterCallback;
 	delete pCbc->iterhandler;
 	pCbc->iterhandler = new CBIterHandler(pCbc->clp);
 	pCbc->iterhandler->setIterCallback(IterCallback);
@@ -553,7 +551,6 @@ int CbcSetMipNodeCallback(HCBC hCbc, MIPNODECALLBACK MipNodeCallback)
 	if (!MipNodeCallback) {
 		return CBC_CALL_FAILED;
 	}
-	//pCbc->MipNodeCallback = MipNodeCallback;
 	delete pCbc->nodehandler;
 	pCbc->nodehandler = new CBNodeHandler(pCbc->cbc);
 	pCbc->nodehandler->setCallback(MipNodeCallback);
@@ -564,15 +561,12 @@ int CbcSetMipNodeCallback(HCBC hCbc, MIPNODECALLBACK MipNodeCallback)
 
 int CbcSetAllCallbacks(HCBC hCbc, PSOLVER pSolver, POPTION pOption)
 {
-	int LogLevel;
+	int logLevel;
 
-	LogLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
-	CbcRegisterMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCB, pSolver->MsgLogParam);
+	logLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
+	CbcRegisterMsgLogCallback(hCbc, logLevel, pSolver->MsgLogCB, pSolver->MsgLogParam);
 	CbcRegisterLPIterCallback(hCbc, pSolver->LPIterCB, pSolver->LPIterParam);
 	CbcRegisterMipNodeCallback(hCbc, pSolver->MipNodeCB, pSolver->MipNodeParam);
-	//CbcSetMsgLogCallback(hCbc, LogLevel, pSolver->MsgLogCallback);
-	//CbcSetIterCallback(hCbc, pSolver->IterCallback);
-	//CbcSetMipNodeCallback(hCbc, pSolver->MipNodeCallback);
 	return CBC_CALL_SUCCESS;
 }
 
@@ -943,11 +937,19 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
 			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
-			char logstr[100];  // BK 2013/11/28: Allows setting the log level from CoinMP. Thanks to Miles Lubin for suggesting this
-			sprintf(logstr, "%d", coinGetIntOption(pOption, COIN_INT_LOGLEVEL));
-			const int argc = 5;
-			const char* argv[] = {"CoinMP", "-log", logstr, "-solve", "-quit"};
-			CbcMain1(argc,argv,*pCbc->cbc);
+			int logLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
+			if (logLevel == 1) {
+				const int argc = 3;
+				const char* argv[] = {"CoinMP", "-solve", "-quit"};
+				CbcMain1(argc, argv, *pCbc->cbc);
+				}
+			else {
+				char logstr[100];  // BK 2013/11/28: Allows setting the log level from CoinMP. Thanks to Miles Lubin for suggesting this
+				sprintf(logstr, "%d", logLevel);
+				const int argc = 5;
+				const char* argv[] = {"CoinMP", "-log", logstr, "-solve", "-quit"};
+				CbcMain1(argc, argv, *pCbc->cbc);
+			}
 			}
 		else 
 #endif
