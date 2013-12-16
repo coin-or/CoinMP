@@ -26,6 +26,11 @@ libCoinMP_la_SOURCES = \
 	CoinCbc.cpp CoinCbc.h \
 	CoinMPConfig.h
 
+# List all additionally required libraries
+if DEPENDENCY_LINKING
+libCoinMP_la_LIBADD = $(COINMP_LIBS)
+endif
+
 # This is for libtool (on Windows)
 libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
 
