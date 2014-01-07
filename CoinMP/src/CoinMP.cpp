@@ -35,9 +35,9 @@
 #include "CoinMP.h"
 
 
-const char*  COINMP_VERSIONSTR = "1.7.5";
-const int    COINMP_VERSIONINT = 175;
-const double COINMP_VERSIONDBL = 1.75;
+const char*  COINMP_VERSIONSTR = "1.7.6";
+const int    COINMP_VERSIONINT = 176;
+const double COINMP_VERSIONDBL = 1.76;
 
 const char* COINMP_NAME = "CoinMP";
 
