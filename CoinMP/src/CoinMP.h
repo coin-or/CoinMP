@@ -4,11 +4,11 @@
 /*                                                                      */
 /*  File         :  'coinmp.h'                                          */
 /*                                                                      */
-/*  Version      :  1.7                                                 */
+/*  Version      :  1.8                                                 */
 /*                                                                      */
 /*  Author       :  Bjarni Kristjansson, Maximal Software               */
 /*                                                                      */
-/*  Copyright (c) 2002-2013                     Bjarni Kristjansson     */
+/*  Copyright (c) 2002-2015                     Bjarni Kristjansson     */
 /*                                                                      */
 /************************************************************************/
 
@@ -42,7 +42,9 @@
 
 #ifndef SOLV_LINK_LIB
 #ifndef SOLV_LINK_DLL
+#ifndef SOLV_LINK_DYN
 #define SOLV_LINK_LIB
+#endif
 #endif
 #endif
 
@@ -318,7 +320,7 @@ SOLVAPI int    SOLVCALL CoinSetStringOption(HPROB hProb, int OptionID, const cha
 #endif
 
 
-#ifdef SOLV_LINK_DLL
+#if defined(SOLV_LINK_DLL) || defined(SOLV_LINK_DYN)
 
 int    (SOLVCALL *CoinInitSolver)(const char* LicenseStr);
 int    (SOLVCALL *CoinFreeSolver)(void);
@@ -401,14 +403,14 @@ int    (SOLVCALL *CoinGetColNameBuf)(HPROB hProb, int col, char* ColName, int bu
 const char*  (SOLVCALL *CoinGetRowName)(HPROB hProb, int row);
 int    (SOLVCALL *CoinGetRowNameBuf)(HPROB hProb, int row, char* RowName, int buflen);
 
-void   (SOLVCALL *CoinRegisterMsgLogCallback)(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, void* UserParam);
-void   (SOLVCALL *CoinRegisterLPIterCallback)(HPROB hProb, COIN_LPITER_CB LPIterCB, void* UserParam);
-void   (SOLVCALL *CoinRegisterMipNodeCallback)(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void* UserParam);
+int    (SOLVCALL *CoinRegisterMsgLogCallback)(HPROB hProb, COIN_MSGLOG_CB MsgLogCB, void* UserParam);
+int    (SOLVCALL *CoinRegisterLPIterCallback)(HPROB hProb, COIN_LPITER_CB LPIterCB, void* UserParam);
+int    (SOLVCALL *CoinRegisterMipNodeCallback)(HPROB hProb, COIN_MIPNODE_CB MipNodeCB, void* UserParam);
 
 /* Depreciated, use CoinRegisterXxxCallback instead */
-void   (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
-void   (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
-void   (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
+int    (SOLVCALL *CoinSetMsgLogCallback)(HPROB hProb, MSGLOGCALLBACK MsgLogCallback);
+int    (SOLVCALL *CoinSetIterCallback)(HPROB hProb, ITERCALLBACK IterCallback);
+int    (SOLVCALL *CoinSetMipNodeCallback)(HPROB hProb, MIPNODECALLBACK MipNodeCallback);
 
 int    (SOLVCALL *CoinOptimizeProblem)(HPROB hProb, int Method);
 
@@ -429,11 +431,11 @@ int    (SOLVCALL *CoinGetSolutionRanges)(HPROB hProb, double* ObjLoRange, double
 int    (SOLVCALL *CoinGetSolutionBasis)(HPROB hProb, int* ColStatus, int* RowStatus);
 
 
-void   (SOLVCALL *CoinReadFile)(HPROB hProb, int FileType, const char* ReadFilename);
-void   (SOLVCALL *CoinWriteFile)(HPROB hProb, int FileType, const char* WriteFilename);
+int    (SOLVCALL *CoinReadFile)(HPROB hProb, int FileType, const char* ReadFilename);
+int    (SOLVCALL *CoinWriteFile)(HPROB hProb, int FileType, const char* WriteFilename);
 
-void   (SOLVCALL *CoinOpenLogFile)(HPROB hProb, const char* LogFilename);
-void   (SOLVCALL *CoinCloseLogFile)(HPROB hProb);
+int    (SOLVCALL *CoinOpenLogFile)(HPROB hProb, const char* LogFilename);
+int    (SOLVCALL *CoinCloseLogFile)(HPROB hProb);
 
 
 int    (SOLVCALL *CoinGetOptionCount)(HPROB hProb);
