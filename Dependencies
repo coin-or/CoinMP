@@ -1,7 +1,7 @@
 BuildTools  https://projects.coin-or.org/svn/BuildTools/stable/0.8
-CoinUtils  https://projects.coin-or.org/svn/CoinUtils/stable/2.10/CoinUtils
-Clp  https://projects.coin-or.org/svn/Clp/stable/1.16/Clp
-Osi  https://projects.coin-or.org/svn/Osi/stable/0.107/Osi
-Cgl  https://projects.coin-or.org/svn/Cgl/stable/0.59/Cgl
-Cbc  https://projects.coin-or.org/svn/Cbc/stable/2.9/Cbc
+CoinUtils  https://projects.coin-or.org/svn/CoinUtils/stable/2.11/CoinUtils
+Clp  https://projects.coin-or.org/svn/Clp/stable/1.17/Clp
+Osi  https://projects.coin-or.org/svn/Osi/stable/0.108/Osi
+Cgl  https://projects.coin-or.org/svn/Cgl/stable/0.60/Cgl
+Cbc  https://projects.coin-or.org/svn/Cbc/stable/2.10/Cbc
 Data/Sample  https://projects.coin-or.org/svn/Data/Sample/stable/1.2
