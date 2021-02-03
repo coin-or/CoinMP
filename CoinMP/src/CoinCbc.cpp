@@ -915,7 +915,7 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 
 
 
-extern int CbcOrClpRead_mode;
+//extern int CbcOrClpRead_mode;
 
 int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 {
@@ -923,7 +923,7 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 
 	if (!pProblem->SolveAsMIP) {
 		CbcSetClpOptions(hCbc, pOption);
-		if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE))			
+		if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE))
 			pCbc->clp->initialSolve(*pCbc->clp_presolve);
 		else {
 			pCbc->clp->initialSolve();
@@ -936,7 +936,7 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 			CbcSetClpOptions(hCbc, pOption);
 			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
-			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
+			//CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			int logLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
 			if (logLevel == 1) {
 				const int argc = 3;
