@@ -20,7 +20,7 @@ namespace CoinMPTest
 	        int nrow = NUM_ROWS;
 	        int nels = NUM_NZ;
 	        int nrng = NUM_RNG;
-	
+
 	        string objectname = "z";
 	        int objsens = CoinMP.SOLV_OBJSENS_MIN;
 	        double objconst = 0.0;
@@ -41,7 +41,7 @@ namespace CoinMPTest
 	        int[] midx = new int[NUM_NZ] {0, 4, 0, 1, 1, 2, 0, 3, 0, 4, 2, 3, 0, 4};
 	        double[] mval = new double[NUM_NZ] {3, 5.6, 1, 2, 1.1, 1, -2, 2.8, -1, 1, 1, -1.2, -1, 1.9};
 
-	        string[] colNames = new string[NUM_COLS] {"col01", "col02", "col03", "col04", "col05", "col06", 
+	        string[] colNames = new string[NUM_COLS] {"col01", "col02", "col03", "col04", "col05", "col06",
 		                                              "col07", "col08"};
 	        string[] rowNames = new string[NUM_ROWS] {"row01", "row02", "row03", "row04", "row05"};
 
@@ -49,7 +49,7 @@ namespace CoinMPTest
 
 	        double optimalValue = 3.23684210526;
 
-            solveProblem.RunProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
+            solveProblem.RunProblem(probname, optimalValue, ncol, nrow, nels, nrng,
 	            objsens, objconst, dobj, dclo, dcup, drlo, drup, mbeg,
                 mcnt, midx, mval, colNames, rowNames, objectname, null, ctyp);
         }

@@ -45,4 +45,3 @@ void coinClearResultObject(PRESULT pResult);
 
 
 #endif  /* _COINRESULT_H_ */
-

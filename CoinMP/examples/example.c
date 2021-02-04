@@ -18,9 +18,9 @@ int SOLVCALL MsgLogCallback(char* MessageStr)
 	return 0;
 }
 
-int SOLVCALL IterCallback(int    IterCount, 
+int SOLVCALL IterCallback(int    IterCount,
 			double ObjectValue,
-			int    IsFeasible, 
+			int    IsFeasible,
 			double InfeasValue)
 {
 	fprintf(stdout, "ITER: iter=%d, obj=%.20g, feas=%d, infeas=%.20g\n",
@@ -28,7 +28,7 @@ int SOLVCALL IterCallback(int    IterCount,
 	return 0;
 }
 
-int SOLVCALL MipNodeCallback(int    IterCount, 
+int SOLVCALL MipNodeCallback(int    IterCount,
 				int	  MipNodeCount,
 				double BestBound,
 				double BestInteger,
@@ -55,7 +55,7 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 	solutionStatus = CoinGetSolutionStatus(hProb);
 	solutionText = CoinGetSolutionText(hProb);
 	objectValue =  CoinGetObjectValue(hProb);
-      
+
 	fprintf(stdout, "\n---------------------------------------\n");
 	fprintf(stdout, "Problem Name:    %s\n", problemName);
 	fprintf(stdout, "Solution Result: %s\n", solutionText );
@@ -82,21 +82,21 @@ void GetAndCheckSolution(double optimalValue, HPROB hProb)
 
 
 
-void RunTestProblem(char* problemName, double optimalValue, int colCount, int rowCount, 
-	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
-	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
+void RunTestProblem(char* problemName, double optimalValue, int colCount, int rowCount,
+	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs,
+	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues,
+	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames,
 	  char** rowNames, char* objectName, double* initValues, char* columnType)
 {
 	HPROB hProb;
 	int result;
 	char filename[260];
-    
+
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
-	hProb = CoinCreateProblem(problemName);  
+	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
-					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
-					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
+					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
+					rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
 					matrixIndex, matrixValues);
 	result = CoinLoadNames(hProb, colNames, rowNames, objectName);
 	if (columnType) {
@@ -121,21 +121,21 @@ void RunTestProblem(char* problemName, double optimalValue, int colCount, int ro
 }
 
 
-void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int rowCount, 
-	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
-	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char* colNamesBuf, 
+void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int rowCount,
+	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs,
+	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues,
+	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char* colNamesBuf,
 	  char* rowNamesBuf, char* objectName, double* initValues, char* columnType)
 {
 	HPROB hProb;
 	int result;
 	char filename[260];
-    
+
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
-	hProb = CoinCreateProblem(problemName);  
+	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
-					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
-					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
+					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
+					rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
 					matrixIndex, matrixValues);
 	result = CoinLoadNamesBuf(hProb, colNamesBuf, rowNamesBuf, objectName);
 	if (columnType) {
@@ -160,23 +160,23 @@ void RunTestProblemBuf(char* problemName, double optimalValue, int colCount, int
 }
 
 
-void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int rowCount, 
-	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs, 
-	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues, 
-	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames, 
-	  char** rowNames, char* objectName, double* initValues, char* columnType, int sosCount, 
+void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int rowCount,
+	  int nonZeroCount, int rangeCount, int objectSense, double objectConst, double* objectCoeffs,
+	  double* lowerBounds, double* upperBounds, char* rowType, double* rhsValues, double* rangeValues,
+	  int* matrixBegin, int* matrixCount, int* matrixIndex, double* matrixValues, char** colNames,
+	  char** rowNames, char* objectName, double* initValues, char* columnType, int sosCount,
 	  int sosNZCount, int* sosType, int* sosPrior, int* sosBegin, int* sosIndex, double* sosRef,
 	  int semiCount, int* semiIndex, int priorCount, int* priorIndex, int* priorValues, int* priorBranch)
 {
 	HPROB hProb;
 	int result;
 	char filename[260];
-    
+
 	fprintf(stdout, "Solve Problem: %s (obj=%.20g)\n", problemName, optimalValue);
 	hProb = CoinCreateProblem(problemName);
 	result = CoinLoadMatrix(hProb, colCount, rowCount, nonZeroCount, rangeCount,
-					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, 
-					rowType, rhsValues, rangeValues, matrixBegin, matrixCount, 
+					objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds,
+					rowType, rhsValues, rangeValues, matrixBegin, matrixCount,
 					matrixIndex, matrixValues);
 	result = CoinLoadNames(hProb, colNames, rowNames, objectName);
 	if (columnType) {
@@ -216,7 +216,7 @@ void RunTestProblemMip(char* problemName, double optimalValue, int colCount, int
 *
 *    3x1 +  x2         -  2x4 - x5               -    x8
 *          2x2 + 1.1x3
-*                   x3              +  x6               
+*                   x3              +  x6
 *                       2.8x4             -1.2x7
 *  5.6x1                      + x5               + 1.9x8
 *
@@ -245,18 +245,18 @@ void SolveProblemCoinTest(void)
 	int matrixCount[8]={2,2,2,2,2,1,1,2};
 	int matrixIndex[14]={0,4,0,1,1,2,0,3,0,4,2,3,0,4};
 	double matrixValues[14]={3., 5.6, 1., 2., 1.1, 1., -2., 2.8, -1., 1., 1., -1.2, -1., 1.9};
-    
+
 	char* colNames[8] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"};
 	char* rowNames[5] = {"r1", "r2", "r3", "r4", "r5"};
-    
+
 	double initValues[8] = { 0., 0., 0., 0., 0., 0., 0., 0.  };
 
 	double optimalValue = 1428729.2857143;
 
-	RunTestProblem(problemName, optimalValue, colCount, rowCount, 
-	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
-	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
-	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs,
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL,
+	  matrixBegin, matrixCount, matrixIndex, matrixValues,
 	  colNames, rowNames, objectName, initValues, NULL);
 }
 
@@ -287,13 +287,13 @@ void SolveProblemBakery(void)
 
 	char* colNames[2] = {"Sun", "Moon"};
 	char* rowNames[3] = {"c1", "c2", "c3"};
-    
+
 	double optimalValue = 506.66666667;
 
-	RunTestProblem(problemName, optimalValue, colCount, rowCount, 
-	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
-	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
-	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs,
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL,
+	  matrixBegin, matrixCount, matrixIndex, matrixValues,
 	  colNames, rowNames, objectName, NULL, NULL);
 }
 
@@ -310,64 +310,64 @@ void SolveProblemAfiro(void)
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
 
-	double dobj[32]={0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.32, 0, 0, 0, -0.6, 
+	double dobj[32]={0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.32, 0, 0, 0, -0.6,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.48, 0, 0, 10};
 
-	double dclo[32]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	double dclo[32]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	double dcup[32]={1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 
-		1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 
-		1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 
+	double dcup[32]={1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037,
+		1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037,
+		1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037,
 		1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037, 1e+037};
 
-	char rtyp[27]= {'E', 'E', 'L', 'L', 'E', 'E', 'L', 'L', 'L', 'L', 'E', 'E', 'L', 
+	char rtyp[27]= {'E', 'E', 'L', 'L', 'E', 'E', 'L', 'L', 'L', 'L', 'E', 'E', 'L',
 		'L', 'E', 'E', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'};
 
-	double drhs[27]={0, 0, 80, 0, 0, 0, 80, 0, 0, 0, 0, 0, 500, 0, 0, 44, 500, 0, 
+	double drhs[27]={0, 0, 80, 0, 0, 0, 80, 0, 0, 0, 0, 0, 500, 0, 0, 44, 500, 0,
 		0, 0, 0, 0, 0, 0, 0, 310, 300};
 
-	int mbeg[32+1]={0, 4, 6, 8, 10, 14, 18, 22, 26, 28, 30, 32, 34, 36, 38, 40, 
+	int mbeg[32+1]={0, 4, 6, 8, 10, 14, 18, 22, 26, 28, 30, 32, 34, 36, 38, 40,
 		44, 46, 48, 50, 52, 56, 60, 64, 68, 70, 72, 74, 76, 78, 80, 82, 83};
 
-	int mcnt[32]={4, 2, 2, 2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 4, 
+	int mcnt[32]={4, 2, 2, 2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 4,
 		4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1};
 
-	int midx[83]={0, 1, 2, 23, 0, 3, 0, 21, 1, 25, 4, 5, 6, 24, 4, 5, 7, 24, 4, 5, 
-		8, 24, 4, 5, 9, 24, 6, 20, 7, 20, 8, 20, 9, 20, 3, 4, 4, 22, 5, 26, 10, 11, 
-		12, 21, 10, 13, 10, 23, 10, 20, 11, 25, 14, 15, 16, 22, 14, 15, 17, 22, 14, 
-		15, 18, 22, 14, 15, 19, 22, 16, 20, 17, 20, 18, 20, 19, 20, 13, 15, 15, 24, 
+	int midx[83]={0, 1, 2, 23, 0, 3, 0, 21, 1, 25, 4, 5, 6, 24, 4, 5, 7, 24, 4, 5,
+		8, 24, 4, 5, 9, 24, 6, 20, 7, 20, 8, 20, 9, 20, 3, 4, 4, 22, 5, 26, 10, 11,
+		12, 21, 10, 13, 10, 23, 10, 20, 11, 25, 14, 15, 16, 22, 14, 15, 17, 22, 14,
+		15, 18, 22, 14, 15, 19, 22, 16, 20, 17, 20, 18, 20, 19, 20, 13, 15, 15, 24,
 		14, 26, 15};
 
-	double mval[83]={-1, -1.06, 1, 0.301, 1, -1, 1, -1, 1, 1, -1, -1.06, 1, 0.301, 
-		-1, -1.06, 1, 0.313, -1, -0.96, 1, 0.313, -1, -0.86, 1, 0.326, -1, 2.364, -1, 
-		2.386, -1, 2.408, -1, 2.429, 1.4, 1, 1, -1, 1, 1, -1, -0.43, 1, 0.109, 1, -1, 
-		1, -1, 1, -1, 1, 1, -0.43, 1, 1, 0.109, -0.43, 1, 1, 0.108, -0.39, 1, 1, 
-		0.108, -0.37, 1, 1, 0.107, -1, 2.191, -1, 2.219, -1, 2.249, -1, 2.279, 1.4, 
+	double mval[83]={-1, -1.06, 1, 0.301, 1, -1, 1, -1, 1, 1, -1, -1.06, 1, 0.301,
+		-1, -1.06, 1, 0.313, -1, -0.96, 1, 0.313, -1, -0.86, 1, 0.326, -1, 2.364, -1,
+		2.386, -1, 2.408, -1, 2.429, 1.4, 1, 1, -1, 1, 1, -1, -0.43, 1, 0.109, 1, -1,
+		1, -1, 1, -1, 1, 1, -0.43, 1, 1, 0.109, -0.43, 1, 1, 0.108, -0.39, 1, 1,
+		0.108, -0.37, 1, 1, 0.107, -1, 2.191, -1, 2.219, -1, 2.249, -1, 2.279, 1.4,
 		-1, 1, -1, 1, 1, 1};
 
-	char* colnames[32] = {"x01", "x02", "x03", "x04", "x06", "x07", "x08", "x09", 
-		"x10", "x11", "x12", "x13", "x14", "x15", "x16", "x22", "x23", "x24", "x25", 
-		"x26", "x28", "x29", "x30", "x31", "x32", "x33", "x34", "x35", "x36", "x37", 
+	char* colnames[32] = {"x01", "x02", "x03", "x04", "x06", "x07", "x08", "x09",
+		"x10", "x11", "x12", "x13", "x14", "x15", "x16", "x22", "x23", "x24", "x25",
+		"x26", "x28", "x29", "x30", "x31", "x32", "x33", "x34", "x35", "x36", "x37",
 		"x38", "x39"};
 
-	char* rownames[27] = {"r09", "r10", "x05", "x21", "r12", "r13", "x17", "x18", 
-		"x19", "x20", "r19", "r20", "x27", "x44", "r22", "r23", "x40", "x41", "x42", 
+	char* rownames[27] = {"r09", "r10", "x05", "x21", "r12", "r13", "x17", "x18",
+		"x19", "x20", "r19", "r20", "x27", "x44", "r22", "r23", "x40", "x41", "x42",
 		"x43", "x45", "x46", "x47", "x48", "x49", "x50", "x51"};
 
-	/*char* colnamesBuf = "x01\0" "x02\0" "x03\0" "x04\0" "x06\0" "x07\0" "x08\0" "x09\0" 
-		"x10\0" "x11\0" "x12\0" "x13\0" "x14\0" "x15\0" "x16\0" "x22\0" "x23\0" "x24\0" "x25\0" 
-		"x26\0" "x28\0" "x29\0" "x30\0" "x31\0" "x32\0" "x33\0" "x34\0" "x35\0" "x36\0" "x37\0" 
+	/*char* colnamesBuf = "x01\0" "x02\0" "x03\0" "x04\0" "x06\0" "x07\0" "x08\0" "x09\0"
+		"x10\0" "x11\0" "x12\0" "x13\0" "x14\0" "x15\0" "x16\0" "x22\0" "x23\0" "x24\0" "x25\0"
+		"x26\0" "x28\0" "x29\0" "x30\0" "x31\0" "x32\0" "x33\0" "x34\0" "x35\0" "x36\0" "x37\0"
 		"x38\0" "x39";*/
 
-	/*char* rownamesBuf = "r09\0" "r10\0" "x05\0" "x21\0" "r12\0" "r13\0" "x17\0" "x18\0" 
-		"x19\0" "x20\0" "r19\0" "r20\0" "x27\0" "x44\0" "r22\0" "r23\0" "x40\0" "x41\0" "x42\0" 
+	/*char* rownamesBuf = "r09\0" "r10\0" "x05\0" "x21\0" "r12\0" "r13\0" "x17\0" "x18\0"
+		"x19\0" "x20\0" "r19\0" "r20\0" "x27\0" "x44\0" "r22\0" "r23\0" "x40\0" "x41\0" "x42\0"
 		"x43\0" "x45\0" "x46\0" "x47\0" "x48\0" "x49\0" "x50\0" "x51";*/
 
 	double optimalValue = -464.753142857;
 
-	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL);
 }
 
@@ -384,67 +384,67 @@ void SolveProblemP0033(void)
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
 
-	double dobj[33]={171, 171, 171, 171, 163, 162, 163, 69, 69, 183, 183, 183, 
-		183, 49, 183, 258, 517, 250, 500, 250, 500, 159, 318, 159, 318, 159, 318, 159, 
+	double dobj[33]={171, 171, 171, 171, 163, 162, 163, 69, 69, 183, 183, 183,
+		183, 49, 183, 258, 517, 250, 500, 250, 500, 159, 318, 159, 318, 159, 318, 159,
 		318, 114, 228, 159, 318};
 
-	double dclo[33]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	double dclo[33]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	double dcup[33]={1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+	double dcup[33]={1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 	char rtyp[15]= { 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L' };
 
-	double drhs[15]={1, 1, 1, 1, -5, 2700, -2600, -100, -900, -1656, -335, -1026, 
+	double drhs[15]={1, 1, 1, 1, -5, 2700, -2600, -100, -900, -1656, -335, -1026,
 		-5, -500, -270};
 
-	int mbeg[33+1]={0, 3, 6, 10, 14, 19, 24, 26, 31, 36, 38, 41, 45, 49, 53, 54, 
+	int mbeg[33+1]={0, 3, 6, 10, 14, 19, 24, 26, 31, 36, 38, 41, 45, 49, 53, 54,
 		55, 56, 58, 60, 61, 62, 66, 70, 73, 76, 80, 84, 87, 90, 93, 96, 97, 98};
 
-	int mcnt[33]={3, 3, 4, 4, 5, 5, 2, 5, 5, 2, 3, 4, 4, 4, 1, 1, 1, 2, 2, 1, 1, 
+	int mcnt[33]={3, 3, 4, 4, 5, 5, 2, 5, 5, 2, 3, 4, 4, 4, 1, 1, 1, 2, 2, 1, 1,
 		4, 4, 3, 3, 4, 4, 3, 3, 3, 3, 1, 1};
 
-	int midx[98]={0, 8, 9, 0, 12, 13, 0, 5, 6, 9, 0, 5, 6, 7, 1, 5, 6, 10, 11, 1, 
-		5, 6, 8, 9, 1, 14, 2, 5, 6, 10, 11, 2, 5, 6, 8, 9, 3, 4, 3, 10, 11, 3, 5, 6, 
-		11, 3, 5, 6, 9, 5, 6, 8, 9, 3, 4, 4, 12, 13, 12, 13, 13, 13, 5, 6, 10, 11, 5, 
-		6, 10, 11, 5, 6, 11, 5, 6, 11, 5, 6, 8, 9, 5, 6, 8, 9, 5, 6, 9, 5, 6, 9, 5, 6, 
+	int midx[98]={0, 8, 9, 0, 12, 13, 0, 5, 6, 9, 0, 5, 6, 7, 1, 5, 6, 10, 11, 1,
+		5, 6, 8, 9, 1, 14, 2, 5, 6, 10, 11, 2, 5, 6, 8, 9, 3, 4, 3, 10, 11, 3, 5, 6,
+		11, 3, 5, 6, 9, 5, 6, 8, 9, 3, 4, 4, 12, 13, 12, 13, 13, 13, 5, 6, 10, 11, 5,
+		6, 10, 11, 5, 6, 11, 5, 6, 11, 5, 6, 8, 9, 5, 6, 8, 9, 5, 6, 9, 5, 6, 9, 5, 6,
 		7, 5, 6, 7, 14, 14};
 
-	double mval[98]={1, -300, -300, 1, -300, -300, 1, 300, -300, -300, 1, 300, 
-		-300, -300, 1, 285, -285, -285, -285, 1, 285, -285, -285, -285, 1, -285, 1, 
-		265, -265, -265, -265, 1, 265, -265, -265, -265, 1, -230, 1, -230, -230, 1, 
-		230, -230, -230, 1, 230, -230, -230, 190, -190, -190, -190, 1, -200, -400, 
-		-200, -200, -400, -400, -200, -400, 200, -200, -200, -200, 400, -400, -400, 
-		-400, 200, -200, -200, 400, -400, -400, 200, -200, -200, -200, 400, -400, 
-		-400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400, 
+	double mval[98]={1, -300, -300, 1, -300, -300, 1, 300, -300, -300, 1, 300,
+		-300, -300, 1, 285, -285, -285, -285, 1, 285, -285, -285, -285, 1, -285, 1,
+		265, -265, -265, -265, 1, 265, -265, -265, -265, 1, -230, 1, -230, -230, 1,
+		230, -230, -230, 1, 230, -230, -230, 190, -190, -190, -190, 1, -200, -400,
+		-200, -200, -400, -400, -200, -400, 200, -200, -200, -200, 400, -400, -400,
+		-400, 200, -200, -200, 400, -400, -400, 200, -200, -200, -200, 400, -400,
+		-400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400,
 		-400, -200, -400};
 
-	char* colnames[33] = {"c157", "c158", "c159", "c160", "c161", "c162", "c163", 
-		"c164", "c165", "c166", "c167", "c168", "c169", "c170", "c171", "c172", 
-		"c173", "c174", "c175", "c176", "c177", "c178", "c179", "c180", "c181", 
+	char* colnames[33] = {"c157", "c158", "c159", "c160", "c161", "c162", "c163",
+		"c164", "c165", "c166", "c167", "c168", "c169", "c170", "c171", "c172",
+		"c173", "c174", "c175", "c176", "c177", "c178", "c179", "c180", "c181",
 		"c182", "c183", "c184", "c185", "c186", "c187", "c188", "c189"};
 
-	char* rownames[15] = {"r114", "r115", "r116", "r117", "r118", "r119", "r120", 
+	char* rownames[15] = {"r114", "r115", "r116", "r117", "r118", "r119", "r120",
 		"r121", "r122", "r123", "r124", "r125", "r126", "r127", "r128"};
 
-	/*char* colnamesBuf = "c157\0" "c158\0" "c159\0" "c160\0" "c161\0" "c162\0" "c163\0" 
-		"c164\0" "c165\0" "c166\0" "c167\0" "c168\0" "c169\0" "c170\0" "c171\0" "c172\0" 
-		"c173\0" "c174\0" "c175\0" "c176\0" "c177\0" "c178\0" "c179\0" "c180\0" "c181\0" 
+	/*char* colnamesBuf = "c157\0" "c158\0" "c159\0" "c160\0" "c161\0" "c162\0" "c163\0"
+		"c164\0" "c165\0" "c166\0" "c167\0" "c168\0" "c169\0" "c170\0" "c171\0" "c172\0"
+		"c173\0" "c174\0" "c175\0" "c176\0" "c177\0" "c178\0" "c179\0" "c180\0" "c181\0"
 		"c182\0" "c183\0" "c184\0" "c185\0" "c186\0" "c187\0" "c188\0" "c189";*/
 
-	/*char* rownamesBuf = "r114\0" "r115\0" "r116\0" "r117\0" "r118\0" "r119\0" "r120\0" 
+	/*char* rownamesBuf = "r114\0" "r115\0" "r116\0" "r117\0" "r118\0" "r119\0" "r120\0"
 		"r121\0" "r122\0" "r123\0" "r124\0" "r125\0" "r126\0" "r127\0" "r128";*/
 
 	char ctyp[33] = { 'B', 'B', 'B', 'B', 'B', 'B', 'B',
-		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 
-		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 
+		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+		'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
 		'B', 'B', 'B', 'B', 'B', 'B' };
 
 	double optimalValue = 3089.0;
 
-	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
@@ -456,7 +456,7 @@ void SolveProblemExmip1(void)
 	int nrow = 5;
 	int nels = 14;
 	int nrng = 2;
-	
+
 	char* objectname = "z";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
@@ -474,11 +474,11 @@ void SolveProblemExmip1(void)
 	int midx[14]={0, 4, 0, 1, 1, 2, 0, 3, 0, 4, 2, 3, 0, 4};
 	double mval[14]={3, 5.6, 1, 2, 1.1, 1, -2, 2.8, -1, 1, 1, -1.2, -1, 1.9};
 
-	char* colnames[8] = {"col01", "col02", "col03", "col04", "col05", "col06", 
+	char* colnames[8] = {"col01", "col02", "col03", "col04", "col05", "col06",
 		"col07", "col08"};
 	char* rownames[5] = {"row01", "row02", "row03", "row04", "row05"};
 
-	/*char* colnamesBuf = "col01\0" "col02\0" "col03\0" "col04\0" "col05\0" "col06\0" 
+	/*char* colnamesBuf = "col01\0" "col02\0" "col03\0" "col04\0" "col05\0" "col06\0"
 		"col07\0" "col08";*/
 	/*char* rownamesBuf = "row01\0" "row02\0" "row03\0" "row04\0" "row05";*/
 
@@ -486,8 +486,8 @@ void SolveProblemExmip1(void)
 
 	double optimalValue = 3.23684210526;
 
-	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, drng, mbeg, 
+	RunTestProblem(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, drng, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, ctyp);
 }
 
@@ -500,7 +500,7 @@ void SolveProblemGamsSos1a(void)
 	int nrow = 1;
 	int nels = 3;
 	int nrng = 0;
-	
+
 	char* objectname = "z";
 	int objsens = SOLV_OBJSENS_MAX;
 	double objconst = 0.0;
@@ -528,8 +528,8 @@ void SolveProblemGamsSos1a(void)
 
 	double optimalValue = 0.72;
 
-	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, NULL, drlo, drup, mbeg, 
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, NULL, drlo, drup, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
 	  0, NULL, 0, NULL, NULL, NULL);
@@ -543,7 +543,7 @@ void SolveProblemGamsSos2a(void)
 	int nrow = 5;
 	int nels = 15;
 	int nrng = 0;
-	
+
 	char* objectname = "z";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
@@ -571,8 +571,8 @@ void SolveProblemGamsSos2a(void)
 
 	double optimalValue = 0.0;
 
-	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  sosCount, sosNZCount, sosType, NULL, sosBegin, sosIndex, NULL,
 	  0, NULL, 0, NULL, NULL, NULL);
@@ -586,7 +586,7 @@ void SolveProblemSemiCont(void)
 	int nrow = 3;
 	int nels = 6;
 	int nrng = 0;
-	
+
 	char* objectname = "z";
 	int objsens = SOLV_OBJSENS_MIN;
 	double objconst = 0.0;
@@ -611,8 +611,8 @@ void SolveProblemSemiCont(void)
 
 	double optimalValue = 1.1;
 
-	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
-	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg, 
+	RunTestProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
+	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, NULL, mbeg,
 	  mcnt, midx, mval, colnames, rownames, objectname, NULL, NULL,
 	  0, 0, NULL, NULL, NULL, NULL, NULL, semiCount, semiIndex,
 	  0, NULL, NULL, NULL);

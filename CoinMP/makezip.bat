@@ -68,5 +68,3 @@ copy ..\examples\csharp\bin\x86\Release\CoinMPTestCS9.exe  examples\csharp\bin\x
 copy ..\examples\csharp\bin\x64\Release\CoinMPTestCS9.exe  examples\csharp\bin\x64\Release
 
 cd ..
-
-

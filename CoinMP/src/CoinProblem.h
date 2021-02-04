@@ -26,7 +26,7 @@ typedef struct {
 				char* RowType;
 				int* MatrixBegin;
 				int* MatrixCount;
-				int* MatrixIndex; 
+				int* MatrixIndex;
 				double* MatrixValues;
 				double* LowerBounds;
 				double* UpperBounds;
@@ -78,9 +78,9 @@ void coinClearProblemObject(PPROBLEM pProblem);
 
 void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName);
 
-int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount, 
-				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds, 
-				double* UpperBounds, const char* RowType, double* RHSValues, double* RangeValues, 
+int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount,
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds,
+				double* UpperBounds, const char* RowType, double* RHSValues, double* RangeValues,
 				int* MatrixBegin, int* MatrixCount, int* MatrixIndex, double* MatrixValues);
 
 int coinStoreNamesList(PPROBLEM pProblem, char** ColNamesList, char** RowNamesList, const char* OjbectName);
@@ -89,10 +89,10 @@ int coinStoreNamesBuf(PPROBLEM pProblem, const char* ColNamesBuf, const char* Ro
 int coinStoreInitValues(PPROBLEM pProblem, double* InitValues);
 int coinStoreInteger(PPROBLEM pProblem, const char* ColType);
 
-int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex, 
+int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex,
 				int* PriorValues, int* PriorBranch);
-int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount, 
-				int* SosType, int* SosPrior, int* SosBegin, 
+int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount,
+				int* SosType, int* SosPrior, int* SosBegin,
 				int* SosIndex, double* SosRef);
 int coinStoreSemiCont(PPROBLEM pProblem, int SemiCount, int* SemiIndex);
 
@@ -112,4 +112,3 @@ int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count);
 
 
 #endif  /* _COINPROBLEM_H_ */
-

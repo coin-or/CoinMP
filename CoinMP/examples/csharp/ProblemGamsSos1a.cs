@@ -20,7 +20,7 @@ namespace CoinMPTest
 	        int nrow = NUM_ROWS;
 	        int nels = NUM_NZ;
 	        int nrng = NUM_RNG;
-	
+
 	        string objectname = "z";
 	        int objsens = CoinMP.SOLV_OBJSENS_MAX;
 	        double objconst = 0.0;
@@ -52,7 +52,7 @@ namespace CoinMPTest
 
 	        double optimalValue = 0.72;
 
-            solveProblem.RunProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
+            solveProblem.RunProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
 	            objsens, objconst, dobj, dclo, dcup, null, drlo, drup, mbeg,
                 mcnt, midx, mval, colNames, rowNames, objectname, null, null,
                 sosCount, sosNZCount, sosType, null, sosBegin, sosIndex, null,

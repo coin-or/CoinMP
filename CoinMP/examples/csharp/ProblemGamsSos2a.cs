@@ -20,14 +20,14 @@ namespace CoinMPTest
 	        int nrow = NUM_ROWS;
 	        int nels = NUM_NZ;
 	        int nrng = NUM_RNG;
-	
+
 	        string objectname = "z";
 	        int objsens = CoinMP.SOLV_OBJSENS_MIN;
 	        double objconst = 0.0;
 	        double[] dobj = new double[NUM_COLS] {0, 0, 0, 0, 0, 1, 1};
 
 	        double[] dclo = new double[NUM_COLS] {0.0, 0, 0, -DBL_MAX, -DBL_MAX, 0, 0};
-	        double[] dcup = new double[NUM_COLS] {DBL_MAX, DBL_MAX, DBL_MAX, DBL_MAX, 
+	        double[] dcup = new double[NUM_COLS] {DBL_MAX, DBL_MAX, DBL_MAX, DBL_MAX,
                                                   DBL_MAX, DBL_MAX, DBL_MAX};
 
 	        char[] rtyp = new char[NUM_ROWS]  {'E', 'E', 'E', 'G', 'G'};
@@ -49,7 +49,7 @@ namespace CoinMPTest
 
 	        double optimalValue = 0.0;
 
-            solveProblem.RunProblemMip(probname, optimalValue, ncol, nrow, nels, nrng, 
+            solveProblem.RunProblemMip(probname, optimalValue, ncol, nrow, nels, nrng,
 	            objsens, objconst, dobj, dclo, dcup, rtyp, drhs, null, mbeg,
                 mcnt, midx, mval, colNames, rowNames, objectname, null, null,
                 sosCount, sosNZCount, sosType, null, sosBegin, sosIndex, null,

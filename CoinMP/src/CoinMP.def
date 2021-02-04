@@ -251,5 +251,4 @@ EXPORTS
 	ClpSolve_presolveActions
 	ClpSolve_setPresolveActions
 	ClpSolve_substitution
-	ClpSolve_setSubstitution	
-	
+	ClpSolve_setSubstitution

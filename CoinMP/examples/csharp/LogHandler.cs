@@ -84,6 +84,6 @@ namespace CoinMPTest
                 txtLog.Text = "";
             }
         }
-        
+
     }
 }

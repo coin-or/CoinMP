@@ -1,18 +1,18 @@
 
-CoinMP.dll is a Windows dynamic linked library (DLL) that supports most 
-of the functionality of COIN-OR LP, COIN-OR Branch-and-Cut and Cut Generation 
-Library projects.  This CoinMP.dll distribution of the COIN-OR projects for 
-Windows has the advantages of being: high portability, does not require any 
-compilation, easy to use, and can be used from any other Windows application.  
+CoinMP.dll is a Windows dynamic linked library (DLL) that supports most
+of the functionality of COIN-OR LP, COIN-OR Branch-and-Cut and Cut Generation
+Library projects.  This CoinMP.dll distribution of the COIN-OR projects for
+Windows has the advantages of being: high portability, does not require any
+compilation, easy to use, and can be used from any other Windows application.
 
 For information how to build CoinMP, see the INSTALL file in the folder above.
 
-To use CoinMP in your own application, link in the CoinMP.lib file in the 
-CoinMP\MSVisualStudio\v8\Release folder and copy the CoinMP.dll file to the 
-same directory as your application.  The header file CoinMP.h in the CoinMP\src 
+To use CoinMP in your own application, link in the CoinMP.lib file in the
+CoinMP\MSVisualStudio\v8\Release folder and copy the CoinMP.dll file to the
+same directory as your application.  The header file CoinMP.h in the CoinMP\src
 folder contains the prototypes for all the functions in the DLL.
 
-The interface to this library designed to be as simple as possible, but still 
+The interface to this library designed to be as simple as possible, but still
 provide similar functionality as other solver DLL's availble.
 
 The CoinMP.dll file will work as is with the MPL for Windows Modeling System by
@@ -21,4 +21,3 @@ and restart MPL.
 
 Bjarni Kristjansson
 Maximal Software
-

@@ -53,4 +53,3 @@ const char* coinGetLogFilename(PSOLVER pSolver)
 {
 	return pSolver->LogFilename;
 }
-

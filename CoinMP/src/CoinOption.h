@@ -8,7 +8,7 @@
 
 #if defined(_MSC_VER) && !defined(HAVE_CONFIG_H)
 #define SOLVCALL   __stdcall
-#else 
+#else
 #define SOLVCALL
 #endif
 
@@ -118,4 +118,3 @@ int     coinSetRealOption(POPTION pOption, int OptionID, double RealValue);
 
 
 #endif  /* _COINOPTION_H_ */
-

@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form frmCoinMP 
+Begin VB.Form frmCoinMP
    Caption         =   "CoinMP Test"
    ClientHeight    =   6720
    ClientLeft      =   60
@@ -9,7 +9,7 @@ Begin VB.Form frmCoinMP
    ScaleHeight     =   6720
    ScaleWidth      =   7485
    StartUpPosition =   3  'Windows Default
-   Begin VB.TextBox txt 
+   Begin VB.TextBox txt
       Height          =   5535
       Left            =   240
       MultiLine       =   -1  'True
@@ -18,7 +18,7 @@ Begin VB.Form frmCoinMP
       Top             =   240
       Width           =   6975
    End
-   Begin VB.CommandButton cmdClear 
+   Begin VB.CommandButton cmdClear
       Caption         =   "Clear"
       Height          =   495
       Left            =   4200
@@ -26,7 +26,7 @@ Begin VB.Form frmCoinMP
       Top             =   6000
       Width           =   1335
    End
-   Begin VB.CommandButton cmdRunTest 
+   Begin VB.CommandButton cmdRunTest
       Caption         =   "Run Test"
       Height          =   495
       Left            =   1560
@@ -68,25 +68,25 @@ Dim version As Double
 
 
     result = CoinInitSolver("")
-    
+
     solverName = String(MAX_NAME_LEN, vbNullChar)
     length = CoinGetSolverNameBuf(solverName, MAX_NAME_LEN)
     solverName = Left(solverName, length)
-    
+
     version = CoinGetVersion()
-    
+
     LogEmptyText
     LogWriteLine "Solver: " & solverName
     LogWriteLine "Version:  " & version
 
-    
+
 End Sub
 
 
 Private Sub Form_Unload(Cancel As Integer)
 
 Dim result As Long
-    
+
 result = CoinFreeSolver()
 LogWriteLine "All unit tests completed successfully"
 
