@@ -119,7 +119,7 @@ namespace Coin.CoinMP
                         double[] rangeValues, int[] matrixBegin, int[] matrixCount, int[] matrixIndex,
                         double[] matrixValues);
 
-        [DllImport("coinmp.dll")] public static extern int CoinLoadNamesBuf(IntPtr hProb, string colNamesBuf, 
+        [DllImport("coinmp.dll")] public static extern int CoinLoadNamesBuf(IntPtr hProb, string colNamesBuf,
                         string rowNamesBuf, string objName);
 
         public static int CoinLoadNames(IntPtr hProb, string[] colNames, string[] rowNames, string objName)
@@ -139,8 +139,8 @@ namespace Coin.CoinMP
                         double[] rangeValues, int[] matrixBegin, int[] matrixCount, int[] matrixIndex,
                         double[] matrixValues, string[] colNames, string[] rowNames, string objName)
         {
-            return CoinLoadProblemBuf(hProb, colCount, rowCount, nzCount, rangeCount, objectSense, 
-                        objectConst, objectCoeffs, lowerBounds, upperBounds, rowType, rhsValues, 
+            return CoinLoadProblemBuf(hProb, colCount, rowCount, nzCount, rangeCount, objectSense,
+                        objectConst, objectCoeffs, lowerBounds, upperBounds, rowType, rhsValues,
                         rangeValues, matrixBegin, matrixCount, matrixIndex, matrixValues,
                         GenerateNamesBuf(colNames), GenerateNamesBuf(rowNames), objName);
 
@@ -150,7 +150,7 @@ namespace Coin.CoinMP
         public static int CoinLoadProblem(IntPtr hProb, int colCount, int rowCount, int nzCount,
                         int rangeCount, int objectSense, double objectConst, double[] objectCoeffs,
                         double[] lowerBounds, double[] upperBounds, double[] rowLower, double[] rowUpper,
-                        int[] matrixBegin, int[] matrixCount, int[] matrixIndex, double[] matrixValues, 
+                        int[] matrixBegin, int[] matrixCount, int[] matrixIndex, double[] matrixValues,
                         string[] colNames, string[] rowNames, string objName)
         {
             return CoinLoadProblemBuf(hProb, colCount, rowCount, nzCount, rangeCount, objectSense,
@@ -247,7 +247,7 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinLocateOptionName(IntPtr hProb, string optionName);
 
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionID(IntPtr hProb, int optionNr);
-        [DllImport("coinmp.dll")] public static extern int CoinGetOptionInfo(IntPtr hProb, int optionNr, 
+        [DllImport("coinmp.dll")] public static extern int CoinGetOptionInfo(IntPtr hProb, int optionNr,
                         [In, Out] int[] optionID, [In, Out] int[] groupType, [In, Out] int[] optionType);
         [DllImport("coinmp.dll")] public static extern int CoinGetIntOptionMinMax(IntPtr hProb, int optionNr,
                         [In, Out] int[] minValue, [In, Out] int[] maxValue);
@@ -256,7 +256,7 @@ namespace Coin.CoinMP
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionNamesBuf(IntPtr hProb, int optionNr,
                         StringBuilder optionName, StringBuilder shortName, int buflen);
 
-						
+
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionGroup(IntPtr hProb, int optionID);
         [DllImport("coinmp.dll")] public static extern int CoinGetOptionType(IntPtr hProb, int optionID);
 

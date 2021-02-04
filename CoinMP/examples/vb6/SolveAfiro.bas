@@ -1,7 +1,7 @@
 Attribute VB_Name = "SolveAfiro"
 Option Explicit
 
-    
+
 
 Public Sub SolveProblemAfiro()
 
@@ -9,7 +9,7 @@ Const NUM_COLS As Long = 32
 Const NUM_ROWS As Long = 27
 Const NUM_NZ As Long = 83
 Const NUM_RNG As Long = 0
-    
+
 Dim problemName As String
 Dim colCount As Long
 Dim rowCount As Long
@@ -155,7 +155,7 @@ upperBounds(28) = 1E+37
 upperBounds(29) = 1E+37
 upperBounds(30) = 1E+37
 upperBounds(31) = 1E+37
-    
+
 rowType(0) = Asc("E")
 rowType(1) = Asc("E")
 rowType(2) = Asc("L")
@@ -245,7 +245,7 @@ matrixBegin(29) = 78
 matrixBegin(30) = 80
 matrixBegin(31) = 82
 matrixBegin(32) = 83
-    
+
 matrixCount(0) = 4
 matrixCount(1) = 2
 matrixCount(2) = 2
@@ -551,13 +551,5 @@ RunTestProblem problemName, optimalValue, colCount, rowCount, _
     lowerBounds(0), upperBounds(0), rowType(0), rhsValues(0), 0&, _
     matrixBegin(0), matrixCount(0), matrixIndex(0), matrixValues(0), _
     colNames, rowNames, objectName, 0&, 0&
-    
+
 End Sub
-
-
-
-
-
-
-
-

@@ -22,7 +22,7 @@ Dim hProb As Long
 Dim solutionStatus As Long
 Dim solutionText As String
 Dim objectValue As Double
-    
+
 Dim activity() As Double
 Dim reduced() As Double
 Dim slack() As Double
@@ -64,19 +64,19 @@ Dim ch As String
     'result = CoinSetMsgLogCallback(hProb, AddressOf MsgLogCallback)
     result = CoinOptimizeProblem(hProb, 0)
     result = CoinWriteFile(hProb, SOLV_FILE_MPS, problemName + ".mps")
-   
+
     problemName = CoinGetProblemName(hProb)
     solutionStatus = CoinGetSolutionStatus(hProb)
     solutionText = CoinGetSolutionText(hProb)
     objectValue = CoinGetObjectValue(hProb)
-      
+
     LogWriteLine "---------------------------------------------------------------"
     LogWriteLine "Problem Name:    " & problemName
     LogWriteLine "Solution Result: " & solutionText
     LogWriteLine "Solution Status: " & solutionStatus
     LogWriteLine "Optimal Value:   " & objectValue & " (" & optimalValue & ")"
     LogWriteLine "---------------------------------------------------------------"
-    
+
     colCount = CoinGetColCount(hProb)
     rowCount = CoinGetRowCount(hProb)
     ReDim activity(colCount)
@@ -92,9 +92,7 @@ Dim ch As String
     Next i
     LogWriteLine "---------------------------------------------------------------"
     LogWriteLine ""
-    
+
     result = CoinUnloadProblem(hProb)
-          
+
 End Sub
-
-

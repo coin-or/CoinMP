@@ -11,7 +11,7 @@ namespace CoinMPTest
 {
     public partial class formCoinMP : Form
     {
- 
+
         public formCoinMP()
         {
             int result;
@@ -28,7 +28,6 @@ namespace CoinMPTest
             LogHandler.EmptyText(txtLog);
             LogHandler.WriteLine(txtLog, "Solver: " + solverName);
             LogHandler.WriteLine(txtLog, "Version: " + version);
-            
         }
 
 

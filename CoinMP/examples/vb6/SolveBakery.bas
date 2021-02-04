@@ -7,7 +7,7 @@ Public Sub SolveProblemBakery()
 Const NUMCOLS As Long = 2
 Const NUMROWS As Long = 3
 Const NUMNZ As Long = 4
-    
+
 Dim problemName As String
 Dim colCount As Long
 Dim rowCount As Long
@@ -66,7 +66,7 @@ lowerBounds(1) = 0
 
 upperBounds(0) = 1000000
 upperBounds(1) = 1000000
-    
+
 rowType(0) = Asc("L")
 rowType(1) = Asc("L")
 rowType(2) = Asc("L")
@@ -74,11 +74,11 @@ rowType(2) = Asc("L")
 rhsValues(0) = 1400
 rhsValues(1) = 8000
 rhsValues(2) = 5000
-    
+
 matrixBegin(0) = 0
 matrixBegin(1) = 2
 matrixBegin(2) = 4
-    
+
 matrixCount(0) = 2
 matrixCount(1) = 2
 
@@ -86,7 +86,7 @@ matrixIndex(0) = 0
 matrixIndex(1) = 1
 matrixIndex(2) = 0
 matrixIndex(3) = 2
-    
+
 matrixValues(0) = 0.1
 matrixValues(1) = 1
 matrixValues(2) = 0.2
@@ -105,7 +105,7 @@ rowNames(2) = "c3"
 'rowNamesBuf = "c1" & vbNullChar & _
 '              "c2" & vbNullChar & _
 '              "c3" & vbNullChar
-    
+
 colNamesBuf = CoinGenerateNamesBuf(colNames, NUMCOLS)
 rowNamesBuf = CoinGenerateNamesBuf(rowNames, NUMROWS)
 
@@ -116,7 +116,5 @@ RunTestProblem problemName, optimalValue, colCount, rowCount, _
     lowerBounds(0), upperBounds(0), rowType(0), rhsValues(0), 0&, _
     matrixBegin(0), matrixCount(0), matrixIndex(0), matrixValues(0), _
     colNames, rowNames, objectName, 0&, 0&
-    
+
 End Sub
-
-

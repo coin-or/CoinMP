@@ -335,4 +335,3 @@ int coinSetRealOption(POPTION pOption, int OptionID, double RealValue)
 	pOption->OptionTable[OptionNr].changed = 1;
 	return 0;
 }
-

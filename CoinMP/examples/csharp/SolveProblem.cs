@@ -181,7 +181,7 @@ namespace CoinMPTest
                 result = CoinMP.CoinLoadPriority(hProb, priorCount, priorIndex, priorValues, priorBranch);
             }
             if (sosCount > 0) {
-		        result = CoinMP.CoinLoadSos(hProb, sosCount, sosNZCount, sosType, sosPrior, sosBegin, 
+		        result = CoinMP.CoinLoadSos(hProb, sosCount, sosNZCount, sosType, sosPrior, sosBegin,
                     sosIndex, sosRef);
             }
             if (semiCount > 0) {

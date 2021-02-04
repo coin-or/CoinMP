@@ -94,7 +94,7 @@ Public Declare Function CoinLoadSemiCont Lib "CoinMP.dll" (ByVal hProb As Long, 
 Public Declare Function CoinLoadQuadratic Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByRef QuadBegin As Long, ByRef QuadCount As Long, _
     ByRef QuadIndex As Long, ByRef QuadValues As Double) As Long
-    
+
 Public Declare Function CoinLoadNonlinear Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal NlpTreeCount As Long, ByVal NlpLineCount As Long, _
     ByRef NlpBegin As Long, ByRef NlpOper As Long, ByRef NlpArg1 As Long, _
@@ -115,30 +115,30 @@ Public Declare Function CoinGetRowCount Lib "CoinMP.dll" (ByVal hProb As Long) A
 
 Public Declare Function CoinGetColNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal col As Long, ByVal colName As String, ByVal buflen As Long) As Long
-    
+
 Public Declare Function CoinGetRowNameBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal row As Long, ByVal rowName As String, ByVal buflen As Long) As Long
 
 
 Public Declare Function CoinSetMsgLogCallback Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal MsgLogCallback As Long) As Long
-    
+
 Public Declare Function CoinSetIterCallback Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal IterCallback As Long) As Long
 
 Public Declare Function CoinSetMipNodeCallback Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal MipNodeCallback As Long) As Long
-    
-    
+
+
 Public Declare Function CoinOptimizeProblem Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal Method As Long) As Long
-   
-    
+
+
 Public Declare Function CoinGetSolutionStatus Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
 Public Declare Function CoinGetSolutionTextBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal solutionText As String, ByVal buflen As Long) As Long
-    
+
 Public Declare Function CoinGetObjectValue Lib "CoinMP.dll" (ByVal hProb As Long) As Double
 
 Public Declare Function CoinGetMipBestBound Lib "CoinMP.dll" (ByVal hProb As Long) As Double
@@ -155,20 +155,20 @@ Public Declare Function CoinGetSolutionValues Lib "CoinMP.dll" (ByVal hProb As L
 Public Declare Function CoinGetSolutionRanges Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByRef ObjLoRange As Double, ByRef ObjUpRange As Double, _
     ByRef RhsLoRange As Double, ByRef RhsUpRange As Double) As Long
-    
+
 Public Declare Function CoinGetSolutionBasis Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByRef ColStatus As Long, ByRef RowStatus As Double) As Long
 
 
 Public Declare Function CoinReadFile Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal FileType As Long, ByVal ReadFilename As String) As Long
-    
+
 Public Declare Function CoinWriteFile Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal FileType As Long, ByVal WriteFilename As String) As Long
 
 Public Declare Function CoinOpenLogFile Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal LogFilename As String) As Long
-    
+
 Public Declare Function CoinCloseLogFile Lib "CoinMP.dll" (ByVal hProb As Long) As Long
 
 
@@ -187,7 +187,7 @@ Public Declare Function CoinGetOptionInfo Lib "CoinMP.dll" (ByVal hProb As Long,
 
 Public Declare Function CoinGetIntOptionMinMax Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionNr As Long, ByRef MinValue As Long, ByRef MaxValue As Long) As Long
-    
+
 Public Declare Function CoinGetRealOptionMinMax Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionNr As Long, ByRef MinValue As Double, ByRef MaxValue As Double) As Long
 
@@ -220,27 +220,27 @@ Public Declare Function CoinGetOptionChanged Lib "CoinMP.dll" (ByVal hProb As Lo
 
 Public Declare Function CoinGetIntOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long) As Long
-    
+
 Public Declare Function CoinSetIntOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, IntValue As Long) As Long
 
 Public Declare Function CoinGetRealOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long) As Double
-    
+
 Public Declare Function CoinSetRealOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, ByVal RealValue As Double) As Long
 
 Public Declare Function CoinGetStringOptionBuf Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, ByVal StringValue As String, ByVal buflen As Long) As Long
-    
+
 Public Declare Function CoinSetStringOption Lib "CoinMP.dll" (ByVal hProb As Long, _
     ByVal OptionID As Long, ByVal StringValue As String) As Long
-    
-    
+
+
 Public Function CoinGenerateNamesBuf(NamesList() As String, Count As Long) As String
     Dim i As Long
     Dim namesBuf As String
-    
+
     If Count > 0 Then
         namesBuf = NamesList(0) + vbNullChar
         For i = 1 To Count - 1
@@ -255,7 +255,7 @@ End Function
 Public Function CoinGetSolverName() As String
     Dim solverName As String
     Dim length As Long
-    
+
     solverName = String(1000, vbNullChar)
     length = CoinGetSolverNameBuf(solverName, 1000)
     CoinGetSolverName = Left(solverName, length)
@@ -265,7 +265,7 @@ End Function
 Public Function CoinGetVersionStr() As String
     Dim versionStr As String
     Dim length As Long
-    
+
     versionStr = String(1000, vbNullChar)
     length = CoinGetVersionStrBuf(versionStr, 1000)
     CoinGetVersionStr = Left(versionStr, length)
@@ -276,7 +276,7 @@ Public Function CoinLoadNames(ByVal hProb As Long, _
     ByRef colNames() As String, ByRef rowNames() As String, ByVal objName As String) As Integer
     Dim colCount As Long
     Dim rowCount As Long
-    
+
     colCount = CoinGetColCount(hProb)
     rowCount = CoinGetRowCount(hProb)
     CoinLoadNames = CoinLoadNamesBuf(hProb, CoinGenerateNamesBuf(colNames, colCount), _
@@ -292,7 +292,7 @@ Public Function CoinLoadProblem(ByVal hProb As Long, _
     ByRef rhsValues As Double, ByRef rangeValues As Double, ByRef matrixBegin As Long, _
     ByRef matrixCount As Long, ByRef matrixIndex As Long, ByRef matrixValues As Double, _
     ByRef colNames() As String, ByRef rowNames() As String, ByVal objName As String) As Integer
-    
+
     CoinLoadProblem = CoinLoadProblemBuf(hProb, colCount, rowCount, nonZeroCount, rangeCount, _
                     objectSense, objectConst, objectCoeffs, lowerBounds, upperBounds, rowType, _
                     rhsValues, rangeValues, matrixBegin, matrixCount, matrixIndex, matrixValues, _
@@ -305,7 +305,7 @@ End Function
 Public Function CoinGetProblemName(ByVal hProb As Long) As String
     Dim problemName As String
     Dim length As Long
-    
+
     problemName = String(1000, vbNullChar)
     length = CoinGetProblemNameBuf(hProb, problemName, 1000)
     CoinGetProblemName = Left(problemName, length)
@@ -315,7 +315,7 @@ End Function
 Public Function CoinGetColName(ByVal hProb As Long, ByVal col As Long) As String
     Dim colName As String
     Dim length As Long
-    
+
     colName = String(1000, vbNullChar)
     length = CoinGetColNameBuf(hProb, col, colName, 1000)
     CoinGetColName = Left(colName, length)
@@ -325,7 +325,7 @@ End Function
 Public Function CoinGetRowName(ByVal hProb As Long, ByVal row As Long) As String
     Dim rowName As String
     Dim length As Long
-    
+
     rowName = String(1000, vbNullChar)
     length = CoinGetRowNameBuf(hProb, row, rowName, 1000)
     CoinGetRowName = Left(rowName, length)
@@ -335,7 +335,7 @@ End Function
 Public Function CoinGetSolutionText(ByVal hProb As Long) As String
     Dim solutionText As String
     Dim length As Long
-    
+
     solutionText = String(1000, vbNullChar)
     length = CoinGetSolutionTextBuf(hProb, solutionText, 1000)
     CoinGetSolutionText = Left(solutionText, length)
@@ -345,7 +345,7 @@ End Function
 Public Function CoinGetOptionName(ByVal hProb As Long, ByVal OptionID As Long) As String
     Dim optionName As String
     Dim length As Long
-    
+
     optionName = String(1000, vbNullChar)
     length = CoinGetOptionNameBuf(hProb, OptionID, optionName, 1000)
     CoinGetOptionName = Left(optionName, length)
@@ -365,10 +365,8 @@ End Function
 Public Function CoinGetStringOption(ByVal hProb As Long, ByVal OptionID As Long) As String
     Dim stringOption As String
     Dim length As Long
-    
+
     stringOption = String(1000, vbNullChar)
     length = CoinGetStringOptionBuf(hProb, OptionID, stringOption, 1000)
     CoinGetStringOption = Left(stringOption, length)
 End Function
-
-

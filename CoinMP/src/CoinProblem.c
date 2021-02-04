@@ -33,7 +33,7 @@ PPROBLEM coinCreateProblemObject()
 	pProblem->RowType      = NULL;
 	pProblem->MatrixBegin  = NULL;
 	pProblem->MatrixCount  = NULL;
-	pProblem->MatrixIndex  = NULL; 
+	pProblem->MatrixIndex  = NULL;
 	pProblem->MatrixValues = NULL;
 	pProblem->LowerBounds  = NULL;
 	pProblem->UpperBounds  = NULL;
@@ -89,7 +89,7 @@ void coinClearProblemObject(PPROBLEM pProblem)
 	if (pProblem->RowType)      free(pProblem->RowType);
 	if (pProblem->MatrixBegin)  free(pProblem->MatrixBegin);
 	if (pProblem->MatrixCount)  free(pProblem->MatrixCount);
-	if (pProblem->MatrixIndex)  free(pProblem->MatrixIndex); 
+	if (pProblem->MatrixIndex)  free(pProblem->MatrixIndex);
 	if (pProblem->MatrixValues) free(pProblem->MatrixValues);
 	if (pProblem->LowerBounds)  free(pProblem->LowerBounds);
 	if (pProblem->UpperBounds)  free(pProblem->UpperBounds);
@@ -137,9 +137,9 @@ void coinSetProblemName(PPROBLEM pProblem, const char *ProblemName)
 }
 
 
-int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount, 
-				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds, 
-				double* UpperBounds, const char* RowType, double* RHSValues, double* RangeValues, 
+int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, int RangeCount,
+				int ObjectSense, double ObjectConst, double* ObjectCoeffs, double* LowerBounds,
+				double* UpperBounds, const char* RowType, double* RHSValues, double* RangeValues,
 				int* MatrixBegin, int* MatrixCount, int* MatrixIndex, double* MatrixValues)
 {
 	if (ColCount == 0) {
@@ -160,18 +160,18 @@ int coinStoreMatrix(PPROBLEM pProblem,	int ColCount, int RowCount, int NZCount, 
 	if (RangeValues)  pProblem->RangeValues  = (double*) malloc(pProblem->RowCount     * sizeof(double));
 	if (MatrixBegin)  pProblem->MatrixBegin  = (int*)    malloc((pProblem->ColCount+1) * sizeof(int));
 	if (MatrixCount)  pProblem->MatrixCount  = (int*)    malloc(pProblem->ColCount     * sizeof(int));
-	if (MatrixIndex)  pProblem->MatrixIndex  = (int*)    malloc(pProblem->NZCount      * sizeof(int)); 
+	if (MatrixIndex)  pProblem->MatrixIndex  = (int*)    malloc(pProblem->NZCount      * sizeof(int));
 	if (MatrixValues) pProblem->MatrixValues = (double*) malloc(pProblem->NZCount      * sizeof(double));
 
-	if ((ObjectCoeffs && !pProblem->ObjectCoeffs) || 
-		(LowerBounds  && !pProblem->LowerBounds) ||  
-		(UpperBounds  && !pProblem->UpperBounds) || 
-		(RowType      && !pProblem->RowType)     || 
-		(RHSValues    && !pProblem->RHSValues)   ||  
-		(RangeValues  && !pProblem->RangeValues) || 
-		(MatrixBegin  && !pProblem->MatrixBegin) || 
-		(MatrixCount  && !pProblem->MatrixCount) ||  
-		(MatrixIndex  && !pProblem->MatrixIndex) || 
+	if ((ObjectCoeffs && !pProblem->ObjectCoeffs) ||
+		(LowerBounds  && !pProblem->LowerBounds)  ||
+		(UpperBounds  && !pProblem->UpperBounds)  ||
+		(RowType      && !pProblem->RowType)      ||
+		(RHSValues    && !pProblem->RHSValues)    ||
+		(RangeValues  && !pProblem->RangeValues)  ||
+		(MatrixBegin  && !pProblem->MatrixBegin)  ||
+		(MatrixCount  && !pProblem->MatrixCount)  ||
+		(MatrixIndex  && !pProblem->MatrixIndex)  ||
 		(MatrixValues && !pProblem->MatrixValues)) {
 		return 0;
 	}
@@ -249,7 +249,7 @@ int coinStoreInitValues(PPROBLEM pProblem, double* InitValues)
 {
 	if (!InitValues) {
 		return 0;
-	}	
+	}
 	pProblem->InitValues = (double* ) malloc(pProblem->ColCount * sizeof(double));
 	if (!pProblem->InitValues) {
 		return 0;
@@ -280,7 +280,7 @@ int coinStoreInteger(PPROBLEM pProblem, const char* ColType)
 }
 
 
-int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex, 
+int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex,
 				int* PriorValues, int* PriorBranch)
 {
 	if (PriorCount == 0) {
@@ -291,8 +291,8 @@ int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex,
 	if (PriorValues) pProblem->PriorValues = (int* )malloc(PriorCount * sizeof(int));
 	if (PriorBranch) pProblem->PriorBranch = (int* )malloc(PriorCount * sizeof(int));
 
-	if ((PriorIndex && !pProblem->PriorIndex) || 
-		(PriorValues  && !pProblem->PriorValues) ||  
+	if ((PriorIndex && !pProblem->PriorIndex) ||
+		(PriorValues  && !pProblem->PriorValues) ||
 		(PriorBranch  && !pProblem->PriorBranch)) {
 		return 0;
 	}
@@ -303,8 +303,8 @@ int coinStorePriority(PPROBLEM pProblem, int PriorCount, int* PriorIndex,
 }
 
 
-int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount, 
-				int* SosType, int* SosPrior, int* SosBegin, 
+int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount,
+				int* SosType, int* SosPrior, int* SosBegin,
 				int* SosIndex, double* SosRef)
 {
 	if ((SosCount == 0) || (SosNZCount == 0)) {
@@ -319,10 +319,10 @@ int coinStoreSos(PPROBLEM pProblem, int SosCount, int SosNZCount,
 	if (SosIndex) pProblem->SosIndex = (int* )malloc(SosNZCount   * sizeof(int));
 	if (SosRef)   pProblem->SosRef   = (double* )malloc(SosNZCount* sizeof(double));
 
-	if ((SosType && !pProblem->SosType) || 
-		(SosPrior  && !pProblem->SosPrior) ||  
-		(SosBegin  && !pProblem->SosBegin) ||  
-		(SosIndex  && !pProblem->SosIndex) ||  
+	if ((SosType && !pProblem->SosType) ||
+		(SosPrior  && !pProblem->SosPrior) ||
+		(SosBegin  && !pProblem->SosBegin) ||
+		(SosIndex  && !pProblem->SosIndex) ||
 		(SosRef  && !pProblem->SosRef)) {
 		return 0;
 	}
@@ -428,12 +428,12 @@ int coinComputeIntVariables(PPROBLEM pProblem)
 	}
 	for (i = 0; i < pProblem->ColCount; i++ ) {
 		switch (pProblem->ColType[i]) {
-			case 'B': 
+			case 'B':
 				pProblem->BinCount++;
 				pProblem->IsInt[i] = 1;
 				break;
 
-			case 'I': 
+			case 'I':
 				pProblem->IntCount++;
 				pProblem->IsInt[i] = 1;
 				break;
@@ -512,4 +512,3 @@ int coinSetupNamesList(char** NamesList, const char* NamesBuf, int Count)
 	}
 	return 1;
 }
-

@@ -14,5 +14,3 @@ End Sub
 Public Sub LogEmptyText()
     frmCoinMP.txt = ""
 End Sub
-
-

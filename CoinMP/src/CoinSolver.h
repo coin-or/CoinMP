@@ -8,36 +8,36 @@
 
 #if defined(_MSC_VER) && !defined(HAVE_CONFIG_H)
 #define SOLVCALL   __stdcall
-#else 
+#else
 #define SOLVCALL
 #endif
 
-typedef int (SOLVCALL * COIN_MSGLOG_CB)(const char* MessageStr, 
+typedef int (SOLVCALL * COIN_MSGLOG_CB)(const char* MessageStr,
 					void* UserParam);
 
-typedef int (SOLVCALL *COIN_LPITER_CB)(int    IterCount, 
+typedef int (SOLVCALL *COIN_LPITER_CB)(int    IterCount,
 					double ObjectValue,
-					int    IsFeasible, 
+					int    IsFeasible,
 					double InfeasValue,
 					void*  UserParam);
 
-typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount, 
+typedef int (SOLVCALL *COIN_MIPNODE_CB)(int    IterCount,
 					int    MipNodeCount,
 					double BestBound,
 					double BestInteger,
-					int    IsMipImproved, 
+					int    IsMipImproved,
 					void*  UserParam);
 
 
 /* Depreciated, use COIN_XXX_CB instead */
 typedef int (SOLVCALL  *MSGLOGCALLBACK)(const char* MessageStr);
 
-typedef int (SOLVCALL  *ITERCALLBACK)(int    IterCount, 
+typedef int (SOLVCALL  *ITERCALLBACK)(int    IterCount,
 							double ObjectValue,
-							int    IsFeasible, 
+							int    IsFeasible,
 							double InfeasValue);
 
-typedef int (SOLVCALL *MIPNODECALLBACK)(int    IterCount, 
+typedef int (SOLVCALL *MIPNODECALLBACK)(int    IterCount,
 							   int	  MipNodeCount,
 							   double BestBound,
 							   double BestInteger,
@@ -81,4 +81,3 @@ const char* coinGetLogFilename(PSOLVER pSolver);
 
 
 #endif  /* _COINSOLVER_H_ */
-

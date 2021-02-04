@@ -1,7 +1,7 @@
 Attribute VB_Name = "SolveCoinTest"
 Option Explicit
 
-    
+
 '*************************************************************************
 '*   This problem is copied from coinutils\test\CoinPackedMatrixTest
 '*
@@ -19,7 +19,7 @@ Public Sub SolveProblemCoinTest()
 Const NUM_COLS As Long = 8
 Const NUM_ROWS As Long = 5
 Const NUM_NZ As Long = 14
-    
+
 Dim problemName As String
 Dim colCount As Long
 Dim rowCount As Long
@@ -93,7 +93,7 @@ upperBounds(4) = 1000000
 upperBounds(5) = 1000000
 upperBounds(6) = 1000000
 upperBounds(7) = 1000000
-    
+
 rowType(0) = Asc("L")
 rowType(1) = Asc("L")
 rowType(2) = Asc("L")
@@ -115,7 +115,7 @@ matrixBegin(5) = 10
 matrixBegin(6) = 11
 matrixBegin(7) = 12
 matrixBegin(8) = 14
-    
+
 matrixCount(0) = 2
 matrixCount(1) = 2
 matrixCount(2) = 2
@@ -184,7 +184,7 @@ rowNames(4) = "r5"
 '           "r3" & vbNullChar & _
 '           "r4" & vbNullChar & _
 '           "r5" & vbNullChar
-    
+
 colNamesBuf = CoinGenerateNamesBuf(colNames, NUM_COLS)
 rowNamesBuf = CoinGenerateNamesBuf(rowNames, NUM_ROWS)
 
@@ -195,9 +195,5 @@ RunTestProblem problemName, optimalValue, colCount, rowCount, _
     lowerBounds(0), upperBounds(0), rowType(0), rhsValues(0), 0&, _
     matrixBegin(0), matrixCount(0), matrixIndex(0), matrixValues(0), _
     colNames, rowNames, objectName, 0&, 0&
-    
+
 End Sub
-
-
-
-

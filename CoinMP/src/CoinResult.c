@@ -61,5 +61,3 @@ void coinClearResultObject(PRESULT pResult)
 	if (pResult->ColStatus)     free(pResult->ColStatus);
 	free(pResult);
 }
-
-

@@ -1,5 +1,5 @@
 
-/*  CoinCbc.cpp  */
+/*  CoinCbc.h  */
 
 
 #ifndef _COINCBC_H_
@@ -70,7 +70,7 @@ int CbcSetRealOption(int OptionID, double RealValue);
 #define COIN_INT_DUALPIVOTALG    6
 #define COIN_INT_LOGLEVEL        7
 #define COIN_INT_MAXITER         8
-#define COIN_INT_CRASHIND        9     
+#define COIN_INT_CRASHIND        9
 #define COIN_INT_CRASHPIVOT     10
 #define COIN_REAL_CRASHGAP      11
 #define COIN_REAL_PRIMALOBJLIM  12
@@ -140,8 +140,8 @@ int CbcSetRealOption(int OptionID, double RealValue);
 #define COIN_INT_MIPLIFTPRO_BETAONE      172
 
 #define COIN_INT_MIPCUT_SIMPROUND        180
-#define COIN_INT_MIPSIMPROUND_FREQ       181   
+#define COIN_INT_MIPSIMPROUND_FREQ       181
 
-#define COIN_INT_MIPUSECBCMAIN           200   
+#define COIN_INT_MIPUSECBCMAIN           200
 
 #endif  /* _COINCBC_H_ */

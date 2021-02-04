@@ -41,15 +41,15 @@
     <!-- Fill in your text below (outside the comment block)       -->
 
     <projectDescription>
-    CoinMP is a C-API interface library that supports most of the 
-    functionality of the CLP (Coin LP), CBC (Coin Branch-and-Cut), and 
-    CGL (Cut Generation Library) projects. 
-    When compiled for Windows it generates a CoinMP.dll library that 
-    can be readily used in other Windows C/C++ projects.  
-    When compiled for Unix it generates a CoinMP.so library that can 
+    CoinMP is a C-API interface library that supports most of the
+    functionality of the CLP (Coin LP), CBC (Coin Branch-and-Cut), and
+    CGL (Cut Generation Library) projects.
+    When compiled for Windows it generates a CoinMP.dll library that
+    can be readily used in other Windows C/C++ projects.
+    When compiled for Unix it generates a CoinMP.so library that can
     be similarly used in other Unix C/C++ projects.
-    The project includes precompiled CoinMP.dll that is ready to be 
-    used as is in other Windows applications.  
+    The project includes precompiled CoinMP.dll that is ready to be
+    used as is in other Windows applications.
     </projectDescription>
     <projectShortDescription>
       A lightweight API and DLL for CLP, CBC, and CGL.
@@ -141,13 +141,13 @@
           CoinUtils
         </repoName>
       </coinProject>
-      
+
       <coinProject>
         <repoName>
           Clp
         </repoName>
       </coinProject>
-      
+
       <coinProject>
         <repoName>
           Cbc
@@ -292,7 +292,7 @@
     <!--   </platform>                                             -->
     <!--                                                           -->
     <!--   <platform>                                              -->
-    <!--      <operatingSystem>Linux</operatingSystem> -->
+    <!--      <operatingSystem>Linux</operatingSystem>             -->
     <!--      <compiler>gcc</compiler>                             -->
     <!--   </platform>                                             -->
     <!--                                                           -->
@@ -311,7 +311,7 @@
     <!--      <compiler>sunpro</compiler>                          -->
     <!--   </platform>                                             -->
     <!--                                                           -->
-    <!--</testedPlatforms>					       -->
+    <!--</testedPlatforms>                                         -->
     <!--                                                           -->
     <!--Fill in your text below (outside the comment block).       -->
 
@@ -321,31 +321,31 @@
         <operatingSystem>Microsoft Windows</operatingSystem>
         <compiler>MSVC++/cl</compiler>
       </platform>
-      <platform>                                              
-         <operatingSystem>Microsoft Windows</operatingSystem> 
-         <compiler>CYGWIN/gcc</compiler>                      
+      <platform>
+         <operatingSystem>Microsoft Windows</operatingSystem>
+         <compiler>CYGWIN/gcc</compiler>
       </platform>
-      <platform>                                              
-         <operatingSystem>Microsoft Windows</operatingSystem> 
-         <compiler>MSys/gcc/cl</compiler>                        
-      </platform>                                             
+      <platform>
+         <operatingSystem>Microsoft Windows</operatingSystem>
+         <compiler>MSys/gcc/cl</compiler>
+      </platform>
       <platform>
         <operatingSystem>Linux</operatingSystem>
         <compiler>gcc/g++</compiler>
       </platform>
-      <platform>                                             
-        <operatingSystem>Mac OSX</operatingSystem>           
-        <compiler>gcc</compiler>                             
-      </platform>                                            
-      <platform>                                             
-        <operatingSystem>Solaris x86</operatingSystem>       
-        <compiler>gcc</compiler>                             
-      </platform>                                            
+      <platform>
+        <operatingSystem>Mac OSX</operatingSystem>
+        <compiler>gcc</compiler>
+      </platform>
+      <platform>
+        <operatingSystem>Solaris x86</operatingSystem>
+        <compiler>gcc</compiler>
+      </platform>
 
     </testedPlatforms>
 
     <projectCategories>
-      <!-- Start  of projectCategories block   -->
+      <!-- Start  of projectCategories block                -->
 
       <!--Below is the list of COIN-OR project categores.    -->
       <!--Simply "un-comment" any categories that apply to   -->
@@ -357,15 +357,15 @@
       <!--    <category>                                     -->
       <!--        Graphs                                     -->
       <!--    </category>                                    -->
-          <category>                                     
-              Interfaces                                
-          </category>                                   
+          <category>
+              Interfaces
+          </category>
       <!--    <category>                                     -->
       <!--        Metaheuristics                             -->
       <!--    </category>                                    -->
-          <category>                                    
-             Modeling systems                           
-          </category>                                   
+          <category>
+             Modeling systems
+          </category>
       <!--    <category>                                     -->
       <!--        Optimization convex non-differentiable     -->
       <!--    </category>                                    -->
@@ -387,9 +387,9 @@
       <!--    <category>                                     -->
       <!--        Optimization stochastic                    -->
       <!--    </category>                                    -->
-          <category>                                   
-             Optimization utility                      
-         </category>                                   
+          <category>
+             Optimization utility
+         </category>
 
       <!-- End of projectCategories block                    -->
     </projectCategories>

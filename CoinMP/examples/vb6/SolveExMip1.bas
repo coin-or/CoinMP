@@ -1,7 +1,7 @@
 Attribute VB_Name = "SolveExMip1"
 Option Explicit
 
-    
+
 
 Public Sub SolveProblemExMip1()
 
@@ -9,7 +9,7 @@ Const NUM_COLS As Long = 8
 Const NUM_ROWS As Long = 5
 Const NUM_NZ As Long = 14
 Const NUM_RNG As Long = 2
-    
+
 Dim problemName As String
 Dim colCount As Long
 Dim rowCount As Long
@@ -83,7 +83,7 @@ upperBounds(4) = 4
 upperBounds(5) = 1E+37
 upperBounds(6) = 1E+37
 upperBounds(7) = 4.3
-    
+
 rowType(0) = Asc("G")
 rowType(1) = Asc("L")
 rowType(2) = Asc("E")
@@ -111,7 +111,7 @@ matrixBegin(5) = 10
 matrixBegin(6) = 11
 matrixBegin(7) = 12
 matrixBegin(8) = 14
-    
+
 matrixCount(0) = 2
 matrixCount(1) = 2
 matrixCount(2) = 2
@@ -181,10 +181,10 @@ rowNames(4) = "row05"
 '           "row03" & vbNullChar & _
 '           "row04" & vbNullChar & _
 '           "row05" & vbNullChar
-    
+
 colNamesBuf = CoinGenerateNamesBuf(colNames, NUM_COLS)
 rowNamesBuf = CoinGenerateNamesBuf(rowNames, NUM_ROWS)
-    
+
 colType(0) = Asc("C")
 colType(1) = Asc("C")
 colType(2) = Asc("B")
@@ -201,11 +201,5 @@ RunTestProblem problemName, optimalValue, colCount, rowCount, _
     lowerBounds(0), upperBounds(0), rowType(0), rhsValues(0), rangeValues(0), _
     matrixBegin(0), matrixCount(0), matrixIndex(0), matrixValues(0), _
     colNames, rowNames, objectName, 0&, colType(0)
-    
+
 End Sub
-
-
-
-
-
-

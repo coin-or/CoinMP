@@ -6,7 +6,7 @@ You can obtain the source code for the CoinMP package in two ways:
 
 1. Obtain the source directly from the COIN-OR subversion repository
    (recommended).  For this you needs the program 'svn' installed on
-   your machine, and output of "svn --version" must contain 
+   your machine, and output of "svn --version" must contain
    "handles 'https' scheme".
 
    Assuming that you want to download the code into a subdirectory
@@ -20,7 +20,7 @@ You can obtain the source code for the CoinMP package in two ways:
    gunzip CoinMP-1.2.0.tgz
    tar xvf CoinMP-1.2.0.tar
 
-   (Here "-1.2.0" is of course replaced by the actual release string 
+   (Here "-1.2.0" is of course replaced by the actual release string
     in the tarball you downloaded.)
 
    More detailed download instructions can be found at
@@ -34,8 +34,8 @@ You can obtain the source code for the CoinMP package in two ways:
 **********************************************************************
 **********************************************************************
 
-To build the 'CoinMP.dll', start MS Visual Studio 8 (2005) or 9 (2008), 
-open the solution file 'CoinMP.sln' in the CoinMP\MSVisualStudio\v8 
+To build the 'CoinMP.dll', start MS Visual Studio 8 (2005) or 9 (2008),
+open the solution file 'CoinMP.sln' in the CoinMP\MSVisualStudio\v8
 folder and select 'Build Solution' from the 'Build' menu.
 
 
@@ -109,7 +109,3 @@ find examples in the
 subdirectory, see also the information at
 
    https://projects.coin-or.org/BuildTools/wiki/user-examples
-
-
-
->>>>>>> .r50

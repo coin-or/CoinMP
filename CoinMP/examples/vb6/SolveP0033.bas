@@ -1,14 +1,14 @@
 Attribute VB_Name = "SolveP0033"
 Option Explicit
 
-    
+
 Public Sub SolveProblemP0033()
 
 Const NUM_COLS As Long = 33
 Const NUM_ROWS As Long = 15
 Const NUM_NZ As Long = 98
 Const NUM_RNG As Long = 0
-    
+
 Dim problemName As String
 Dim colCount As Long
 Dim rowCount As Long
@@ -157,7 +157,7 @@ upperBounds(29) = 1
 upperBounds(30) = 1
 upperBounds(31) = 1
 upperBounds(32) = 1
-    
+
 rowType(0) = Asc("L")
 rowType(1) = Asc("L")
 rowType(2) = Asc("L")
@@ -224,7 +224,7 @@ matrixBegin(30) = 93
 matrixBegin(31) = 96
 matrixBegin(32) = 97
 matrixBegin(33) = 98
-    
+
 matrixCount(0) = 3
 matrixCount(1) = 3
 matrixCount(2) = 4
@@ -590,13 +590,5 @@ RunTestProblem problemName, optimalValue, colCount, rowCount, _
     lowerBounds(0), upperBounds(0), rowType(0), rhsValues(0), 0&, _
     matrixBegin(0), matrixCount(0), matrixIndex(0), matrixValues(0), _
     colNames, rowNames, objectName, 0&, colType(0)
-    
+
 End Sub
-
-
-
-
-
-
-
-

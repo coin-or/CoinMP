@@ -49,7 +49,7 @@ typedef void *HCBC;
 
 
 class CBMessageHandler : public CoinMessageHandler {
-public: 
+public:
 	void registerCallback(COIN_MSGLOG_CB MsgLogCB, void *MsgLogParam);
 	void setCallback(MSGLOGCALLBACK msgCallback);
 	virtual int print();
@@ -100,8 +100,8 @@ int CBMessageHandler::print()
 	return CoinMessageHandler::print();
 }
 
-// Default Constructor 
-CBMessageHandler::CBMessageHandler () : CoinMessageHandler() 
+// Default Constructor
+CBMessageHandler::CBMessageHandler () : CoinMessageHandler()
 {
   MsgLogCB_ = NULL;
   MsgLogParam_ = NULL;
@@ -109,13 +109,13 @@ CBMessageHandler::CBMessageHandler () : CoinMessageHandler()
 }
 
 
-// Copy constructor 
+// Copy constructor
 CBMessageHandler::CBMessageHandler (const CBMessageHandler & rhs) : CoinMessageHandler(rhs) {}
 
-// Destructor 
+// Destructor
 CBMessageHandler::~CBMessageHandler () {}
 
-// Assignment operator 
+// Assignment operator
 CBMessageHandler & CBMessageHandler::operator=(const CBMessageHandler& rhs)
 {
   if (this != &rhs) {
@@ -145,12 +145,12 @@ CoinMessageHandler * CBMessageHandler::clone() const
 
 class CBIterHandler : public ClpEventHandler {
 
-public: 
+public:
    void registerLPIterCallback(COIN_LPITER_CB LPIterCB, void* LPIterParam);
    void setIterCallback(ITERCALLBACK iterCallback);
 
-	virtual int event(Event whichEvent);
-   
+   virtual int event(Event whichEvent);
+
   /** Default constructor. */
   CBIterHandler();
   /// Constructor with pointer to model (redundant as setEventHandler does)
@@ -195,7 +195,7 @@ int CBIterHandler::event(Event whichEvent)
 	double objValue;
 	int isPrimalFeasible;
 	int isDualFeasible;
-	double sumPrimalInfeas; 
+	double sumPrimalInfeas;
 	double sumDualInfeas;
 	int cancelAsap;
 
@@ -219,24 +219,24 @@ int CBIterHandler::event(Event whichEvent)
 }
 
 
-// Default Constructor 
-CBIterHandler::CBIterHandler () : ClpEventHandler() 
+// Default Constructor
+CBIterHandler::CBIterHandler () : ClpEventHandler()
 {
 	LPIterCB_ = NULL;
 	LPIterParam_ = NULL;
 	iterCallback_ = NULL;
 }
 
-// Copy constructor 
+// Copy constructor
 CBIterHandler::CBIterHandler (const CBIterHandler & rhs) : ClpEventHandler(rhs) {}
 
 // Constructor with pointer to model
 CBIterHandler::CBIterHandler(ClpSimplex * model) : ClpEventHandler(model) {}
 
-// Destructor 
+// Destructor
 CBIterHandler::~CBIterHandler () {}
 
-// Assignment operator 
+// Assignment operator
 CBIterHandler & CBIterHandler::operator=(const CBIterHandler& rhs)
 {
   if (this != &rhs) {
@@ -266,18 +266,18 @@ ClpEventHandler * CBIterHandler::clone() const
 
 class CBNodeHandler : public CbcEventHandler {
 
-public: 
+public:
 	void registerCallback(COIN_MIPNODE_CB MipNodeCB, void* MipNodeParam);
 	void setCallback(MIPNODECALLBACK mipNodeCallback);
 
 	virtual CbcAction event(CbcEvent whichEvent);
-   
+
   /** Default constructor. */
   CBNodeHandler();
   /// Constructor with pointer to model (redundant as setEventHandler does)
   //JPF CBNodeHandler(ClpSimplex * model);
   CBNodeHandler(CbcModel * model);
-  
+
 
   /** Destructor */
   virtual ~CBNodeHandler();
@@ -330,7 +330,7 @@ CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 		objValue = model_->getObjValue();
 		bestBound = model_->getBestPossibleObjValue();
 		solCount = model_->getSolutionCount();
-		if (MipNodeCB_) 
+		if (MipNodeCB_)
 			cancelAsap = MipNodeCB_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_, MipNodeParam_);
 		else {
 			cancelAsap = mipNodeCallback_(numIter, numNodes, bestBound, objValue, solCount != lastSolCount_);
@@ -344,8 +344,8 @@ CBNodeHandler::CbcAction CBNodeHandler::event(CbcEvent whichEvent)
 }
 
 
-// Default Constructor 
-CBNodeHandler::CBNodeHandler () : CbcEventHandler() 
+// Default Constructor
+CBNodeHandler::CBNodeHandler () : CbcEventHandler()
 {
 	MipNodeCB_ = NULL;
 	MipNodeParam_ = NULL;
@@ -353,17 +353,17 @@ CBNodeHandler::CBNodeHandler () : CbcEventHandler()
 	lastSolCount_ = 0;
 }
 
-// Copy constructor 
+// Copy constructor
 CBNodeHandler::CBNodeHandler (const CBNodeHandler & rhs) : CbcEventHandler(rhs) {}
 
 // Constructor with pointer to model
 //JPF: CBNodeHandler::CBNodeHandler(ClpSimplex * model) : CbcEventHandler(model) {}
 CBNodeHandler::CBNodeHandler(CbcModel * model) : CbcEventHandler(model) {}
 
-// Destructor 
+// Destructor
 CBNodeHandler::~CBNodeHandler () {}
 
-// Assignment operator 
+// Assignment operator
 CBNodeHandler & CBNodeHandler::operator=(const CBNodeHandler& rhs)
 {
   if (this != &rhs) {
@@ -605,7 +605,7 @@ int CbcSetClpOptions(HCBC hCbc, POPTION pOption)
 		pCbc->clp->setDualRowPivotAlgorithm(dualSteepest);
 	}
 
-	if (coinGetOptionChanged(pOption, COIN_INT_CRASHIND)) { 
+	if (coinGetOptionChanged(pOption, COIN_INT_CRASHIND)) {
 		if (coinGetIntOption(pOption, COIN_INT_CRASHIND)) {
 			pCbc->clp->crash(coinGetRealOption(pOption, COIN_REAL_CRASHGAP),
 								coinGetIntOption(pOption, COIN_INT_CRASHPIVOT));
@@ -625,7 +625,7 @@ int CbcSetClpOptions(HCBC hCbc, POPTION pOption)
 		pCbc->clp->setSolveType(method);   //ClpSolve::usePrimal
 	}
 
-	if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE)) {   
+	if (coinGetOptionChanged(pOption, COIN_INT_PRESOLVETYPE)) {
 		switch (coinGetIntOption(pOption, COIN_INT_PRESOLVETYPE)) {
 			case 0: presolve = ClpSolve::presolveOn;		 break;
 			case 1: presolve = ClpSolve::presolveOff;		 break;
@@ -801,7 +801,7 @@ int CbcAddPriorObjects(HCBC hCbc, PPROBLEM pProblem)
 		priorVar[i] = 1000;
 	}
 	for (i = 0; i < pProblem->PriorCount; i++) {
-		if ((pProblem->PriorIndex[i] < 0) || 
+		if ((pProblem->PriorIndex[i] < 0) ||
 			(pProblem->PriorIndex[i] >= pProblem->ColCount)) {
 			free(priorVar);
 			return CBC_CALL_FAILED;
@@ -880,7 +880,7 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 	int result;
 	double* storeLowerBound = NULL;
 
-	if (pProblem->SemiCount > 0) { 
+	if (pProblem->SemiCount > 0) {
 		storeLowerBound = (double *)malloc(pProblem->ColCount * sizeof(double));
 		if (!storeLowerBound) {
 			return CBC_CALL_FAILED;
@@ -892,11 +892,11 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 		}
 	}
 	pCbc->clp->setOptimizationDirection(pProblem->ObjectSense);
-	pCbc->clp->loadProblem(pProblem->ColCount, pProblem->RowCount, 
+	pCbc->clp->loadProblem(pProblem->ColCount, pProblem->RowCount,
 							pProblem->MatrixBegin, pProblem->MatrixIndex, pProblem->MatrixValues,
-							pProblem->LowerBounds, pProblem->UpperBounds, pProblem->ObjectCoeffs, 
+							pProblem->LowerBounds, pProblem->UpperBounds, pProblem->ObjectCoeffs,
 							pProblem->RowLower, pProblem->RowUpper);
-	if (pProblem->SemiCount > 0) { 
+	if (pProblem->SemiCount > 0) {
 		memcpy(pProblem->LowerBounds, storeLowerBound, pProblem->ColCount * sizeof(double));
 		free(storeLowerBound);
 	}
@@ -953,7 +953,7 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 				CbcMain1(argc, argv, *pCbc->cbc, parameterData);
 			}
 			}
-		else 
+		else
 #endif
 		{
 			CbcSetClpOptions(hCbc, pOption);
@@ -999,7 +999,7 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 		case 3:	strcpy(pResult->SolutionText, "Stopped on iterations");			break;
 		case 4: strcpy(pResult->SolutionText, "Stopped due to errors");			break;
 		case 5: strcpy(pResult->SolutionText, "Stopped by user");		break;
-		default: 
+		default:
 			sprintf(pResult->SolutionText, "Unknown CBC solution status (%d)", pResult->SolutionStatus);
 			break;
 	}
@@ -1015,9 +1015,9 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 		pResult->SlackValues = (double*) malloc(pProblem->RowCount * sizeof(double));
 		pResult->ShadowPrice = (double*) malloc(pProblem->RowCount * sizeof(double));
 		if (!pResult->ColActivity ||
-			!pResult->ReducedCost || 
-			!pResult->RowActivity || 
-			!pResult->SlackValues || 
+			!pResult->ReducedCost ||
+			!pResult->RowActivity ||
+			!pResult->SlackValues ||
 			!pResult->ShadowPrice) {
 			return CBC_CALL_FAILED;
 		}
@@ -1043,7 +1043,7 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 
 
 int CbcOptimizeProblem(PPROBLEM pProblem, PRESULT pResult, PSOLVER pSolver, POPTION pOption, int Method)
-{		
+{
 	HCBC hCbc;
 	int result;
 
@@ -1064,7 +1064,7 @@ int CbcReadMpsFile(PPROBLEM pProblem, const char *ReadFilename)
 
 	hCbc = CbcCreateSolverObject();
 	pCbc = (PCBC)hCbc;
-	pCbc->clp->readMps(ReadFilename, 1, 0); 
+	pCbc->clp->readMps(ReadFilename, 1, 0);
 	CbcClearSolverObject(hCbc);
 	return CBC_CALL_SUCCESS;
 }
@@ -1085,7 +1085,7 @@ int CbcWriteMpsFile(PPROBLEM pProblem, const char *WriteFilename)
 	else {
 		extension = "";
 	}
-	pCbc->osi->writeMps(WriteFilename, extension, pProblem->ObjectSense); 
+	pCbc->osi->writeMps(WriteFilename, extension, pProblem->ObjectSense);
 	//result = CbcClearAllSolverObjects(hCbc);
 	CbcClearSolverObject(hCbc);
 	return CBC_CALL_SUCCESS;
@@ -1106,34 +1106,34 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
       /*enum SolveType { useDual=0, usePrimal, usePrimalorSprint, useBarrier, useBarrierNoCross, automatic*/
 	{"PresolveType",           "Presolve",     GRP_SIMPLEX,        0,        0,      0,       2,  OPT_LIST,   0,   COIN_INT_PRESOLVETYPE},
       /*enum PresolveType { presolveOn=0, presolveOff, presolveNumber }; */
-	{"Scaling",                "Scaling",      GRP_SIMPLEX,        3,        3,      0,       4,  OPT_LIST,   0,   COIN_INT_SCALING}, 
+	{"Scaling",                "Scaling",      GRP_SIMPLEX,        3,        3,      0,       4,  OPT_LIST,   0,   COIN_INT_SCALING},
       /* Sets or unsets scaling, 0 -off, 1 equilibrium, 2 geometric, 3, auto, 4 dynamic(later) */
-	{"Perturbation",           "Perturb",      GRP_SIMPLEX,      100,      100,      0,     100,  OPT_INT,    0,   COIN_INT_PERTURBATION}, 
+	{"Perturbation",           "Perturb",      GRP_SIMPLEX,      100,      100,      0,     100,  OPT_INT,    0,   COIN_INT_PERTURBATION},
       /* 0 - Off, 50 - On, 100 - Only if clp stalls */
-	{"PrimalColPivotAlg",      "PrimPivAlg",   GRP_SIMPLEX,        1,        1,      0,       4,  OPT_LIST,   0,   COIN_INT_PRIMALPIVOTALG}, 
+	{"PrimalColPivotAlg",      "PrimPivAlg",   GRP_SIMPLEX,        1,        1,      0,       4,  OPT_LIST,   0,   COIN_INT_PRIMALPIVOTALG},
       /*0 is exact devex, 1 full steepest, 2 is partial exact devex
         3 switches between 0 and 2 depending on factorization
         4 starts as partial dantzig/devex but then may switch between 0 and 2.*/
-	{"DualRowPivotAlg",        "DualPivAlg",   GRP_SIMPLEX,        1,        1,      0,       3,  OPT_LIST,   0,   COIN_INT_DUALPIVOTALG}, 
+	{"DualRowPivotAlg",        "DualPivAlg",   GRP_SIMPLEX,        1,        1,      0,       3,  OPT_LIST,   0,   COIN_INT_DUALPIVOTALG},
       /*0 is uninitialized, 1 full, 2 is partial uninitialized,
         3 starts as 2 but may switch to 1.*/
-	{"LogLevel",               "LogLevel",     GRP_LOGFILE,        1,        1,      0,       4,  OPT_LIST,   0,   COIN_INT_LOGLEVEL}, 
-	{"MaxIterations",          "MaxIter",      GRP_LIMITS,  99999999, 99999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MAXITER}, 
-	{"MaxSeconds",             "MaxSeconds",   GRP_LIMITS,      -1.0,     -1.0,   -1.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MAXSECONDS}, 
+	{"LogLevel",               "LogLevel",     GRP_LOGFILE,        1,        1,      0,       4,  OPT_LIST,   0,   COIN_INT_LOGLEVEL},
+	{"MaxIterations",          "MaxIter",      GRP_LIMITS,  99999999, 99999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MAXITER},
+	{"MaxSeconds",             "MaxSeconds",   GRP_LIMITS,      -1.0,     -1.0,   -1.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MAXSECONDS},
 
-	{"CrashInd",               "CrashInd",     GRP_SIMPLEX,        0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_CRASHIND}, 
-	{"CrashPivot",             "CrashPivot",   GRP_SIMPLEX,        0,        0,     -1,       2,  OPT_LIST,   0,   COIN_INT_CRASHPIVOT}, 
-	{"CrashGap",               "CrashGap",     GRP_SIMPLEX,   1000.0,   1000.0,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_CRASHGAP}, 
-	{"PrimalObjectLimit",      "PrimalObjLim", GRP_SIMPLEX,  MAXREAL,  MAXREAL,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_PRIMALOBJLIM}, 
-	{"DualObjectLimit",        "DualObjLim",   GRP_SIMPLEX,  MAXREAL,  MAXREAL,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_DUALOBJLIM}, 
-	{"PrimalTolerance",        "PrimalTol",    GRP_SIMPLEX,     1e-7,     1e-7,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_PRIMALOBJTOL}, 
-	{"DualTolerance",          "DualTol",      GRP_SIMPLEX,     1e-7,     1e-7,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_DUALOBJTOL}, 
+	{"CrashInd",               "CrashInd",     GRP_SIMPLEX,        0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_CRASHIND},
+	{"CrashPivot",             "CrashPivot",   GRP_SIMPLEX,        0,        0,     -1,       2,  OPT_LIST,   0,   COIN_INT_CRASHPIVOT},
+	{"CrashGap",               "CrashGap",     GRP_SIMPLEX,   1000.0,   1000.0,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_CRASHGAP},
+	{"PrimalObjectLimit",      "PrimalObjLim", GRP_SIMPLEX,  MAXREAL,  MAXREAL,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_PRIMALOBJLIM},
+	{"DualObjectLimit",        "DualObjLim",   GRP_SIMPLEX,  MAXREAL,  MAXREAL,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_DUALOBJLIM},
+	{"PrimalTolerance",        "PrimalTol",    GRP_SIMPLEX,     1e-7,     1e-7,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_PRIMALOBJTOL},
+	{"DualTolerance",          "DualTol",      GRP_SIMPLEX,     1e-7,     1e-7,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_DUALOBJTOL},
 
-	{"MipMaxNodes",            "MipMaxNodes",  GRP_LIMITS,   9999999,  9999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPMAXNODES}, 
-	{"MipMaxSolutions",        "MipMaxSol",    GRP_LIMITS,   9999999,  9999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPMAXSOL}, 
-	{"MipMaxSeconds",          "MipMaxSec",    GRP_LIMITS,     1e100,    1e100,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPMAXSEC}, 
+	{"MipMaxNodes",            "MipMaxNodes",  GRP_LIMITS,   9999999,  9999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPMAXNODES},
+	{"MipMaxSolutions",        "MipMaxSol",    GRP_LIMITS,   9999999,  9999999,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPMAXSOL},
+	{"MipMaxSeconds",          "MipMaxSec",    GRP_LIMITS,     1e100,    1e100,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPMAXSEC},
 
-	{"MipFathomDiscipline",    "FathomDisc",   GRP_MIPSTRAT,       0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPFATHOMDISC}, 
+	{"MipFathomDiscipline",    "FathomDisc",   GRP_MIPSTRAT,       0,        0,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPFATHOMDISC},
 	{"MipHotStart",            "HotStart",     GRP_MIPSTRAT,       0,        0,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPHOTSTART},
 //	{"MipForcePriority",       "ForcePrior",   GRP_MIPSTRAT,      -1,       -1,-MAXINT,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPFORCEPRIOR},
 	{"MipMinimumDrop",         "MinimumDrop",  GRP_MIPSTRAT,    1e-4,     1e-4,-MAXINT,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPMINIMUMDROP},
@@ -1142,11 +1142,11 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 	{"MipStrongBranching",     "StrongBranch", GRP_MIPSTRAT,       5,        5,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPSTRONGBRANCH},
 	{"MipScanGlobalCuts",      "ScanGlobCuts", GRP_MIPSTRAT,       1,        1,      0,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPSCANGLOBCUTS},
 
-	{"MipIntegerTolerance",    "MipIntTol",    GRP_MIPTOL,      1e-6,     1e-6,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPINTTOL}, 
-	{"MipInfeasWeight",        "MipInfWeight", GRP_MIPTOL,       0.0,      0.0,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPINFWEIGHT}, 
-	{"MipCutoffIncrement",     "MipCutIncr",   GRP_MIPTOL,      1e-5,     1e-5,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPCUTOFF}, 
-	{"MipAllowableGap",        "MipAbsGap",    GRP_MIPTOL,     1e-10,    1e-10,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPABSGAP}, 
-	{"MipFractionalGap",       "MipFracGap",   GRP_MIPTOL,     1e-10,    1e-10,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPFRACGAP}, 
+	{"MipIntegerTolerance",    "MipIntTol",    GRP_MIPTOL,      1e-6,     1e-6,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPINTTOL},
+	{"MipInfeasWeight",        "MipInfWeight", GRP_MIPTOL,       0.0,      0.0,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPINFWEIGHT},
+	{"MipCutoffIncrement",     "MipCutIncr",   GRP_MIPTOL,      1e-5,     1e-5,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPCUTOFF},
+	{"MipAllowableGap",        "MipAbsGap",    GRP_MIPTOL,     1e-10,    1e-10,    0.0, MAXREAL,  OPT_REAL,   0,   COIN_REAL_MIPABSGAP},
+	{"MipFractionalGap",       "MipFracGap",   GRP_MIPTOL,     1e-10,    1e-10,    0.0,     1.0,  OPT_REAL,   0,   COIN_REAL_MIPFRACGAP},
 
 	/* Probing */
 	{"MipCutProbing",          "CutProbing",   GRP_MIPCUTS,        1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_PROBING},
@@ -1159,7 +1159,7 @@ SOLVOPTINFO OptionTable[OPTIONCOUNT] = {
 	{"MipProbeRowCuts",        "RowCuts",      GRP_MIPCUTS,        3,        3,      0,       3,  OPT_LIST,   0,   COIN_INT_MIPPROBE_ROWCUTS},
 
 	/* Gomory cuts */
-  	{"MipCutGomory",           "CutGomory",    GRP_MIPCUTS,        1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_GOMORY},
+	{"MipCutGomory",           "CutGomory",    GRP_MIPCUTS,        1,        1,      0,       1,  OPT_ONOFF,  0,   COIN_INT_MIPCUT_GOMORY},
 	{"MipGomoryFrequency",     "GomoryFreq",   GRP_MIPCUTS,       -1,       -1,-MAXINT,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPGOMORY_FREQ},
 	{"MipGomoryLimit",         "GomoryLimit",  GRP_MIPCUTS,       50,       50,      1,  MAXINT,  OPT_INT,    0,   COIN_INT_MIPGOMORY_LIMIT},
 	{"MipGomoryAway",          "GomoryAway",   GRP_MIPCUTS,     0.05,     0.05, 0.0001,     0.5,  OPT_REAL,   0,   COIN_REAL_MIPGOMORY_AWAY},
@@ -1263,7 +1263,7 @@ int CbcGetOptionChanged(int OptionID)
 
 
 int CbcGetIntOption(int OptionID)
-{   
+{
 	SOLVOPTINFO *OptionEntry;
 
 	OptionEntry = CbcGetOptionEntry(OptionID);
@@ -1275,7 +1275,7 @@ int CbcGetIntOption(int OptionID)
 	}
 	return (int)OptionEntry->CurrentValue;
 }
-  	
+
 int CbcSetIntOption(int OptionID, int IntValue)
 {
 	SOLVOPTINFO *OptionEntry;
@@ -1378,4 +1378,3 @@ int CbcSetRealOption(int OptionID, double RealValue)
 //MaxTime         0.0, 1e12
 //SparseFactor    On, Off
 //SprintCrash     -1, 500
-
