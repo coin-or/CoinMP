@@ -915,7 +915,7 @@ int CbcLoadAllSolverObjects(HCBC hCbc, PPROBLEM pProblem)
 
 
 
-//extern int CbcOrClpRead_mode;
+extern int CbcOrClpRead_mode;
 
 int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 {
@@ -932,25 +932,28 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 	else {
 #ifdef NEW_STYLE_CBCMAIN
 		if (coinGetIntOption(pOption, COIN_INT_MIPUSECBCMAIN)) {
-			CbcSolverUsefulData parameterData;
-			parameterData.noPrinting_ = true;
-			CbcMain0(*pCbc->cbc, parameterData);
+			//CbcSolverUsefulData parameterData;
+			//parameterData.noPrinting_ = true;
+			//CbcMain0(*pCbc->cbc, parameterData);
+			CbcMain0(*pCbc->cbc);
 			CbcSetClpOptions(hCbc, pOption);
 			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
-			//CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
+			CbcOrClpRead_mode = 1;  // BK: Fix bug in CbcMain1, CbcOrClpRead_mode not initialized  (CpcSolver.cpp, stable 2.2)
 			int logLevel = coinGetIntOption(pOption, COIN_INT_LOGLEVEL);
 			if (logLevel == 1) {
 				const int argc = 3;
 				const char* argv[] = {"CoinMP", "-solve", "-quit"};
-				CbcMain1(argc, argv, *pCbc->cbc, parameterData);
+				//CbcMain1(argc, argv, *pCbc->cbc, parameterData);
+				CbcMain1(argc, argv, *pCbc->cbc);
 				}
 			else {
 				char logstr[100];  // BK 2013/11/28: Allows setting the log level from CoinMP. Thanks to Miles Lubin for suggesting this
 				sprintf(logstr, "%d", logLevel);
 				const int argc = 5;
 				const char* argv[] = {"CoinMP", "-log", logstr, "-solve", "-quit"};
-				CbcMain1(argc, argv, *pCbc->cbc, parameterData);
+				//CbcMain1(argc, argv, *pCbc->cbc, parameterData);
+				CbcMain1(argc, argv, *pCbc->cbc);
 			}
 			}
 		else
