@@ -932,10 +932,9 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 	else {
 #ifdef NEW_STYLE_CBCMAIN
 		if (coinGetIntOption(pOption, COIN_INT_MIPUSECBCMAIN)) {
-			//CbcSolverUsefulData parameterData;
-			//parameterData.noPrinting_ = true;
-			//CbcMain0(*pCbc->cbc, parameterData);
-			CbcMain0(*pCbc->cbc);
+			CbcSolverUsefulData parameterData;
+			parameterData.noPrinting_ = true;
+			CbcMain0(*pCbc->cbc, parameterData);
 			CbcSetClpOptions(hCbc, pOption);
 			CbcSetCbcOptions(hCbc, pOption);
 			//CbcSetCglOptions(hProb);  BK: CbcMain1 will call the Cgl's automatically
@@ -944,16 +943,14 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 			if (logLevel == 1) {
 				const int argc = 3;
 				const char* argv[] = {"CoinMP", "-solve", "-quit"};
-				//CbcMain1(argc, argv, *pCbc->cbc, parameterData);
-				CbcMain1(argc, argv, *pCbc->cbc);
+				CbcMain1(argc, argv, *pCbc->cbc, parameterData);
 				}
 			else {
 				char logstr[100];  // BK 2013/11/28: Allows setting the log level from CoinMP. Thanks to Miles Lubin for suggesting this
 				sprintf(logstr, "%d", logLevel);
 				const int argc = 5;
 				const char* argv[] = {"CoinMP", "-log", logstr, "-solve", "-quit"};
-				//CbcMain1(argc, argv, *pCbc->cbc, parameterData);
-				CbcMain1(argc, argv, *pCbc->cbc);
+				CbcMain1(argc, argv, *pCbc->cbc, parameterData);
 			}
 			}
 		else
