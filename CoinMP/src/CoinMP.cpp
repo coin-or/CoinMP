@@ -204,7 +204,164 @@ SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList, char** RowN
 	return SOLV_CALL_SUCCESS;
 }
 
+void insertInArrayInt(int* matind, int position, int value, int lastPos) {
+	for (int i = 0; i <= lastPos; i++) {
+		if (i == position) {
+			int tmp = matind[i];
+			matind[i] = value;
+			value = tmp;
+			position = i + 1;
+		}
+	}
+}
 
+void insertInArrayDouble(double* matind, int position, double value, int lastPos) {
+	for (int i = 0; i <= lastPos; i++) {
+		if (i == position) {
+			int tmp = matind[i];
+			matind[i] = value;
+			value = tmp;
+			position = i + 1;
+		}
+	}
+}
+
+void addRangeValues(PCOIN pp, double* rowLower, double* rowUpper, int oldRow, char type)
+{
+	memcpy(pp->pProblem->RowLower, rowLower, sizeof(double) * oldRow);
+	memcpy(pp->pProblem->RowUpper, rowUpper, sizeof(double) * oldRow);
+	switch (type) {
+		case 'L':
+			pp->pProblem->RowLower[oldRow] = -COIN_DBL_MAX;
+			pp->pProblem->RowUpper[oldRow] = pp->pProblem->RHSValues ? pp->pProblem->RHSValues[oldRow] : COIN_DBL_MAX;
+			break;
+
+		case 'G':
+			pp->pProblem->RowLower[oldRow] = pp->pProblem->RHSValues ? pp->pProblem->RHSValues[oldRow] : -COIN_DBL_MAX;
+			pp->pProblem->RowUpper[oldRow] = COIN_DBL_MAX;
+			break;
+
+		case 'E':
+			pp->pProblem->RowLower[oldRow] = pp->pProblem->RHSValues ? pp->pProblem->RHSValues[oldRow] : 0.0;
+			pp->pProblem->RowUpper[oldRow] = pp->pProblem->RHSValues ? pp->pProblem->RHSValues[oldRow] : 0.0;
+			break;
+	}
+}
+
+SOLVAPI int SOLVCALL CoinNullifyRow(HPROB hProb, int rowidx) {
+	PCOIN pCoin = (PCOIN)hProb;
+	if (rowidx >= pCoin->pProblem->RowCount) {
+		return SOLV_CALL_FAILED;
+	}
+	for (int i = 0; i < pCoin->pProblem->NZCount; i++)
+	{
+		if (pCoin->pProblem->MatrixIndex[i] == rowidx) {
+			pCoin->pProblem->MatrixValues[i] = 0;
+		}
+	}
+	return SOLV_CALL_SUCCESS;
+}
+
+SOLVAPI int SOLVCALL CoinAddColumn(HPROB hProb, double coeff, double upperbound, double lowerbound) {
+	PCOIN pCoin = (PCOIN)hProb;
+	int oldColumns = pCoin->pProblem->ColCount;
+	pCoin->pProblem->ColCount = oldColumns + 1;
+	pCoin->pProblem->LowerBounds = (double*)realloc(pCoin->pProblem->LowerBounds, sizeof(double) * pCoin->pProblem->ColCount);
+	pCoin->pProblem->UpperBounds = (double*)realloc(pCoin->pProblem->UpperBounds, sizeof(double) * pCoin->pProblem->ColCount);
+	pCoin->pProblem->MatrixBegin = (int*)realloc(pCoin->pProblem->MatrixBegin, sizeof(int) * (pCoin->pProblem->ColCount + 1));
+	pCoin->pProblem->MatrixCount = (int*)realloc(pCoin->pProblem->MatrixCount, sizeof(int) * pCoin->pProblem->ColCount);
+	pCoin->pProblem->ObjectCoeffs = (double*)realloc(pCoin->pProblem->ObjectCoeffs, sizeof(double) * pCoin->pProblem->ColCount); 
+	pCoin->pProblem->LowerBounds[oldColumns] = lowerbound;
+	pCoin->pProblem->UpperBounds[oldColumns] = upperbound;
+	pCoin->pProblem->MatrixBegin[oldColumns+1] = pCoin->pProblem->MatrixBegin[oldColumns];
+	pCoin->pProblem->MatrixCount[oldColumns] = 0 ;
+	pCoin->pProblem->ObjectCoeffs[oldColumns] = coeff;
+	return SOLV_CALL_SUCCESS;
+}
+
+SOLVAPI HPROB SOLVCALL CoinAddRow(HPROB hProb,
+	double* RowValues, double RHSValue, char RowType, char* RowName)
+{	
+	PCOIN pCoin = (PCOIN)hProb;
+	if (!RowValues  || !RowType || !RowName) {
+		return hProb;
+	}
+	// Rialloca array interni
+	char* name = pCoin->pProblem->ProblemName;
+	int newRowCount = pCoin->pProblem->RowCount;
+	int colCount;
+	
+	memcpy(&colCount, &pCoin->pProblem->ColCount, sizeof(int));
+	int newNZC;
+	memcpy(&newNZC, &pCoin->pProblem->NZCount, sizeof(int));
+	int range;
+	memcpy(&range, &pCoin->pProblem->RangeCount, sizeof(int));
+	int objs;
+	memcpy(&objs, &pCoin->pProblem->ObjectSense, sizeof(int));
+	int objc;
+	memcpy(&objc, &pCoin->pProblem->ObjectConst, sizeof(int));
+	double* objcoe = (double*)malloc(sizeof(double) * pCoin->pProblem->ColCount);
+	memcpy(objcoe, pCoin->pProblem->ObjectCoeffs, sizeof(double) * pCoin->pProblem->ColCount);
+	double* lob = (double*)malloc(sizeof(double) * pCoin->pProblem->ColCount);
+	memcpy(lob, pCoin->pProblem->LowerBounds, sizeof(double) * pCoin->pProblem->ColCount);
+	double* upb = (double*)malloc(sizeof(double) * pCoin->pProblem->ColCount);
+	memcpy(upb, pCoin->pProblem->UpperBounds, sizeof(double) * pCoin->pProblem->ColCount);
+	
+	int* matbeg = pCoin->pProblem->MatrixBegin;
+	int* matcou = pCoin->pProblem->MatrixCount;
+	int nz = 0;
+	for (int i = 0; i < colCount; i++) {
+		if (RowValues[i] != 0) {
+			nz = nz + 1;
+		}
+	}
+	int oldNZ = newNZC;
+	newNZC += nz;
+
+	int* matind = (int*)malloc(sizeof(int) * newNZC);
+	memcpy(matind, pCoin->pProblem->MatrixIndex, sizeof(int) * oldNZ);
+
+	double* matval = (double*)malloc(sizeof(double) * newNZC);
+	memcpy(matval, pCoin->pProblem->MatrixValues, sizeof(double) * oldNZ);
+
+
+	int previous = 0;
+	for (int i = 0; i < colCount; i++) {
+		if (RowValues[i] != 0)
+		{
+			int position = previous + matcou[i];
+			matcou[i] += 1;
+			insertInArrayInt(matind,position, newRowCount, oldNZ);
+			insertInArrayDouble(matval, position, RowValues[i], oldNZ);
+			oldNZ++;
+		}
+		previous += matcou[i];
+	}
+
+
+	for (int i = 0; i < colCount + 1; i++) {
+		if (i == 0) {
+			matbeg[i] = 0;
+		}
+		else {
+			matbeg[i] = matbeg[i - 1] + matcou[i - 1];
+		}
+	}
+	double* rhsV = (double*)malloc(sizeof(double) * newRowCount + 1);
+	memcpy(rhsV, pCoin->pProblem->RHSValues, sizeof(double) * newRowCount);
+	rhsV[newRowCount] = RHSValue;
+	
+	newRowCount += 1;
+	HPROB p1 = CoinCreateProblem(name);
+	CoinLoadProblem(p1, colCount, newRowCount, newNZC, range, objs, objc, objcoe, lob, upb, pCoin->pProblem->RowType, rhsV, 0, matbeg, matcou, matind, matval, pCoin->pProblem->ColNamesList, pCoin->pProblem->RowNamesList, pCoin->pProblem->ObjectName);
+	PCOIN pp = (PCOIN)p1;
+	addRangeValues(pp, pCoin->pProblem->RowLower, pCoin->pProblem->RowUpper, pCoin->pProblem->RowCount, RowType);
+	pp->pProblem->RowType[newRowCount - 1] = RowType;
+	pp->pProblem->ObjectName = (char*)malloc(pCoin->pProblem->lenObjNameBuf * sizeof(char));
+	memcpy(pp->pProblem->ObjectName, pCoin->pProblem->ObjectName, pCoin->pProblem->lenObjNameBuf * sizeof(char));
+	CoinUnloadProblem(hProb);
+	return 	p1;
+}
 
 SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, const char* ColNamesBuf, const char* RowNamesBuf, const char* ObjectName)
 {

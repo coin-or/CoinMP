@@ -181,6 +181,12 @@ SOLVAPI int SOLVCALL CoinLoadNames(HPROB hProb, char** ColNamesList,
 SOLVAPI int SOLVCALL CoinLoadNamesBuf(HPROB hProb, const char* ColNamesBuf, 
 				const char* RowNamesBuf, const char* ObjectName);
 
+SOLVAPI int SOLVCALL CoinNullifyRow(HPROB hProb, int rowidx);
+
+SOLVAPI int SOLVCALL CoinAddColumn(HPROB hProb, double coeff, double upperbound, double lowerbound);
+
+SOLVAPI HPROB SOLVCALL CoinAddRow(HPROB hProb, double* RowValues, double RHSValue, char RowType, char* RowName);
+
 SOLVAPI int    SOLVCALL CoinLoadProblem(HPROB hProb, 
 					int ColCount, int RowCount, int NZCount, int RangeCount, 
 					int ObjectSense, double ObjectConst, double* ObjectCoeffs, 
@@ -345,7 +351,11 @@ int    (SOLVCALL *CoinLoadMatrix)(HPROB hProb,
 
 int    (SOLVCALL *CoinLoadNames)(HPROB hProb, char** ColNamesList, 
 				char** RowNamesList, const char* ObjectName);
+int (SOLVCALL *CoinNullifyRow)(HPROB hProb, int rowidx);
 
+int (SOLVCALL *CoinAddColumn)(HPROB hProb, double coeff, double upperbound, double lowerbound);
+
+HPROB (SOLVCALL *CoinAddRow)(HPROB hProb, double* RowValues, double RHSValue, char RowType, char* RowName);
 int    (SOLVCALL *CoinLoadNamesBuf)(HPROB hProb, const char* ColNamesBuf, 
 				const char* RowNamesBuf, const char* ObjectName);
 
