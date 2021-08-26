@@ -252,3 +252,6 @@ EXPORTS
 	ClpSolve_setPresolveActions
 	ClpSolve_substitution
 	ClpSolve_setSubstitution
+	CoinAddRow
+	CoinNullifyRow
+	CoinAddColumn
