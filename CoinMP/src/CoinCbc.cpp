@@ -933,7 +933,7 @@ int CbcSolveProblem(HCBC hCbc, PPROBLEM pProblem, POPTION pOption, int Method)
 #ifdef NEW_STYLE_CBCMAIN
 		if (coinGetIntOption(pOption, COIN_INT_MIPUSECBCMAIN)) {
 			CbcSolverUsefulData parameterData;
-			parameterData.noPrinting_ = true;
+			parameterData.disablePrinting();
 			CbcMain0(*pCbc->cbc, parameterData);
 			CbcSetClpOptions(hCbc, pOption);
 			CbcSetCbcOptions(hCbc, pOption);
