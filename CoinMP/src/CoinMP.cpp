@@ -35,11 +35,11 @@
 #include "CoinMP.h"
 
 
-const char*  COINMP_VERSIONSTR = "1.8.4";
+const char* const COINMP_VERSIONSTR = "1.8.4";
 const int    COINMP_VERSIONINT = 184;
 const double COINMP_VERSIONDBL = 1.84;
 
-const char* COINMP_NAME = "CoinMP";
+const char* const COINMP_NAME = "CoinMP";
 
 
 /************************************************************************/
