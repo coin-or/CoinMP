@@ -2,16 +2,13 @@
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
-# $Id: Makefile.in 726 2006-04-17 04:16:00Z andreasw $
-
 ##########################################################################
 #    You can modify this example makefile to fit for your own program.   #
 #    Usually, you only need to change the five CHANGEME entries below.   #
 ##########################################################################
 
-EXNAME = example
-
 # CHANGEME: This should be the name of your executable
+EXNAME = example
 EXE = $(EXNAME)@EXEEXT@
 
 # CHANGEME: Here is the name of all object files corresponding to the source
@@ -32,12 +29,8 @@ VPATH = @srcdir@
 ##########################################################################
 #  Usually, you don't have to change anything below.  Note that if you   #
 #  change certain compiler options, you might have to recompile the      #
-#  COIN package.                                                         #
+#  package.                                                              #
 ##########################################################################
-
-COIN_HAS_PKGCONFIG = @COIN_HAS_PKGCONFIG_TRUE@TRUE
-COIN_CXX_IS_CL = @COIN_CXX_IS_CL_TRUE@TRUE
-COIN_HAS_DATASTOCHASTIC = @COIN_HAS_DATASTOCHASTIC_TRUE@TRUE
 
 # C Compiler command
 CC = @CC@
@@ -45,27 +38,24 @@ CC = @CC@
 # C Compiler options
 CFLAGS = @CFLAGS@
 
-# additional C Compiler options for linking
-CLINKFLAGS = @RPATH_FLAGS@
+# The example is C, but CoinMP is a C++ library, so link with the C++ compiler
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
 
-# Include directories (we use the CYGPATH_W variables to allow compilation with Windows compilers)
-ifeq ($(COIN_HAS_PKGCONFIG), TRUE)
-  INCL = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --cflags coinmp`
-else
-  INCL = @COINMP_CFLAGS_INSTALLED@
-endif
+# additional C++ Compiler options for linking
+CXXLINKFLAGS = @RPATH_FLAGS@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+# Include directories
+@COIN_HAS_PKGCONFIG_TRUE@INCL = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --cflags coinmp`
+@COIN_HAS_PKGCONFIG_FALSE@INCL = -I@includedir@/coin-or @COINMPLIB_CFLAGS_NOPC@
 INCL += $(ADDINCFLAGS)
 
 # Linker flags
-ifeq ($(COIN_HAS_PKGCONFIG), TRUE)
-  LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs coinmp`
-else
-  ifeq ($(COIN_CXX_IS_CL), TRUE)
-    LIBS = -link -libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @COINMP_LIBS_INSTALLED@
-  else
-    LIBS = -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@
-  endif
-endif
+@COIN_HAS_PKGCONFIG_TRUE@LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs coinmp`
+@COIN_HAS_PKGCONFIG_FALSE@LIBS = -L@libdir@ -lCoinMP @COINMPLIB_LFLAGS_NOPC@
 
 # The following is necessary under cygwin, if native compilers are used
 CYGPATH_W = @CYGPATH_W@
@@ -77,7 +67,7 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	bla=;\
 	for file in $(OBJS); do bla="$$bla `$(CYGPATH_W) $$file`"; done; \
-	$(CC) $(CLINKFLAGS) $(CFLAGS) -o $@ $$bla $(LIBS) $(ADDLIBS)
+	$(CXX) $(CXXLINKFLAGS) $(CXXFLAGS) -o $@ $$bla $(LIBS) $(ADDLIBS)
 
 clean:
 	rm -rf $(EXE) $(OBJS)

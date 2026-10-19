@@ -1,4 +1,10 @@
-/* src/config_cbc.h.in. */
+/* src/config_coinmp.h.in. */
+
+#ifndef __CONFIG_COINMP_H__
+#define __CONFIG_COINMP_H__
+
+/* Library Visibility Attribute */
+#undef COINMPLIB_EXPORT
 
 /* Version number of project */
 #undef COINMP_VERSION
@@ -11,3 +17,5 @@
 
 /* Release Version number of project */
 #undef COINMP_VERSION_RELEASE
+
+#endif

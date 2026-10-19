@@ -5,7 +5,7 @@
 /***************************************************************************/
 
 /* Version number of project */
-#define COINMP_VERSION      "trunk"
+#define COINMP_VERSION      "devel"
 
 /* Major Version number of project */
 #define COINMP_VERSION_MAJOR   9999
@@ -15,3 +15,11 @@
 
 /* Release Version number of project */
 #define COINMP_VERSION_RELEASE 9999
+
+#ifndef COINMPLIB_EXPORT
+#if defined(_WIN32) && defined(DLL_EXPORT)
+#define COINMPLIB_EXPORT __declspec(dllimport)
+#else
+#define COINMPLIB_EXPORT
+#endif
+#endif
