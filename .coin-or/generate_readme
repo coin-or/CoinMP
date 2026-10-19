@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# Exit when command fails
+set -e
+#Attempt to use undefined variable outputs error message, and forces an exit
+set -u
+#Causes a pipeline to return the exit status of the last command in the pipe
+#that returned a non-zero return value.
+set -o pipefail
+#set -x
+
+source $COINBREW_HOME/scripts/generate_readme
+
+pushd . > /dev/null
+cd $(dirname $0)
+SCRIPT_DIR=$PWD
+popd > /dev/null
+
+create_variables $SCRIPT_DIR/config.yml
+
+make_header
+
+echo "CoinMP is a C-API interface library that supports most of the
+functionality of the CLP (Coin LP), CBC (Coin Branch-and-Cut), and CGL (Cut
+Generation Library) projects. It is built as a shared library (\`libCoinMP\`,
+or \`CoinMP.dll\` on Windows) that can be used from other C/C++ projects and
+applications. The header file \`src/CoinMP.h\` contains the prototypes of all
+functions of the library."
+
+# Arch's package is called coin-or-mp, Debian's only coinor-libcoinmp-dev, and
+# conda-forge's coinmp. There are no current Fedora, linuxbrew, or Homebrew
+# packages of CoinMP.
+make_build_info | awk '
+  /^   \* Fedora\/Redhat\/CentOS:/ || /^   \* linuxbrew:/ || /^ \* \*Mac OS X\*:/ { skip = 1; fences = 0; next }
+  skip { if (/```/ && ++fences == 2) skip = 0; next }
+  { print }' | sed -e 's/pacman -S  coin-or-coinmp/pacman -S  coin-or-mp/' \
+                   -e 's/coinor-coinmp coinor-libcoinmp-dev/coinor-libcoinmp-dev/' \
+                   -e 's/conda install coin-or-coinmp/conda install -c conda-forge coinmp/' \
+                   -e 's|repology.org/project/coin-or-coinmp/|repology.org/project/coinmp/|'
+
+echo "### Example
+
+The \`examples\` directory has a C program that solves a few small problems
+with CoinMP. After building and installing CoinMP, it can be built by running
+\`make\` in the corresponding subdirectory of the build directory, e.g.,
+\`\`\`
+cd build/CoinMP/master/examples
+make
+./example
+\`\`\`
+"
+
+make_links
