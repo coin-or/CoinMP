@@ -27,7 +27,7 @@
 
 #include "CoinCbc.h"
 
-#include "config_coinmp_default.h"
+#include "CoinMPConfig.h"
 
 
 #define SOLVER_EXPORT
