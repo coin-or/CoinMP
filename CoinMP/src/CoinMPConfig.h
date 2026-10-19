@@ -23,11 +23,37 @@
  */
 
 #ifndef __COINMPCONFIG_H__
+#define __COINMPCONFIG_H__
 
 #ifdef HAVE_CONFIG_H
+#ifdef COINMPLIB_BUILD
+#include "config.h"
+
+/* overwrite COINMPLIB_EXPORT from config.h when building CoinMP
+ * we want it to be __declspec(dllexport) when building a DLL on Windows
+ * we want it to be __attribute__((__visibility__("default"))) when building with GCC,
+ *   so user can compile with -fvisibility=hidden
+ */
+#ifdef DLL_EXPORT
+#undef COINMPLIB_EXPORT
+#define COINMPLIB_EXPORT __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#undef COINMPLIB_EXPORT
+#define COINMPLIB_EXPORT __attribute__((__visibility__("default")))
+#endif
+
+#else
 #include "config_coinmp.h"
+#endif
+
+#else /* HAVE_CONFIG_H */
+
+#ifdef COINMPLIB_BUILD
+#include "config_default.h"
 #else
 #include "config_coinmp_default.h"
 #endif
+
+#endif /* HAVE_CONFIG_H */
 
 #endif /*__COINMPCONFIG_H__*/
