@@ -31,7 +31,8 @@
 #endif
 
 #ifndef SOLVAPI
-#define SOLVAPI
+#include "CoinMPConfig.h"
+#define SOLVAPI COINMPLIB_EXPORT
 #endif
 
 #ifndef SOLVCALL
