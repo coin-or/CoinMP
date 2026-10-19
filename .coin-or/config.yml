@@ -1,0 +1,60 @@
+Description:
+  Slug: CoinMP
+  ShortName: CoinMP
+  LongName: CoinMP
+  ShortDescription: A lightweight C API library for Clp, Cbc, and Cgl.
+  LongDescription: |2
+    CoinMP is a C-API interface library that supports most of the
+    functionality of the CLP (Coin LP), CBC (Coin Branch-and-Cut), and CGL
+    (Cut Generation Library) projects. It can be used as a shared library
+    (or DLL on Windows) from other C/C++ projects and applications.
+  Manager: Bjarni Kristjansson
+  Homepage: https://github.com/coin-or/CoinMP
+  License: Eclipse Public License 2.0
+  LicenseURL: http://www.opensource.org/licenses/EPL-2.0
+  Zenodo:
+  IncludedIn:
+    Package: CoinMP
+  Language:
+    - C++
+  Categories:
+    - Optimization deterministic linear continuous
+    - Optimization deterministic linear discrete
+    - Interfaces
+
+Dependencies:
+  - Description: COIN-OR Utilities
+    URL: https://github.com/coin-or/CoinUtils
+    Version: stable/2.11
+    Required: Required
+  - Description: Open Solver Interface
+    URL: https://github.com/coin-or/Osi
+    Version: stable/0.108
+    Required: Required
+  - Description: COIN-OR Linear Programming Solver
+    URL: https://github.com/coin-or/Clp
+    Version: stable/1.17
+    Required: Required
+  - Description: Cut Generator Library
+    URL: https://github.com/coin-or/Cgl
+    Version: stable/0.60
+    Required: Required
+  - Description: COIN-OR Branch-and-Cut
+    URL: https://github.com/coin-or/Cbc
+    Version: stable/2.10
+    Required: Required
+
+DevelopmentStatus:
+  activityStatus: Active
+  maturityLevel: 5
+  testedPlatforms:
+  - operatingSystem: Linux
+    compiler: gcc
+  - operatingSystem: Mac OS X
+    compiler:
+    - gcc
+    - clang
+  - operatingSystem: Microsoft Windows with MSys2
+    compiler:
+    - gcc
+    - cl
