@@ -18,6 +18,15 @@ popd > /dev/null
 
 create_variables $SCRIPT_DIR/config.yml
 
+# Binary packages of this project that make_build_info lists (see
+# make_binary_packages in coinbrew's scripts/generate_readme)
+Package_Repology="coinmp"
+Package_Arch="coin-or-mp"
+Package_Debian="coinor-libcoinmp-dev"
+Package_FreeBSD="math/coinmp"
+Package_MSYS2="mingw-w64-ucrt-x86_64-coin-or-mp"
+Package_Conda="coinmp"
+
 make_header
 
 echo "CoinMP is a C-API interface library that supports most of the
@@ -27,16 +36,7 @@ or \`CoinMP.dll\` on Windows) that can be used from other C/C++ projects and
 applications. The header file \`CoinMP/src/CoinMP.h\` contains the prototypes of all
 functions of the library."
 
-# Arch's package is called coin-or-mp, Debian's only coinor-libcoinmp-dev, and
-# conda-forge's coinmp. There are no current Fedora, linuxbrew, or Homebrew
-# packages of CoinMP.
-make_build_info | awk '
-  /^   \* Fedora\/Redhat\/CentOS:/ || /^   \* linuxbrew:/ || /^ \* \*Mac OS X\*:/ { skip = 1; fences = 0; next }
-  skip { if (/```/ && ++fences == 2) skip = 0; next }
-  { print }' | sed -e 's/pacman -S  coin-or-coinmp/pacman -S  coin-or-mp/' \
-                   -e 's/coinor-coinmp coinor-libcoinmp-dev/coinor-libcoinmp-dev/' \
-                   -e 's/conda install coin-or-coinmp/conda install -c conda-forge coinmp/' \
-                   -e 's|repology.org/project/coin-or-coinmp/|repology.org/project/coinmp/|'
+make_build_info
 
 echo "### Example
 
